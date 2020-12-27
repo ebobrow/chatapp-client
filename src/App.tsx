@@ -3,6 +3,8 @@ import React from 'react';
 import './App.css';
 import { AuthContext } from './contexts/AuthContext';
 import { BrowserRouter } from 'react-router-dom';
+import { Navbar } from './components/Navbar';
+import { Router } from './components/Router';
 
 const theme = createMuiTheme({
   palette: {
@@ -20,7 +22,10 @@ const App: React.FC<{}> = () => {
     <div className="App">
       <AuthContext>
         <ThemeProvider theme={theme}>
-          <BrowserRouter></BrowserRouter>
+          <BrowserRouter>
+            <Navbar />
+            <Router />
+          </BrowserRouter>
         </ThemeProvider>
       </AuthContext>
     </div>
