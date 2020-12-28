@@ -1,10 +1,12 @@
 import React from 'react';
 
-interface Props {}
+interface Props {
+  w: string;
+}
 
-export const ConversationList: React.FC<Props> = () => {
+export const ConversationList: React.FC<Props> = ({ w }) => {
   return (
-    <div style={{ width: '50%' }}>
+    <div style={{ width: w }}>
       <h1>Conversations:</h1>
     </div>
   );

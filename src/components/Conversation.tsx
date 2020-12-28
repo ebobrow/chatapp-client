@@ -12,6 +12,7 @@ import { Socket } from 'socket.io-client';
 
 interface Props {
   socket: Socket;
+  w: string;
 }
 
 interface message {
@@ -19,7 +20,7 @@ interface message {
   sender: string;
 }
 
-export const Conversation: React.FC<Props> = ({ socket }) => {
+export const Conversation: React.FC<Props> = ({ socket, w }) => {
   const { user } = useAuthContext();
   const [messages, setMessages] = useState<Array<message>>([]);
   const [form, setForm] = useState('');
@@ -50,7 +51,7 @@ export const Conversation: React.FC<Props> = ({ socket }) => {
   }, [socket]);
 
   return (
-    <ChatWrapper>
+    <ChatWrapper w={w}>
       <div style={{ flexGrow: 1 }} />
       <MessagesContainer>
         {messages.map((message, index) => {

@@ -6,9 +6,11 @@ interface MessageProps {
   mymessage: boolean;
 }
 
+const textWidth = 40;
+
 export const MessagesContainer = styled.div`
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: ${textWidth}% ${100 - textWidth * 2}% ${textWidth}%;
   width: 100%;
   margin: auto;
 `;
@@ -21,7 +23,7 @@ export const Message = styled.div<MessageProps>`
 
 export const MessageWrapper = styled.div<MessageProps>`
   grid-row: ${({ row }) => row + 1};
-  grid-column: ${({ mymessage }) => (mymessage ? '2' : '1')} / span 1;
+  grid-column: ${({ mymessage }) => (mymessage ? '3' : '1')} / span 1;
   display: flex;
   flex-direction: column;
   margin: 10px;
@@ -38,8 +40,8 @@ export const TextNode = styled.p<{ ismine: boolean }>`
   text-align: ${({ ismine }) => (ismine ? 'right' : 'left')}; ;
 `;
 
-export const ChatWrapper = styled(FormWrapper)`
-  width: 50%;
+export const ChatWrapper = styled(FormWrapper)<{ w: string }>`
+  width: ${({ w }) => w};
   margin: 10px;
   height: 90%;
   display: flex;

@@ -15,8 +15,8 @@ export const Chat: React.FC<{}> = () => {
     <div style={{ display: 'flex', flexDirection: 'row', height: '90%' }}>
       {!loggedIn && <Redirect to="/login" />}
 
-      <ConversationList />
-      <Conversation socket={socket} />
+      <ConversationList w="30%" />
+      <Conversation socket={socket} w="70%" />
     </div>
   );
 };
