@@ -1,7 +1,7 @@
 import { AppBar, ButtonGroup, Button } from '@material-ui/core';
 import React from 'react';
 import { UserInfo } from './UserInfo';
-import { FlexContainer, NavContainer, StyledLink } from './StyledComponents';
+import { FlexContainer, NavContainer, StyledLink } from './styled/Auth';
 import { useAuthContext } from '../contexts/AuthContext';
 
 export const Navbar: React.FC<{}> = () => {

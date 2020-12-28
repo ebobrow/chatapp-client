@@ -2,7 +2,7 @@ import { Button, TextField } from '@material-ui/core';
 import React, { ChangeEvent, Dispatch, FormEvent, useEffect } from 'react';
 import { useForm } from '../hooks/useForm';
 import { formDispatchAction, inputObj } from '../types';
-import { FormWrapper } from './StyledComponents';
+import { FormWrapper } from './styled/Auth';
 
 interface Props {
   initialState: Array<inputObj>;

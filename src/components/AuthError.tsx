@@ -1,5 +1,5 @@
 import React, { Dispatch } from 'react';
-import { ErrorContainer } from './StyledComponents';
+import { ErrorContainer } from './styled/Auth';
 import { Alert } from '@material-ui/lab';
 
 interface Props {

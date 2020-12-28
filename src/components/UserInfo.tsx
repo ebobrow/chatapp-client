@@ -1,7 +1,7 @@
 import { Button, ButtonGroup } from '@material-ui/core';
 import React from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
-import { FlexContainer, StyledLink } from './StyledComponents';
+import { FlexContainer, StyledLink } from './styled/Auth';
 
 export const UserInfo: React.FC<{}> = () => {
   const { loggedIn, user, setUserToken } = useAuthContext();
