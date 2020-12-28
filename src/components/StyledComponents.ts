@@ -10,6 +10,11 @@ interface LinkProps {
   hovercolor?: string;
 }
 
+interface MessageProps {
+  row: number;
+  mymessage: boolean;
+}
+
 export const ErrorContainer = styled.div`
   width: 100%;
   display: flex;
@@ -58,4 +63,18 @@ export const FlexContainer = styled.div<FlexProps>`
   width: ${({ width }) => (width ? width : '')};
   justify-content: space-between;
   height: 100%;
+`;
+
+export const MessagesContainer = styled.div`
+  display: grid;
+  grid-template-columns: auto auto;
+  width: 60%;
+  margin: auto;
+`;
+
+export const Message = styled.p<MessageProps>`
+  width: 50%;
+  grid-row: ${({ row }) => row + 1};
+  grid-column: ${({ mymessage }) => (mymessage ? '2' : '1')} / span 1;
+  background-color: ${({ mymessage }) => (mymessage ? 'blue' : 'gray')};
 `;
