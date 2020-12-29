@@ -17,3 +17,9 @@ export type formDispatchAction =
     }
   | { type: 'reset'; target: string }
   | { type: 'reset-all' };
+
+export type ChatObject = {
+  id?: string;
+  participants?: Array<string>;
+  messages?: Array<object>;
+};

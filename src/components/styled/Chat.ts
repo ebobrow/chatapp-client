@@ -1,3 +1,4 @@
+import { FiPlus } from 'react-icons/fi';
 import styled from 'styled-components';
 import { FormWrapper } from './Auth';
 
@@ -27,6 +28,7 @@ export const MessageWrapper = styled.div<MessageProps>`
   display: flex;
   flex-direction: column;
   margin: 10px;
+  min-width: fit-content;
 
   p {
     margin: 0;
@@ -43,9 +45,53 @@ export const TextNode = styled.p<{ ismine: boolean }>`
 export const ChatWrapper = styled(FormWrapper)<{ w: string }>`
   width: ${({ w }) => w};
   margin: 10px;
-  height: 90%;
+  height: 93%;
   display: flex;
   flex-direction: column;
   overflow: scroll;
   flex-wrap: nowrap;
+`;
+
+export const ConversationWrapper = styled.div<{ active: boolean }>`
+  display: flex;
+  flex-direction: column;
+  background-color: ${({ active }) => (active ? 'darkcyan' : 'gainsboro')};
+  min-height: 50px;
+  margin: 10px;
+  padding: 10px;
+  align-content: center;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: ${({ active }) => (active ? 'darkcyan' : 'grey')};
+    cursor: pointer;
+  }
+`;
+
+export const Plus = styled(FiPlus)`
+  width: 30px;
+  height: auto;
+  margin: 20px 30px;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const ModalForm = styled.form`
+  transform: translate(50%, 50%);
+  background-color: white;
+  width: 50%;
+  height: 50%;
+  outline: 0;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+`;
+
+export const FlexFiller = styled.div`
+  flex-grow: 1;
 `;

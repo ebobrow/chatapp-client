@@ -1,40 +1,43 @@
 import { TextField, Button } from '@material-ui/core';
-import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import React, { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
 import {
   MessagesContainer,
   MessageWrapper,
   Message,
   ChatWrapper,
-  TextNode
+  TextNode,
+  FlexFiller
 } from './styled/Chat';
-import { Socket } from 'socket.io-client';
+import { useChatContext } from '../contexts/ChatContext';
+import { useSocketContext } from '../contexts/SocketContext';
 
 interface Props {
-  socket: Socket;
   w: string;
 }
 
 interface message {
-  text: string;
+  message: string;
   sender: string;
 }
 
-export const Conversation: React.FC<Props> = ({ socket, w }) => {
+export const Conversation: React.FC<Props> = ({ w }) => {
   const { user } = useAuthContext();
   const [messages, setMessages] = useState<Array<message>>([]);
   const [form, setForm] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
+  const { chat } = useChatContext();
+  const { socket } = useSocketContext();
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     bottomRef.current!.scrollIntoView({ behavior: 'smooth' });
-  };
+  }, []);
 
   const sendChat = (e: FormEvent) => {
     e.preventDefault();
     scrollToBottom();
-    socket.emit('new-message', { message: form, sender: user!.name });
-    setMessages(curr => [...curr, { sender: user!.name, text: form }]);
+    socket.emit('new-message', { message: form, sender: user!.name, room: chat.id });
+    setMessages(curr => [...curr, { sender: user!.name, message: form }]);
     setForm('');
   };
 
@@ -42,50 +45,63 @@ export const Conversation: React.FC<Props> = ({ socket, w }) => {
     scrollToBottom();
     socket.on('message', ({ message, sender }: { message: string; sender: string }) => {
       scrollToBottom();
-      setMessages(curr => [...curr, { text: message, sender }]);
+      setMessages(curr => [...curr, { message, sender }]);
     });
 
     return () => {
       socket.off();
     };
-  }, [socket]);
+  }, [socket, scrollToBottom]);
+
+  useEffect(() => {
+    scrollToBottom();
+
+    if (!chat.messages) return;
+    setMessages(chat.messages as message[]);
+  }, [chat, scrollToBottom]);
 
   return (
     <ChatWrapper w={w}>
-      <div style={{ flexGrow: 1 }} />
-      <MessagesContainer>
-        {messages.map((message, index) => {
-          const isMine = message.sender === user?.name;
-          return (
-            <MessageWrapper key={index} mymessage={isMine} row={index}>
-              <Message key={index} mymessage={isMine} row={index}>
-                <TextNode ismine={isMine}>{message.text}</TextNode>
-              </Message>
-              <TextNode ismine={isMine}>{isMine ? 'Me' : message.sender}</TextNode>
-            </MessageWrapper>
-          );
-        })}
-      </MessagesContainer>
+      <FlexFiller />
+      {chat.id && (
+        <>
+          <MessagesContainer>
+            {messages.map((message, index) => {
+              const isMine = message.sender === user?.name;
+              return (
+                <MessageWrapper key={index} mymessage={isMine} row={index}>
+                  <Message key={index} mymessage={isMine} row={index}>
+                    <TextNode ismine={isMine}>{message.message}</TextNode>
+                  </Message>
+                  <TextNode ismine={isMine}>{isMine ? 'Me' : message.sender}</TextNode>
+                </MessageWrapper>
+              );
+            })}
+          </MessagesContainer>
 
-      <form onSubmit={sendChat}>
-        <TextField
-          type="text"
-          value={form}
-          onChange={e => {
-            setForm(e.target.value);
-          }}
-          style={{ margin: '5px', width: '80%' }}
-        />
-        <Button
-          disabled={form === ''}
-          variant="contained"
-          type="submit"
-          disableElevation
-          style={{ marginTop: '5px' }}>
-          Send
-        </Button>
-      </form>
-      <div ref={bottomRef}></div>
+          <form onSubmit={sendChat}>
+            <TextField
+              type="text"
+              value={form}
+              onChange={e => {
+                setForm(e.target.value);
+              }}
+              style={{ margin: '5px', width: '80%' }}
+            />
+            <Button
+              disabled={form === ''}
+              variant="contained"
+              type="submit"
+              disableElevation
+              style={{ marginTop: '5px' }}>
+              Send
+            </Button>
+          </form>
+        </>
+      )}
+      <div ref={bottomRef} style={{ height: '10px' }}>
+        {/* jhgjhgjhgj */}
+      </div>
     </ChatWrapper>
   );
 };
