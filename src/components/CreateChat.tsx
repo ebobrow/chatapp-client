@@ -72,17 +72,30 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen, refreshChats }) => 
     <Modal open={open} onClose={closeModal}>
       <ModalForm onSubmit={addPerson}>
         <h1>New Chat</h1>
-        {people.map(person => (
-          <Alert
-            key={person.name}
-            style={{ margin: '5px' }}
-            severity={person.found ? 'success' : 'error'}
-            icon={false}
-            onClose={_ => removePerson(person.name)}>
-            {person.name}
-            {!person.found && !person.type && ' (not found)'}
-          </Alert>
-        ))}
+        {people.map((person, index) => {
+          if (person.type === 'error') {
+            return (
+              <Alert
+                key={index}
+                style={{ margin: '5px' }}
+                severity="error"
+                onClose={_ => removePerson(person.name)}>
+                {person.name}
+              </Alert>
+            );
+          }
+          return (
+            <Alert
+              key={person.name}
+              style={{ margin: '5px' }}
+              severity={person.found ? 'success' : 'error'}
+              icon={false}
+              onClose={_ => removePerson(person.name)}>
+              {person.name}
+              {!person.found && ' (not found)'}
+            </Alert>
+          );
+        })}
         <FlexFiller />
         <div
           style={{

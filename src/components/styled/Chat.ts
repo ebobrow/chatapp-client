@@ -90,6 +90,7 @@ export const ModalForm = styled.form`
   justify-content: center;
   align-content: center;
   text-align: center;
+  overflow: scroll;
 `;
 
 export const FlexFiller = styled.div`
