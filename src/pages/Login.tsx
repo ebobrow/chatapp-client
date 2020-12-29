@@ -5,6 +5,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { API_URL } from '../constants';
 import { errorType, formDispatchAction } from '../types';
 import { AuthForm } from '../components/AuthForm';
+import { Helmet } from 'react-helmet';
 
 export const Login: React.FC<{}> = () => {
   const linkStyle: React.CSSProperties = {
@@ -35,22 +36,27 @@ export const Login: React.FC<{}> = () => {
   };
 
   return (
-    <div>
-      {loggedIn && <Redirect to="/" />}
-      <AuthError messages={errors} setMessages={setErrors} />
-      <AuthForm
-        initialState={[
-          { name: 'Email', type: 'text', id: 'email' },
-          { name: 'Password', type: 'password', id: 'password' }
-        ]}
-        actionName="Log In"
-        submit={loginUser}
-        postUrl={`${API_URL}/auth/login`}
-      />
-      <br />
-      <Link style={linkStyle} to="/signup">
-        Don't have an account?
-      </Link>
-    </div>
+    <>
+      <Helmet>
+        <title>What's Appening | Login</title>
+      </Helmet>
+      <div>
+        {loggedIn && <Redirect to="/" />}
+        <AuthError messages={errors} setMessages={setErrors} />
+        <AuthForm
+          initialState={[
+            { name: 'Email', type: 'text', id: 'email' },
+            { name: 'Password', type: 'password', id: 'password' }
+          ]}
+          actionName="Log In"
+          submit={loginUser}
+          postUrl={`${API_URL}/auth/login`}
+        />
+        <br />
+        <Link style={linkStyle} to="/signup">
+          Don't have an account?
+        </Link>
+      </div>
+    </>
   );
 };

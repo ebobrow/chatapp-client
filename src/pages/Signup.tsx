@@ -5,6 +5,7 @@ import { AuthError } from '../components/AuthError';
 import { AuthForm } from '../components/AuthForm';
 import { API_URL } from '../constants';
 import { errorType, formDispatchAction } from '../types';
+import { Helmet } from 'react-helmet';
 
 export const SignUp: React.FC<{}> = () => {
   const [errors, setErrors] = useState<Array<string>>([]);
@@ -36,20 +37,25 @@ export const SignUp: React.FC<{}> = () => {
   };
 
   return (
-    <div>
-      {loggedIn && <Redirect to="/" />}
-      <AuthError messages={errors} setMessages={setErrors} />
-      <AuthForm
-        initialState={[
-          { name: 'Name', type: 'text', id: 'name' },
-          { name: 'Email', type: 'text', id: 'email' },
-          { name: 'Password', type: 'password', id: 'password' },
-          { name: 'Confirm Password', type: 'password', id: 'passwordVerify' }
-        ]}
-        actionName="Sign Up"
-        postUrl={`${API_URL}/auth/register`}
-        submit={signUpUser}
-      />
-    </div>
+    <>
+      <Helmet>
+        <title>What's Appening | Sign Up</title>
+      </Helmet>
+      <div>
+        {loggedIn && <Redirect to="/" />}
+        <AuthError messages={errors} setMessages={setErrors} />
+        <AuthForm
+          initialState={[
+            { name: 'Name', type: 'text', id: 'name' },
+            { name: 'Email', type: 'text', id: 'email' },
+            { name: 'Password', type: 'password', id: 'password' },
+            { name: 'Confirm Password', type: 'password', id: 'passwordVerify' }
+          ]}
+          actionName="Sign Up"
+          postUrl={`${API_URL}/auth/register`}
+          submit={signUpUser}
+        />
+      </div>
+    </>
   );
 };
