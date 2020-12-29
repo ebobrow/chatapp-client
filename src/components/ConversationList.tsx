@@ -60,7 +60,6 @@ export const ConversationList: React.FC<Props> = ({ w }) => {
     if (chat.id) {
       socket.emit('leave', chat.id);
     }
-    console.log(conversations[key]);
     setChat(conversations[key]);
   };
 

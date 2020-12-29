@@ -32,7 +32,6 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen, refreshChats }) => 
       body: JSON.stringify({ email: form })
     });
     const person: { user: object } = await res.json();
-    console.log(person.user);
 
     setPeople(curr => [...curr, { found: !!person.user, name: form }]);
     setForm('');
@@ -43,11 +42,20 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen, refreshChats }) => 
     setOpen(false);
   };
 
-  const add = () => {
+  const add = async () => {
     const validEmails = people.filter(person => person.found);
     if (!validEmails.length) return;
-    socket.emit('create-group', {
-      users: [...validEmails.map(person => person.name), user?.email]
+    // socket.emit('create-group', {
+    //   users: [...validEmails.map(person => person.name), user?.email]
+    // });
+    const res = await fetch(`${API_URL}/chat/createchat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        users: [...validEmails.map(person => person.name), user?.email]
+      })
     });
     refreshChats();
     closeModal();
