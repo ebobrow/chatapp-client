@@ -35,11 +35,10 @@ export const MessageWrapper = styled.div<MessageProps>`
   }
 `;
 
-export const TextNode = styled.p<{ ismine: boolean }>`
+export const TextNode = styled.p<{ ismine: boolean; padding: boolean }>`
   float: ${({ ismine }) => (ismine ? 'right' : 'left')};
-  width: fit-content;
-  padding: 3px 10px;
-  text-align: ${({ ismine }) => (ismine ? 'right' : 'left')}; ;
+  padding: 3px ${({ padding }) => (padding ? '10px' : '0')};
+  text-align: ${({ ismine }) => (ismine ? 'right' : 'left')};
 `;
 
 export const ChatWrapper = styled(FormWrapper)<{ w: string }>`

@@ -71,9 +71,13 @@ export const Conversation: React.FC<Props> = ({ w }) => {
               return (
                 <MessageWrapper key={index} mymessage={isMine} row={index}>
                   <Message key={index} mymessage={isMine} row={index}>
-                    <TextNode ismine={isMine}>{message.message}</TextNode>
+                    <TextNode ismine={isMine} padding={true}>
+                      {message.message}
+                    </TextNode>
                   </Message>
-                  <TextNode ismine={isMine}>{isMine ? 'Me' : message.sender}</TextNode>
+                  <TextNode ismine={isMine} padding={false}>
+                    {isMine ? 'Me' : message.sender}
+                  </TextNode>
                 </MessageWrapper>
               );
             })}
