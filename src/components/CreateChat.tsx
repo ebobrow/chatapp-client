@@ -3,7 +3,6 @@ import { Alert } from '@material-ui/lab';
 import React, { Dispatch, FormEvent, useState } from 'react';
 import { API_URL } from '../constants';
 import { useAuthContext } from '../contexts/AuthContext';
-import { useSocketContext } from '../contexts/SocketContext';
 import { FlexFiller, ModalForm } from './styled/Chat';
 
 interface Props {
@@ -12,10 +11,15 @@ interface Props {
   refreshChats: () => Promise<void>;
 }
 
+interface person {
+  found: boolean;
+  name: string;
+  type?: 'error' | null;
+}
+
 export const CreateChat: React.FC<Props> = ({ open, setOpen, refreshChats }) => {
   const [form, setForm] = useState('');
-  const [people, setPeople] = useState<Array<{ found: boolean; name: string }>>([]);
-  const { socket } = useSocketContext();
+  const [people, setPeople] = useState<Array<person>>([]);
   const { user } = useAuthContext();
 
   const removePerson = (name: string) => {
@@ -45,9 +49,6 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen, refreshChats }) => 
   const add = async () => {
     const validEmails = people.filter(person => person.found);
     if (!validEmails.length) return;
-    // socket.emit('create-group', {
-    //   users: [...validEmails.map(person => person.name), user?.email]
-    // });
     const res = await fetch(`${API_URL}/chat/createchat`, {
       method: 'POST',
       headers: {
@@ -57,6 +58,12 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen, refreshChats }) => 
         users: [...validEmails.map(person => person.name), user?.email]
       })
     });
+    const data = await res.json();
+
+    if (!data.ok) {
+      setPeople([{ name: data.error, found: false, type: 'error' }]);
+      return;
+    }
     refreshChats();
     closeModal();
   };
@@ -73,7 +80,7 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen, refreshChats }) => 
             icon={false}
             onClose={_ => removePerson(person.name)}>
             {person.name}
-            {!person.found && ' (not found)'}
+            {!person.found && !person.type && ' (not found)'}
           </Alert>
         ))}
         <FlexFiller />
