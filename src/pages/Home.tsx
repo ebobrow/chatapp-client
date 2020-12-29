@@ -8,7 +8,8 @@ export const Home: React.FC<{}> = () => {
   return (
     <>
       {!loggedIn && <Redirect to="/login" />}
-      <h1>Welcome to appname</h1>
+      <h1>What's Appening</h1>
+      <h4>What's app but worse.</h4>
     </>
   );
 };
