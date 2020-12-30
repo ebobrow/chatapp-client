@@ -7,7 +7,7 @@ import React, {
   useEffect,
   useState
 } from 'react';
-import { API_URL } from '../constants';
+import { postRequest } from '../postRequest';
 
 interface ContextObject {
   setUserToken: Dispatch<null | string>;
@@ -40,14 +40,7 @@ export const AuthContext: React.FC<{}> = ({ children }) => {
 
   const checkValidToken = useCallback(
     async token => {
-      const res = await fetch(`${API_URL}/auth/token`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ auth: token })
-      });
-      const data = await res.json();
+      const data = await postRequest('/auth/token', { auth: token });
 
       if (!data || !data.ok) {
         setUserToken(null);

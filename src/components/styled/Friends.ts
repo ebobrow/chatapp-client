@@ -33,3 +33,9 @@ export const AddChat = styled.div`
     cursor: pointer;
   }
 `;
+
+export const FriendsWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+`;

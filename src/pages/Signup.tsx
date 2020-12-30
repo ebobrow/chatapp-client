@@ -3,7 +3,6 @@ import { Redirect } from 'react-router-dom';
 import { useAuthContext } from '../contexts/AuthContext';
 import { AuthError } from '../components/AuthError';
 import { AuthForm } from '../components/AuthForm';
-import { API_URL } from '../constants';
 import { errorType, formDispatchAction } from '../types';
 import { Title } from '../components/Title';
 
@@ -50,7 +49,7 @@ export const SignUp: React.FC<{}> = () => {
             { name: 'Confirm Password', type: 'password', id: 'passwordVerify' }
           ]}
           actionName="Sign Up"
-          postUrl={`${API_URL}/auth/register`}
+          postUrl={'/auth/register'}
           submit={signUpUser}
         />
       </div>

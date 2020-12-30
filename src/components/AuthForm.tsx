@@ -1,6 +1,7 @@
 import { Button, TextField } from '@material-ui/core';
 import React, { ChangeEvent, Dispatch, FormEvent, useEffect } from 'react';
 import { useForm } from '../hooks/useForm';
+import { postRequest } from '../postRequest';
 import { formDispatchAction, inputObj } from '../types';
 import { FormWrapper } from './styled/Auth';
 
@@ -59,14 +60,7 @@ export const AuthForm: React.FC<Props> = ({
     }
     console.log(userCredentials, extraCredentials);
 
-    const res = await fetch(postUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(userCredentials)
-    });
-    const data = await res.json();
+    const data = await postRequest(postUrl, userCredentials);
 
     submit(data, dispatch);
   };

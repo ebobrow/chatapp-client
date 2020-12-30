@@ -2,7 +2,6 @@ import React, { Dispatch, useState } from 'react';
 import { AuthError } from '../components/AuthError';
 import { useAuthContext } from '../contexts/AuthContext';
 import { Link, Redirect } from 'react-router-dom';
-import { API_URL } from '../constants';
 import { errorType, formDispatchAction } from '../types';
 import { AuthForm } from '../components/AuthForm';
 import { Title } from '../components/Title';
@@ -48,7 +47,7 @@ export const Login: React.FC<{}> = () => {
           ]}
           actionName="Log In"
           submit={loginUser}
-          postUrl={`${API_URL}/auth/login`}
+          postUrl={'/auth/login'}
         />
         <br />
         <Link style={linkStyle} to="/signup">

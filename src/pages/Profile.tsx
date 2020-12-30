@@ -3,7 +3,6 @@ import { Redirect } from 'react-router-dom';
 import { useAuthContext } from '../contexts/AuthContext';
 import { AuthError } from '../components/AuthError';
 import { AuthForm } from '../components/AuthForm';
-import { API_URL } from '../constants';
 import { formDispatchAction, errorType } from '../types';
 import { Title } from '../components/Title';
 
@@ -52,7 +51,7 @@ export const Profile: React.FC<{}> = () => {
           { name: 'Confirm New Password', type: 'password', id: 'newPasswordVerify' }
         ]}
         actionName="Change Password"
-        postUrl={`${API_URL}/auth/password`}
+        postUrl={'/auth/password'}
         submit={changePassword}
         extraCredentials={{ id: user?.id }}
       />

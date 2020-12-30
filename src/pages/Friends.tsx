@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Friend } from '../components/Friend';
+import { FriendsWrapper } from '../components/styled/Friends';
 import { Title } from '../components/Title';
-import { API_URL } from '../constants';
 import { useAuthContext } from '../contexts/AuthContext';
+import { postRequest } from '../postRequest';
 
 interface Props {}
 
@@ -14,15 +15,7 @@ export const Friends: React.FC<Props> = () => {
   const getFriendNames = useCallback(async () => {
     if (!user || !user.friends) return;
     const names = user.friends.map(async id => {
-      const res = await fetch(`${API_URL}/friends/getname`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ id })
-      });
-
-      const data = await res.json();
+      const data = await postRequest('/friends/getname', { id });
 
       return data.name;
     });
@@ -40,13 +33,13 @@ export const Friends: React.FC<Props> = () => {
       <Title>Friends</Title>
       {!loggedIn && <Redirect to="/login" />}
       <h1>Friends</h1>
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+      <FriendsWrapper>
         {user
           ? friends.length
             ? friends?.map((friend, index) => <Friend name={friend} key={index} />)
             : 'No friends yet, loser'
           : 'Loading...'}
-      </div>
+      </FriendsWrapper>
     </>
   );
 };

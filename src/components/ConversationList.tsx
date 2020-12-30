@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { API_URL } from '../constants';
 import { useAuthContext } from '../contexts/AuthContext';
 import { useChatContext } from '../contexts/ChatContext';
 import { useSocketContext } from '../contexts/SocketContext';
+import { postRequest } from '../postRequest';
 import { ChatObject } from '../types';
 import { CreateChat } from './CreateChat';
 import { ConversationWrapper, FlexFiller, Plus } from './styled/Chat';
@@ -21,14 +21,7 @@ export const ConversationList: React.FC<Props> = ({ w }) => {
   const getChats = useCallback(async () => {
     if (!user) return;
 
-    const res = await fetch(`${API_URL}/chat/chats`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ id: user.id })
-    });
-    const data: { chats: Array<any> } = await res.json();
+    const data: { chats: Array<any> } = await postRequest('/chat/chats', { id: user.id });
 
     setConversations(
       data.chats.map(chat => ({

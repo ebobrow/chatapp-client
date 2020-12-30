@@ -1,8 +1,8 @@
 import { Button, Modal, TextField } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import React, { Dispatch, FormEvent, useState } from 'react';
-import { API_URL } from '../constants';
 import { useAuthContext } from '../contexts/AuthContext';
+import { postRequest } from '../postRequest';
 import { FlexFiller, ModalForm } from './styled/Chat';
 
 interface Props {
@@ -32,14 +32,7 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen, refreshChats }) => 
 
   const addPerson = async (e: FormEvent) => {
     e.preventDefault();
-    const res = await fetch(`${API_URL}/chat/finduser`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email: form })
-    });
-    const person: { user: object } = await res.json();
+    const person = await postRequest('/chat/finduser', { email: form });
 
     setPeople(curr => [...curr, { found: !!person.user, name: form }]);
     setForm('');
@@ -58,23 +51,17 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen, refreshChats }) => 
     });
   };
 
-  const add = async () => {
+  const create = async () => {
     const validEmails = people.filter(person => person.found);
     if (!validEmails.length) return;
     if (validEmails.find(person => person.name === user?.email)) {
       setErrorsNoRepeats('Cannot add self to chat');
       return;
     }
-    const res = await fetch(`${API_URL}/chat/createchat`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        users: [...validEmails.map(person => person.name), user?.email]
-      })
+
+    const data = await postRequest('/chat/createchat', {
+      users: [...validEmails.map(person => person.name), user?.email]
     });
-    const data = await res.json();
 
     if (!data.ok) {
       setErrorsNoRepeats(data.error);
@@ -130,7 +117,7 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen, refreshChats }) => 
             Add
           </Button>
         </div>
-        <Button variant="contained" color="secondary" onClick={add}>
+        <Button variant="contained" color="secondary" onClick={create}>
           Create
         </Button>
       </ModalForm>

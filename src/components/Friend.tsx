@@ -1,6 +1,6 @@
 import { Button } from '@material-ui/core';
 import React from 'react';
-import { AddChat, FriendContainer, Plus } from './styled/Friends';
+import { FriendContainer, Plus } from './styled/Friends';
 
 interface Props {
   name: string;
