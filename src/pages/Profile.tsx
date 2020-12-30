@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { useAuthContext } from '../contexts/AuthContext';
 import { AuthError } from '../components/AuthError';
 import { AuthForm } from '../components/AuthForm';
-import { API_URL } from '../constants';
+import { API_URL, APP_NAME } from '../constants';
 import { formDispatchAction, errorType } from '../types';
 import { Helmet } from 'react-helmet';
 
@@ -36,7 +36,7 @@ export const Profile: React.FC<{}> = () => {
   return (
     <>
       <Helmet>
-        <title>What's Appening | Profile</title>
+        <title>{APP_NAME} | Profile</title>
       </Helmet>
       {!loggedIn && <Redirect to="/login" />}
       {user ? <h1>Hi, {user.name}</h1> : <h1>Loading...</h1>}

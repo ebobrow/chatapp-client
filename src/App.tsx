@@ -5,11 +5,12 @@ import { AuthContext } from './contexts/AuthContext';
 import { BrowserRouter } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Router } from './components/Router';
+import { PRIMARY_COLOR } from './constants';
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#4db6ac'
+      main: PRIMARY_COLOR
     },
     secondary: {
       main: '#B55855'

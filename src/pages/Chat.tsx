@@ -6,6 +6,7 @@ import { ConversationList } from '../components/ConversationList';
 import { ChatContext } from '../contexts/ChatContext';
 import { SocketContext } from '../contexts/SocketContext';
 import { Helmet } from 'react-helmet';
+import { APP_NAME } from '../constants';
 
 export const Chat: React.FC<{}> = () => {
   const { loggedIn } = useAuthContext();
@@ -13,7 +14,7 @@ export const Chat: React.FC<{}> = () => {
   return (
     <>
       <Helmet>
-        <title>What's Appening | Chat</title>
+        <title>{APP_NAME} | Chat</title>
       </Helmet>
       <ChatContext>
         <SocketContext>

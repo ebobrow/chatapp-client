@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Redirect } from 'react-router-dom';
+import { APP_NAME } from '../constants';
 import { useAuthContext } from '../contexts/AuthContext';
 
 export const Home: React.FC<{}> = () => {
@@ -9,7 +10,7 @@ export const Home: React.FC<{}> = () => {
   return (
     <>
       <Helmet>
-        <title>What's Appening</title>
+        <title>{APP_NAME}</title>
       </Helmet>
       {!loggedIn && <Redirect to="/login" />}
       <h1>What's Appening</h1>

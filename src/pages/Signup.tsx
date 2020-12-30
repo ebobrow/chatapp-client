@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { useAuthContext } from '../contexts/AuthContext';
 import { AuthError } from '../components/AuthError';
 import { AuthForm } from '../components/AuthForm';
-import { API_URL } from '../constants';
+import { API_URL, APP_NAME } from '../constants';
 import { errorType, formDispatchAction } from '../types';
 import { Helmet } from 'react-helmet';
 
@@ -39,7 +39,7 @@ export const SignUp: React.FC<{}> = () => {
   return (
     <>
       <Helmet>
-        <title>What's Appening | Sign Up</title>
+        <title>{APP_NAME} | Sign Up</title>
       </Helmet>
       <div>
         {loggedIn && <Redirect to="/" />}
