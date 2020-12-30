@@ -14,14 +14,9 @@ export const Friends: React.FC<Props> = () => {
 
   const getFriendNames = useCallback(async () => {
     if (!user || !user.friends) return;
-    const names = user.friends.map(async id => {
-      const data = await postRequest('/friends/getname', { id });
+    const data = await postRequest('/friends/getnames', { ids: user.friends });
 
-      return data.name;
-    });
-    const friendNames = await Promise.all(names);
-
-    setFriends(friendNames);
+    setFriends(data.names);
   }, [user]);
 
   useEffect(() => {
