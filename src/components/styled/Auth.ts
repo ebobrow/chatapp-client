@@ -2,14 +2,6 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FormGroup, TextField } from '@material-ui/core';
 
-interface FlexProps {
-  width: string;
-}
-
-interface LinkProps {
-  hovercolor?: string;
-}
-
 export const ErrorContainer = styled.div`
   width: 100%;
   display: flex;
@@ -18,7 +10,7 @@ export const ErrorContainer = styled.div`
   margin: 10px 0;
 `;
 
-export const StyledLink = styled(Link)<LinkProps>`
+export const StyledLink = styled(Link)<{ hovercolor?: string }>`
   text-decoration: none;
   color: black;
 
@@ -51,7 +43,7 @@ export const InputField = styled(TextField)`
   margin: 5px;
 `;
 
-export const FlexContainer = styled.div<FlexProps>`
+export const FlexContainer = styled.div<{ width: string }>`
   display: flex;
   flex-direction: row;
   align-items: center;
