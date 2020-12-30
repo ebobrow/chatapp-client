@@ -3,9 +3,9 @@ import { Redirect } from 'react-router-dom';
 import { useAuthContext } from '../contexts/AuthContext';
 import { AuthError } from '../components/AuthError';
 import { AuthForm } from '../components/AuthForm';
-import { API_URL, APP_NAME } from '../constants';
+import { API_URL } from '../constants';
 import { errorType, formDispatchAction } from '../types';
-import { Helmet } from 'react-helmet';
+import { Title } from '../components/Title';
 
 export const SignUp: React.FC<{}> = () => {
   const [errors, setErrors] = useState<Array<string>>([]);
@@ -38,9 +38,7 @@ export const SignUp: React.FC<{}> = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{APP_NAME} | Sign Up</title>
-      </Helmet>
+      <Title>Sign Up</Title>
       <div>
         {loggedIn && <Redirect to="/" />}
         <AuthError messages={errors} setMessages={setErrors} />

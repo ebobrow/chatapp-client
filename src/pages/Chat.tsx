@@ -5,22 +5,18 @@ import { Conversation } from '../components/Conversation';
 import { ConversationList } from '../components/ConversationList';
 import { ChatContext } from '../contexts/ChatContext';
 import { SocketContext } from '../contexts/SocketContext';
-import { Helmet } from 'react-helmet';
-import { APP_NAME } from '../constants';
+import { Title } from '../components/Title';
 
 export const Chat: React.FC<{}> = () => {
   const { loggedIn } = useAuthContext();
 
   return (
     <>
-      <Helmet>
-        <title>{APP_NAME} | Chat</title>
-      </Helmet>
+      <Title>Chat</Title>
+      {!loggedIn && <Redirect to="/login" />}
       <ChatContext>
         <SocketContext>
           <div style={{ display: 'flex', flexDirection: 'row', height: '90%' }}>
-            {!loggedIn && <Redirect to="/login" />}
-
             <ConversationList w="30%" />
             <Conversation w="70%" />
           </div>

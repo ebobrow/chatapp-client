@@ -3,9 +3,9 @@ import { Redirect } from 'react-router-dom';
 import { useAuthContext } from '../contexts/AuthContext';
 import { AuthError } from '../components/AuthError';
 import { AuthForm } from '../components/AuthForm';
-import { API_URL, APP_NAME } from '../constants';
+import { API_URL } from '../constants';
 import { formDispatchAction, errorType } from '../types';
-import { Helmet } from 'react-helmet';
+import { Title } from '../components/Title';
 
 export const Profile: React.FC<{}> = () => {
   const { user, loggedIn, setUserToken } = useAuthContext();
@@ -35,9 +35,7 @@ export const Profile: React.FC<{}> = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{APP_NAME} | Profile</title>
-      </Helmet>
+      <Title>Profile</Title>
       {!loggedIn && <Redirect to="/login" />}
       {user ? <h1>Hi, {user.name}</h1> : <h1>Loading...</h1>}
       <h3>Account Info</h3>
