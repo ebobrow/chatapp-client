@@ -4,20 +4,19 @@ import { UserInfo } from './UserInfo';
 import { FlexContainer, NavContainer, StyledLink } from './styled/Auth';
 import { useAuthContext } from '../contexts/AuthContext';
 
+const PROTECTED_ROUTES = [
+  {
+    url: '/chat',
+    name: 'Chat'
+  },
+  {
+    url: '/friends',
+    name: 'Friends'
+  }
+];
+
 export const Navbar: React.FC<{}> = () => {
   const { loggedIn } = useAuthContext();
-  const protectedRoutes = loggedIn
-    ? [
-        {
-          url: '/chat',
-          name: 'Chat'
-        },
-        {
-          url: '/friends',
-          name: 'Friends'
-        }
-      ]
-    : [];
 
   return (
     <AppBar position="relative" color="primary">
@@ -27,11 +26,13 @@ export const Navbar: React.FC<{}> = () => {
             <Button>
               <StyledLink to="/">Home</StyledLink>
             </Button>
-            {protectedRoutes.map(route => (
-              <Button key={route.url}>
-                <StyledLink to={route.url}>{route.name}</StyledLink>
-              </Button>
-            ))}
+            {loggedIn
+              ? PROTECTED_ROUTES.map(route => (
+                  <Button key={route.url}>
+                    <StyledLink to={route.url}>{route.name}</StyledLink>
+                  </Button>
+                ))
+              : ''}
           </ButtonGroup>
           <UserInfo />
         </FlexContainer>
