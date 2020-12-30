@@ -62,9 +62,9 @@ export const Conversation: React.FC<Props> = ({ w }) => {
 
   return (
     <ChatWrapper w={w}>
-      <FlexFiller />
-      {chat.id && (
+      {chat.id ? (
         <>
+          <FlexFiller />
           <MessagesContainer>
             {messages.map((message, index) => {
               const isMine = message.sender === user?.name;
@@ -102,6 +102,8 @@ export const Conversation: React.FC<Props> = ({ w }) => {
             </Button>
           </form>
         </>
+      ) : (
+        <h1>No chat selected</h1>
       )}
       <div ref={bottomRef} style={{ height: '10px' }}>
         {/* jhgjhgjhgj */}
