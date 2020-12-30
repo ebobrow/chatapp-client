@@ -14,16 +14,20 @@ interface Props {
 interface person {
   found: boolean;
   name: string;
-  type?: 'error' | null;
 }
 
 export const CreateChat: React.FC<Props> = ({ open, setOpen, refreshChats }) => {
   const [form, setForm] = useState('');
   const [people, setPeople] = useState<Array<person>>([]);
+  const [errors, setErrors] = useState<Array<string>>([]);
   const { user } = useAuthContext();
 
   const removePerson = (name: string) => {
     setPeople(curr => curr.filter(person => person.name !== name));
+  };
+
+  const removeError = (error: string) => {
+    setErrors(curr => curr.filter(err => err !== error));
   };
 
   const addPerson = async (e: FormEvent) => {
@@ -43,12 +47,24 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen, refreshChats }) => 
 
   const closeModal = () => {
     setPeople([]);
+    setErrors([]);
     setOpen(false);
+  };
+
+  const setErrorsNoRepeats = (error: string) => {
+    setErrors(curr => {
+      if (curr.find(err => err === error)) return curr;
+      return [...curr, error];
+    });
   };
 
   const add = async () => {
     const validEmails = people.filter(person => person.found);
     if (!validEmails.length) return;
+    if (validEmails.find(person => person.name === user?.email)) {
+      setErrorsNoRepeats('Cannot add self to chat');
+      return;
+    }
     const res = await fetch(`${API_URL}/chat/createchat`, {
       method: 'POST',
       headers: {
@@ -61,7 +77,7 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen, refreshChats }) => 
     const data = await res.json();
 
     if (!data.ok) {
-      setPeople([{ name: data.error, found: false, type: 'error' }]);
+      setErrorsNoRepeats(data.error);
       return;
     }
     refreshChats();
@@ -72,30 +88,26 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen, refreshChats }) => 
     <Modal open={open} onClose={closeModal}>
       <ModalForm onSubmit={addPerson}>
         <h1>New Chat</h1>
-        {people.map((person, index) => {
-          if (person.type === 'error') {
-            return (
-              <Alert
-                key={index}
-                style={{ margin: '5px' }}
-                severity="error"
-                onClose={_ => removePerson(person.name)}>
-                {person.name}
-              </Alert>
-            );
-          }
-          return (
-            <Alert
-              key={person.name}
-              style={{ margin: '5px' }}
-              severity={person.found ? 'success' : 'error'}
-              icon={false}
-              onClose={_ => removePerson(person.name)}>
-              {person.name}
-              {!person.found && ' (not found)'}
-            </Alert>
-          );
-        })}
+        {errors.map((err, index) => (
+          <Alert
+            key={`err-${index}`}
+            style={{ margin: '5px' }}
+            severity="error"
+            onClose={() => removeError(err)}>
+            {err}
+          </Alert>
+        ))}
+        {people.map((person, index) => (
+          <Alert
+            key={`email-${index}`}
+            style={{ margin: '5px' }}
+            severity={person.found ? 'success' : 'error'}
+            icon={false}
+            onClose={() => removePerson(person.name)}>
+            {person.name}
+            {!person.found && ' (not found)'}
+          </Alert>
+        ))}
         <FlexFiller />
         <div
           style={{
