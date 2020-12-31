@@ -13,7 +13,8 @@ interface Props {
 
 interface person {
   found: boolean;
-  name: string;
+  name?: string;
+  email: string;
 }
 
 export const CreateChat: React.FC<Props> = ({
@@ -26,8 +27,8 @@ export const CreateChat: React.FC<Props> = ({
   const [errors, setErrors] = useState<Array<string>>([]);
   const { user } = useAuthContext();
 
-  const removePerson = (name: string) => {
-    setPeople(curr => curr.filter(person => person.name !== name));
+  const removePerson = (email: string) => {
+    setPeople(curr => curr.filter(person => person.email !== email));
   };
 
   const removeError = (error: string) => {
@@ -36,9 +37,12 @@ export const CreateChat: React.FC<Props> = ({
 
   const addPerson = async (e: FormEvent) => {
     e.preventDefault();
-    const person = await postRequest('/chat/finduser', { email: form });
+    const person = (await postRequest('/chat/finduser', { email: form })).user;
 
-    setPeople(curr => [...curr, { found: !!person.user, name: form }]);
+    setPeople(curr => [
+      ...curr,
+      { found: !!person, email: form, name: person ? person.name : undefined }
+    ]);
     setForm('');
   };
 
@@ -58,13 +62,13 @@ export const CreateChat: React.FC<Props> = ({
   const create = async () => {
     const validEmails = people.filter(person => person.found);
     if (!validEmails.length) return;
-    if (validEmails.find(person => person.name === user?.email)) {
+    if (validEmails.find(person => person.email === user?.email)) {
       setErrorsNoRepeats('Cannot add self to chat');
       return;
     }
 
     const data = await postRequest('/chat/createchat', {
-      users: [...validEmails.map(person => person.name), user?.email]
+      users: [...validEmails.map(person => person.email), user?.email]
     });
 
     if (!data.ok) {
@@ -94,12 +98,9 @@ export const CreateChat: React.FC<Props> = ({
             style={{ margin: '5px' }}
             severity={person.found ? 'success' : 'error'}
             icon={false}
-            onClose={() => removePerson(person.name)}>
-            <AlertTitle>
-              {person.name}
-              {!person.found && ' (not found)'}
-            </AlertTitle>
-            {/* {person.} */}
+            onClose={() => removePerson(person.email)}>
+            <AlertTitle>{person.found ? person.name : 'Not Found'}</AlertTitle>
+            {person.email}
           </Alert>
         ))}
         <FlexFiller />
