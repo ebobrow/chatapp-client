@@ -27,6 +27,7 @@ export const Friend: React.FC<Props> = ({ friend }) => {
   return (
     <FriendContainer>
       <strong>{friend.name}</strong>
+      <small>{friend.email}</small>
       <Button color="primary" variant="outlined" onClick={addChat}>
         Chat <Plus />
       </Button>

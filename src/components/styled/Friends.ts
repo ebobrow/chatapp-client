@@ -4,8 +4,8 @@ import styled from 'styled-components';
 export const FriendContainer = styled.div`
   background-color: gainsboro;
   transition: background-color 0.3s ease;
-  width: 200px;
-  height: 75px;
+  width: 225px;
+  height: 100px;
   text-align: center;
   display: flex;
   align-items: center;
