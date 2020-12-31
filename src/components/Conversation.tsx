@@ -18,6 +18,7 @@ import {
 import { useChatContext } from '../contexts/ChatContext';
 import { useSocketContext } from '../contexts/SocketContext';
 import { postRequest } from '../postRequest';
+import { PRIMARY_COLOR, SECONDARY_COLOR } from '../constants';
 
 interface Props {
   w: string;
@@ -106,12 +107,23 @@ export const Conversation: React.FC<Props> = ({ w }) => {
                       ? 'Me'
                       : participants.find(p => p.email === message.sender)
                           ?.name}
+                    {!isMine && (
+                      <small
+                        style={{
+                          margin: '10px',
+                          color:
+                            participants
+                              .filter(p => p.email !== user?.email)
+                              .findIndex(p => p.email === message.sender) %
+                              2 ===
+                            0
+                              ? PRIMARY_COLOR
+                              : SECONDARY_COLOR
+                        }}>
+                        {message.sender}
+                      </small>
+                    )}
                   </TextNode>
-                  {!isMine && (
-                    <TextNode ismine={false} padding={false}>
-                      <small>{message.sender}</small>
-                    </TextNode>
-                  )}
                 </MessageWrapper>
               );
             })}
