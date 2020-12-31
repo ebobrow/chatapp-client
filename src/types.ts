@@ -19,7 +19,12 @@ export type formDispatchAction =
   | { type: 'reset-all' };
 
 export type ChatObject = {
-  id?: string;
-  participants?: Array<string>;
+  id: string;
+  participants: Array<string>;
   messages?: Array<object>;
 };
+
+export interface friend {
+  name: string;
+  email: string;
+}

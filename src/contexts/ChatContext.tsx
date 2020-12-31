@@ -1,9 +1,15 @@
-import React, { createContext, Context, useContext, useState, Dispatch } from 'react';
-import { ChatObject } from '../types';
+import React, {
+  createContext,
+  Context,
+  useContext,
+  useState,
+  Dispatch,
+  useEffect
+} from 'react';
 
 type ChatContextObject = {
-  chat: ChatObject;
-  setChat: Dispatch<ChatObject | null>;
+  chatId: string;
+  setChatId: Dispatch<string>;
 };
 
 const ChatsContext: Context<ChatContextObject> = createContext({} as ChatContextObject);
@@ -13,13 +19,16 @@ export const useChatContext = () => {
 };
 
 export const ChatContext: React.FC<{}> = ({ children }) => {
-  const [chat, setChat] = useState<null | ChatObject>();
+  const [chatId, setChatId] = useState<string>('');
+  useEffect(() => {
+    console.log(chatId);
+  }, [chatId]);
 
   return (
     <ChatsContext.Provider
       value={{
-        chat: chat ? chat : {},
-        setChat
+        chatId,
+        setChatId
       }}>
       {children}
     </ChatsContext.Provider>

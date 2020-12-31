@@ -11,6 +11,7 @@ import {
 } from './styled/Chat';
 import { useChatContext } from '../contexts/ChatContext';
 import { useSocketContext } from '../contexts/SocketContext';
+import { postRequest } from '../postRequest';
 
 interface Props {
   w: string;
@@ -26,7 +27,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
   const [messages, setMessages] = useState<Array<message>>([]);
   const [form, setForm] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
-  const { chat } = useChatContext();
+  const { chatId } = useChatContext();
   const { socket } = useSocketContext();
 
   const scrollToBottom = useCallback(() => {
@@ -36,7 +37,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
   const sendChat = (e: FormEvent) => {
     e.preventDefault();
     scrollToBottom();
-    socket.emit('new-message', { message: form, sender: user!.name, room: chat.id });
+    socket.emit('new-message', { message: form, sender: user!.name, room: chatId });
     setMessages(curr => [...curr, { sender: user!.name, message: form }]);
     setForm('');
   };
@@ -56,13 +57,15 @@ export const Conversation: React.FC<Props> = ({ w }) => {
   useEffect(() => {
     scrollToBottom();
 
-    if (!chat.messages) return;
-    setMessages(chat.messages as message[]);
-  }, [chat, scrollToBottom]);
+    if (!chatId) return;
+    postRequest('/chat/getmessages', { id: chatId }).then(data => {
+      setMessages(data.messages);
+    });
+  }, [chatId, scrollToBottom]);
 
   return (
     <ChatWrapper w={w}>
-      {chat.id ? (
+      {chatId ? (
         <>
           <FlexFiller />
           <MessagesContainer>

@@ -1,16 +1,33 @@
 import { Button } from '@material-ui/core';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
+import { useAuthContext } from '../contexts/AuthContext';
+import { useChatContext } from '../contexts/ChatContext';
+import { postRequest } from '../postRequest';
+import { friend } from '../types';
 import { FriendContainer, Plus } from './styled/Friends';
 
 interface Props {
-  name: string;
+  friend: friend;
 }
 
-export const Friend: React.FC<Props> = ({ name }) => {
+export const Friend: React.FC<Props> = ({ friend }) => {
+  const { user } = useAuthContext();
+  const { setChatId } = useChatContext();
+  let history = useHistory();
+
+  const addChat = async () => {
+    const chat = await postRequest('/chat/createchat', {
+      users: [friend.email, user?.email]
+    });
+    setChatId(chat.id);
+    history.push('/chat');
+  };
+
   return (
     <FriendContainer>
-      <strong>{name}</strong>
-      <Button color="primary" variant="outlined">
+      <strong>{friend.name}</strong>
+      <Button color="primary" variant="outlined" onClick={addChat}>
         Chat <Plus />
       </Button>
     </FriendContainer>

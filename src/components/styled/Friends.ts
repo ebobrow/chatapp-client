@@ -19,21 +19,6 @@ export const Plus = styled(FiPlus)`
   height: auto;
 `;
 
-export const AddChat = styled.div`
-  background-color: #51a268;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  width: 40%;
-  height: 40%;
-  border-radius: 5px;
-
-  &:hover {
-    background-color: #387048;
-    cursor: pointer;
-  }
-`;
-
 export const FriendsWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;

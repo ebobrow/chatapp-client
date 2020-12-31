@@ -5,18 +5,19 @@ import { FriendsWrapper } from '../components/styled/Friends';
 import { Title } from '../components/Title';
 import { useAuthContext } from '../contexts/AuthContext';
 import { postRequest } from '../postRequest';
+import { friend } from '../types';
 
-interface Props {}
-
-export const Friends: React.FC<Props> = () => {
+export const Friends: React.FC<{}> = () => {
   const { user, loggedIn } = useAuthContext();
-  const [friends, setFriends] = useState<Array<string>>([]);
+  const [friends, setFriends] = useState<Array<friend>>([]);
 
   const getFriendNames = useCallback(async () => {
     if (!user || !user.friends) return;
     const data = await postRequest('/friends/getnames', { ids: user.friends });
 
-    setFriends(data.names);
+    setFriends(
+      data.names.map((friend: friend) => ({ name: friend.name, email: friend.email }))
+    );
   }, [user]);
 
   useEffect(() => {
@@ -31,7 +32,7 @@ export const Friends: React.FC<Props> = () => {
       <FriendsWrapper>
         {user
           ? friends.length
-            ? friends?.map((friend, index) => <Friend name={friend} key={index} />)
+            ? friends?.map((friend, index) => <Friend friend={friend} key={index} />)
             : 'No friends yet, loser'
           : 'Loading...'}
       </FriendsWrapper>

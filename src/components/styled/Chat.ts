@@ -1,5 +1,6 @@
 import { FiPlus } from 'react-icons/fi';
 import styled from 'styled-components';
+import { PRIMARY_COLOR } from '../../constants';
 import { FormWrapper } from './Auth';
 
 interface MessageProps {
@@ -54,7 +55,7 @@ export const ChatWrapper = styled(FormWrapper)<{ w: string }>`
 export const ConversationWrapper = styled.div<{ active: boolean }>`
   display: flex;
   flex-direction: column;
-  background-color: ${({ active }) => (active ? 'darkcyan' : 'gainsboro')};
+  background-color: ${({ active }) => (active ? PRIMARY_COLOR : 'gainsboro')};
   min-height: 50px;
   margin: 10px;
   padding: 10px;
@@ -62,7 +63,7 @@ export const ConversationWrapper = styled.div<{ active: boolean }>`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: ${({ active }) => (active ? 'darkcyan' : 'grey')};
+    background-color: ${({ active }) => (active ? PRIMARY_COLOR : 'grey')};
     cursor: pointer;
   }
 `;

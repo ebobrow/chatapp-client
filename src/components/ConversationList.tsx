@@ -15,7 +15,7 @@ export const ConversationList: React.FC<Props> = ({ w }) => {
   const [conversations, setConversations] = useState<Array<ChatObject>>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const { user } = useAuthContext();
-  const { setChat, chat } = useChatContext();
+  const { setChatId, chatId } = useChatContext();
   const { socket } = useSocketContext();
 
   const getChats = useCallback(async () => {
@@ -34,31 +34,31 @@ export const ConversationList: React.FC<Props> = ({ w }) => {
   }, [setConversations, user]);
 
   const updateChat = useCallback(() => {
-    if (chat.id) {
-      const active = conversations.find(c => c.id === chat.id);
+    if (chatId) {
+      const active = conversations.find(c => c.id === chatId);
       if (!active) return;
-      setChat(active);
+      setChatId(active.id);
     }
-  }, [chat.id, conversations, setChat]);
+  }, [chatId, conversations, setChatId]);
 
   useEffect(() => {
     getChats();
-  }, [getChats, chat.id]);
+  }, [getChats, chatId]);
 
   useEffect(() => {
     updateChat();
   }, [conversations, updateChat]);
 
   const selectChat = (key: number) => {
-    if (chat.id) {
-      socket.emit('leave', chat.id);
+    if (chatId) {
+      socket.emit('leave', chatId);
     }
-    setChat(conversations[key]);
+    setChatId(conversations[key].id);
   };
 
   useEffect(() => {
-    socket.emit('join', chat.id);
-  }, [chat.id, socket]);
+    socket.emit('join', chatId);
+  }, [chatId, socket]);
 
   return (
     <div style={{ width: w, display: 'flex', flexDirection: 'column' }}>
@@ -68,7 +68,7 @@ export const ConversationList: React.FC<Props> = ({ w }) => {
           <ConversationWrapper
             key={index}
             onClick={_ => selectChat(index)}
-            active={conversation.id === chat.id}>
+            active={conversation.id === chatId}>
             <p>{conversation.participants?.join(', ')}</p>
           </ConversationWrapper>
         ))}
