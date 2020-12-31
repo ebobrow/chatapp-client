@@ -5,7 +5,7 @@ import { AuthContext } from './contexts/AuthContext';
 import { BrowserRouter } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Router } from './components/Router';
-import { PRIMARY_COLOR } from './constants';
+import { PRIMARY_COLOR, SECONDARY_COLOR } from './constants';
 import { ChatContext } from './contexts/ChatContext';
 
 const theme = createMuiTheme({
@@ -14,7 +14,7 @@ const theme = createMuiTheme({
       main: PRIMARY_COLOR
     },
     secondary: {
-      main: '#B55855'
+      main: SECONDARY_COLOR
     }
   }
 });
