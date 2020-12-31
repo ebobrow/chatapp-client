@@ -1,5 +1,11 @@
 import { TextField, Button } from '@material-ui/core';
-import React, { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
 import {
   MessagesContainer,
@@ -22,9 +28,15 @@ interface message {
   sender: string;
 }
 
+interface participant {
+  name: string;
+  email: string;
+}
+
 export const Conversation: React.FC<Props> = ({ w }) => {
   const { user } = useAuthContext();
   const [messages, setMessages] = useState<Array<message>>([]);
+  const [participants, setParticipants] = useState<Array<participant>>([]);
   const [form, setForm] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
   const { chatId } = useChatContext();
@@ -37,17 +49,24 @@ export const Conversation: React.FC<Props> = ({ w }) => {
   const sendChat = (e: FormEvent) => {
     e.preventDefault();
     scrollToBottom();
-    socket.emit('new-message', { message: form, sender: user!.name, room: chatId });
-    setMessages(curr => [...curr, { sender: user!.name, message: form }]);
+    socket.emit('new-message', {
+      message: form,
+      sender: user!.email,
+      room: chatId
+    });
+    setMessages(curr => [...curr, { sender: user!.email, message: form }]);
     setForm('');
   };
 
   useEffect(() => {
     scrollToBottom();
-    socket.on('message', ({ message, sender }: { message: string; sender: string }) => {
-      scrollToBottom();
-      setMessages(curr => [...curr, { message, sender }]);
-    });
+    socket.on(
+      'message',
+      ({ message, sender }: { message: string; sender: string }) => {
+        scrollToBottom();
+        setMessages(curr => [...curr, { message, sender }]);
+      }
+    );
 
     return () => {
       socket.off();
@@ -61,6 +80,10 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     postRequest('/chat/getmessages', { id: chatId }).then(data => {
       setMessages(data.messages);
     });
+
+    postRequest('/chat/getparticipants', { id: chatId }).then(data => {
+      setParticipants(data.participants);
+    });
   }, [chatId, scrollToBottom]);
 
   return (
@@ -70,7 +93,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
           <FlexFiller />
           <MessagesContainer>
             {messages.map((message, index) => {
-              const isMine = message.sender === user?.name;
+              const isMine = message.sender === user?.email;
               return (
                 <MessageWrapper key={index} mymessage={isMine} row={index}>
                   <Message key={index} mymessage={isMine} row={index}>
@@ -79,8 +102,16 @@ export const Conversation: React.FC<Props> = ({ w }) => {
                     </TextNode>
                   </Message>
                   <TextNode ismine={isMine} padding={false}>
-                    {isMine ? 'Me' : message.sender}
+                    {isMine
+                      ? 'Me'
+                      : participants.find(p => p.email === message.sender)
+                          ?.name}
                   </TextNode>
+                  {!isMine && (
+                    <TextNode ismine={false} padding={false}>
+                      <small>{message.sender}</small>
+                    </TextNode>
+                  )}
                 </MessageWrapper>
               );
             })}

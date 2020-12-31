@@ -1,6 +1,6 @@
 import { Button, Modal, TextField } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import React, { Dispatch, FormEvent, SetStateAction, useState } from 'react';
+import React, { Dispatch, FormEvent, useState } from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
 import { postRequest } from '../postRequest';
 import { friend } from '../types';
