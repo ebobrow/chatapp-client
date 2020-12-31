@@ -18,7 +18,7 @@ interface ContextObject {
 interface User {
   id: number;
   name: string;
-  email: string;
+  username: string;
   password: string;
   friends?: number[];
   created_at: string;
@@ -33,7 +33,9 @@ export const useAuthContext = () => {
 
 export const AuthContext: React.FC<{}> = ({ children }) => {
   // This is so messy
-  const [userToken, setUserToken] = useState<null | string>(localStorage.getItem('auth'));
+  const [userToken, setUserToken] = useState<null | string>(
+    localStorage.getItem('auth')
+  );
   const loggedIn = userToken !== null;
 
   const [user, setUser] = useState<User | null>(null);

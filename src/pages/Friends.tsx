@@ -25,7 +25,7 @@ export const Friends: React.FC<{}> = () => {
     setFriends(
       data.names.map((friend: friend) => ({
         name: friend.name,
-        email: friend.email
+        username: friend.username
       }))
     );
   }, [user]);

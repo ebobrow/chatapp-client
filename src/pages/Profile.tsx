@@ -9,9 +9,14 @@ import { Title } from '../components/Title';
 export const Profile: React.FC<{}> = () => {
   const { user, loggedIn, setUserToken } = useAuthContext();
   const [errors, setErrors] = useState<Array<string>>([]);
-  const accountAge = new Date((new Date() as any) - (new Date(user?.created_at!) as any));
+  const accountAge = new Date(
+    (new Date() as any) - (new Date(user?.created_at!) as any)
+  );
 
-  const changePassword = async (data: any, dispatch: Dispatch<formDispatchAction>) => {
+  const changePassword = async (
+    data: any,
+    dispatch: Dispatch<formDispatchAction>
+  ) => {
     setErrors([]);
     console.log(data);
 
@@ -39,16 +44,20 @@ export const Profile: React.FC<{}> = () => {
       {user ? <h1>Hi, {user.name}</h1> : <h1>Loading...</h1>}
       <h3>Account Info</h3>
       <p>
-        Created {accountAge.getUTCFullYear() - 1970} years, {accountAge.getUTCMonth()}{' '}
-        months ago
+        Created {accountAge.getUTCFullYear() - 1970} years,{' '}
+        {accountAge.getUTCMonth()} months ago
       </p>
-      <p>Email: {user?.email}</p>
+      <p>Username: {user?.username}</p>
       <AuthError messages={errors} setMessages={setErrors} />
       <AuthForm
         initialState={[
           { name: 'Current Password', type: 'password', id: 'oldPassword' },
           { name: 'New Password', type: 'password', id: 'newPassword' },
-          { name: 'Confirm New Password', type: 'password', id: 'newPasswordVerify' }
+          {
+            name: 'Confirm New Password',
+            type: 'password',
+            id: 'newPasswordVerify'
+          }
         ]}
         actionName="Change Password"
         postUrl={'/auth/password'}

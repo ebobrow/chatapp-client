@@ -16,7 +16,10 @@ export const Login: React.FC<{}> = () => {
 
   const [errors, setErrors] = useState<Array<string>>([]);
 
-  const loginUser = async (data: any, dispatch: Dispatch<formDispatchAction>) => {
+  const loginUser = async (
+    data: any,
+    dispatch: Dispatch<formDispatchAction>
+  ) => {
     setErrors([]);
     if (!data.errors) {
       setUserToken(data.token);
@@ -25,9 +28,9 @@ export const Login: React.FC<{}> = () => {
       data.errors.forEach((err: errorType) => {
         setErrors(c => [...c, err.message]);
 
-        // Remove email if not valid
-        if (err.target === 'email') {
-          dispatch({ type: 'reset', target: 'Email' });
+        // Remove username if not valid
+        if (err.target === 'username') {
+          dispatch({ type: 'reset', target: 'Username' });
         }
         dispatch({ type: 'reset', target: 'Password' });
       });
@@ -42,7 +45,7 @@ export const Login: React.FC<{}> = () => {
         <AuthError messages={errors} setMessages={setErrors} />
         <AuthForm
           initialState={[
-            { name: 'Email', type: 'text', id: 'email' },
+            { name: 'Username', type: 'text', id: 'username' },
             { name: 'Password', type: 'password', id: 'password' }
           ]}
           actionName="Log In"

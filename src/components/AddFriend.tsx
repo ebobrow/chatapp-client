@@ -31,7 +31,7 @@ export const AddFriend: React.FC<Props> = ({ open, setOpen, setFriends }) => {
     e.preventDefault();
 
     const data = await postRequest('/auth/friends/add', {
-      email: form,
+      username: form,
       id: user?.id
     });
 
@@ -41,9 +41,9 @@ export const AddFriend: React.FC<Props> = ({ open, setOpen, setFriends }) => {
       setErrors([data.error]);
       return;
     }
-    const { name, email }: { name: string; email: string } = data.friend;
+    const { name, username }: { name: string; username: string } = data.friend;
 
-    setFriends((curr: Array<friend>) => [...curr, { name, email }]);
+    setFriends((curr: Array<friend>) => [...curr, { name, username }]);
     closeModal();
   };
 
@@ -65,7 +65,7 @@ export const AddFriend: React.FC<Props> = ({ open, setOpen, setFriends }) => {
           type="text"
           value={form}
           onChange={e => setForm(e.target.value)}
-          label="Find user by email"
+          label="Find user by username"
           style={{ margin: '10px' }}
         />
         <Button type="submit" variant="contained" color="secondary">

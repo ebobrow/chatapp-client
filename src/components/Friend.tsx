@@ -18,7 +18,7 @@ export const Friend: React.FC<Props> = ({ friend }) => {
 
   const addChat = async () => {
     const chat = await postRequest('/chat/createchat', {
-      users: [friend.email, user?.email]
+      users: [friend.username, user?.username]
     });
     setChatId(chat.id);
     history.push('/chat');
@@ -27,7 +27,7 @@ export const Friend: React.FC<Props> = ({ friend }) => {
   return (
     <FriendContainer>
       <strong>{friend.name}</strong>
-      <small>{friend.email}</small>
+      <small>{friend.username}</small>
       <Button color="primary" variant="outlined" onClick={addChat}>
         Chat <Plus />
       </Button>

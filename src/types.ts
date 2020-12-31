@@ -26,5 +26,5 @@ export type ChatObject = {
 
 export interface friend {
   name: string;
-  email: string;
+  username: string;
 }

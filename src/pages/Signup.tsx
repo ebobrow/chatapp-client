@@ -11,7 +11,10 @@ export const SignUp: React.FC<{}> = () => {
 
   const { loggedIn, setUserToken } = useAuthContext();
 
-  const signUpUser = async (data: any, dispatch: Dispatch<formDispatchAction>) => {
+  const signUpUser = async (
+    data: any,
+    dispatch: Dispatch<formDispatchAction>
+  ) => {
     setErrors([]);
     if (!data.errors) {
       setUserToken(data.token);
@@ -20,9 +23,9 @@ export const SignUp: React.FC<{}> = () => {
       data.errors.forEach((err: errorType) => {
         setErrors(c => [...c, err.message]);
 
-        // Remove email if not valid
-        if (err.target === 'email') {
-          dispatch({ type: 'reset', target: 'Email' });
+        // Remove username if not valid
+        if (err.target === 'username') {
+          dispatch({ type: 'reset', target: 'Username' });
         }
 
         // Remove name if not valid
@@ -44,7 +47,7 @@ export const SignUp: React.FC<{}> = () => {
         <AuthForm
           initialState={[
             { name: 'Name', type: 'text', id: 'name' },
-            { name: 'Email', type: 'text', id: 'email' },
+            { name: 'Username', type: 'text', id: 'username' },
             { name: 'Password', type: 'password', id: 'password' },
             { name: 'Confirm Password', type: 'password', id: 'passwordVerify' }
           ]}

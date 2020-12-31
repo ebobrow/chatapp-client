@@ -31,7 +31,7 @@ interface message {
 
 interface participant {
   name: string;
-  email: string;
+  username: string;
 }
 
 export const Conversation: React.FC<Props> = ({ w }) => {
@@ -44,7 +44,8 @@ export const Conversation: React.FC<Props> = ({ w }) => {
   const { socket } = useSocketContext();
 
   const scrollToBottom = useCallback(() => {
-    bottomRef.current!.scrollIntoView({ behavior: 'smooth' });
+    if (!bottomRef.current) return;
+    bottomRef.current.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
   const sendChat = (e: FormEvent) => {
@@ -52,10 +53,10 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     scrollToBottom();
     socket.emit('new-message', {
       message: form,
-      sender: user!.email,
+      sender: user!.username,
       room: chatId
     });
-    setMessages(curr => [...curr, { sender: user!.email, message: form }]);
+    setMessages(curr => [...curr, { sender: user!.username, message: form }]);
     setForm('');
   };
 
@@ -94,7 +95,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
           <FlexFiller />
           <MessagesContainer>
             {messages.map((message, index) => {
-              const isMine = message.sender === user?.email;
+              const isMine = message.sender === user?.username;
               return (
                 <MessageWrapper key={index} mymessage={isMine} row={index}>
                   <Message key={index} mymessage={isMine} row={index}>
@@ -105,7 +106,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
                   <TextNode ismine={isMine} padding={false}>
                     {isMine
                       ? 'Me'
-                      : participants.find(p => p.email === message.sender)
+                      : participants.find(p => p.username === message.sender)
                           ?.name}
                     {!isMine && (
                       <small
@@ -113,8 +114,8 @@ export const Conversation: React.FC<Props> = ({ w }) => {
                           margin: '10px',
                           color:
                             participants
-                              .filter(p => p.email !== user?.email)
-                              .findIndex(p => p.email === message.sender) %
+                              .filter(p => p.username !== user?.username)
+                              .findIndex(p => p.username === message.sender) %
                               2 ===
                             0
                               ? PRIMARY_COLOR
@@ -146,14 +147,12 @@ export const Conversation: React.FC<Props> = ({ w }) => {
               style={{ marginTop: '5px' }}>
               Send
             </Button>
+            <div ref={bottomRef} style={{ height: '10px' }} />
           </form>
         </>
       ) : (
         <h1>No chat selected</h1>
       )}
-      <div ref={bottomRef} style={{ height: '10px' }}>
-        {/* jhgjhgjhgj */}
-      </div>
     </ChatWrapper>
   );
 };
