@@ -3,8 +3,7 @@ import React, {
   Context,
   useContext,
   useState,
-  Dispatch,
-  useEffect
+  Dispatch
 } from 'react';
 
 type ChatContextObject = {
@@ -12,7 +11,9 @@ type ChatContextObject = {
   setChatId: Dispatch<string>;
 };
 
-const ChatsContext: Context<ChatContextObject> = createContext({} as ChatContextObject);
+const ChatsContext: Context<ChatContextObject> = createContext(
+  {} as ChatContextObject
+);
 
 export const useChatContext = () => {
   return useContext(ChatsContext);
@@ -20,9 +21,6 @@ export const useChatContext = () => {
 
 export const ChatContext: React.FC<{}> = ({ children }) => {
   const [chatId, setChatId] = useState<string>('');
-  useEffect(() => {
-    console.log(chatId);
-  }, [chatId]);
 
   return (
     <ChatsContext.Provider

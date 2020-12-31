@@ -1,5 +1,5 @@
 import { Button, Modal, TextField } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { Dispatch, FormEvent, useState } from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
 import { postRequest } from '../postRequest';
@@ -16,7 +16,11 @@ interface person {
   name: string;
 }
 
-export const CreateChat: React.FC<Props> = ({ open, setOpen, refreshChats }) => {
+export const CreateChat: React.FC<Props> = ({
+  open,
+  setOpen,
+  refreshChats
+}) => {
   const [form, setForm] = useState('');
   const [people, setPeople] = useState<Array<person>>([]);
   const [errors, setErrors] = useState<Array<string>>([]);
@@ -91,8 +95,11 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen, refreshChats }) => 
             severity={person.found ? 'success' : 'error'}
             icon={false}
             onClose={() => removePerson(person.name)}>
-            {person.name}
-            {!person.found && ' (not found)'}
+            <AlertTitle>
+              {person.name}
+              {!person.found && ' (not found)'}
+            </AlertTitle>
+            {/* {person.} */}
           </Alert>
         ))}
         <FlexFiller />

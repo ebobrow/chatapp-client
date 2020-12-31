@@ -16,7 +16,7 @@ export const UserInfo: React.FC<{}> = () => {
         <StyledLink to="/profile" hovercolor="#B55855">
           {user.name}
         </StyledLink>
-        <Button variant="contained" color="secondary" onClick={logOut}>
+        <Button variant="contained" color="secondary" onClick={logOut} disableElevation>
           Log Out
         </Button>
       </FlexContainer>
