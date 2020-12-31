@@ -27,7 +27,7 @@ export const CreateChat: React.FC<Props> = ({
   setOpen,
   refreshChats
 }) => {
-  const [form, setForm] = useState('');
+  const [form, setForm] = useState<Array<string>>([]);
   const [people, setPeople] = useState<Array<person>>([]);
   const [errors, setErrors] = useState<Array<string>>([]);
   const [friends, setFriends] = useState<Array<friend>>([]);
@@ -49,19 +49,6 @@ export const CreateChat: React.FC<Props> = ({
     setErrors(curr => curr.filter(err => err !== error));
   };
 
-  // const addPerson = async (e: FormEvent) => {
-  //   console.log(form);
-
-  //   e.preventDefault();
-  //   const person = (await postRequest('/chat/finduser', { username: form })).user;
-
-  //   setPeople(curr => [
-  //     ...curr,
-  //     { found: !!person, username: form, name: person ? person.name : undefined }
-  //   ]);
-  //   setForm('');
-  // };
-
   const closeModal = () => {
     setPeople([]);
     setErrors([]);
@@ -76,15 +63,8 @@ export const CreateChat: React.FC<Props> = ({
   };
 
   const create = async () => {
-    const validusernames = people.filter(person => person.found);
-    if (!validusernames.length) return;
-    if (validusernames.find(person => person.username === user?.username)) {
-      setErrorsNoRepeats('Cannot add self to chat');
-      return;
-    }
-
     const data = await postRequest('/chat/createchat', {
-      users: [...validusernames.map(person => person.username), user?.username]
+      users: [...form, user?.username]
     });
 
     if (!data.ok) {
@@ -105,7 +85,11 @@ export const CreateChat: React.FC<Props> = ({
 
   return (
     <Modal open={open} onClose={closeModal}>
-      <ModalForm>
+      <ModalForm
+        onSubmit={e => {
+          e.preventDefault();
+          create();
+        }}>
         <h1>New Chat</h1>
         {errors.map((err, index) => (
           <Alert
@@ -140,6 +124,9 @@ export const CreateChat: React.FC<Props> = ({
             multiple
             options={friends}
             getOptionLabel={option => option.username}
+            getOptionSelected={(option, value) =>
+              option.username === value.username
+            }
             style={{ margin: '10px', width: '100%' }}
             renderOption={option => (
               <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -148,16 +135,13 @@ export const CreateChat: React.FC<Props> = ({
               </div>
             )}
             renderInput={params => (
-              <TextField
-                {...params}
-                label="Add friend"
-                value={form}
-                onChange={e => setForm(e.target.value)}
-              />
+              <TextField {...params} label="Add friend" value={form} />
             )}
-            // onChange={(_e, value) =>
-            //   setForm(value ? (value as friend).username : '')
-            // }
+            onChange={(_e, value) => {
+              console.log(value);
+
+              setForm(value ? value.map(user => user.username) : []);
+            }}
           />
         </div>
         <Button variant="contained" color="secondary" onClick={create}>
