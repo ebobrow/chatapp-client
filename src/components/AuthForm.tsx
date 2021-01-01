@@ -30,7 +30,8 @@ export const AuthForm: React.FC<Props> = ({
 }) => {
   const { state, dispatch } = useForm(initialState, init);
 
-  const getValue = (name: string) => state.find(o => o.name === name)?.value || '';
+  const getValue = (name: string) =>
+    state.find(o => o.name === name)?.value || '';
 
   const changeValue = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -51,14 +52,11 @@ export const AuthForm: React.FC<Props> = ({
     // Get user credentials
     let userCredentials = {};
     state.forEach(o => {
-      // console.log(o);
-
       userCredentials = { ...userCredentials, [o.id]: o.value };
     });
     if (extraCredentials) {
       userCredentials = { ...userCredentials, ...extraCredentials };
     }
-    console.log(userCredentials, extraCredentials);
 
     const data = await postRequest(postUrl, userCredentials);
 

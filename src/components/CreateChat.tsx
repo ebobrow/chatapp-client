@@ -120,8 +120,6 @@ export const CreateChat: React.FC<Props> = ({
               <TextField {...params} label="Add friend" value={form} />
             )}
             onChange={(_e, value) => {
-              console.log(value);
-
               setForm(value ? value.map(user => user.username) : []);
             }}
           />

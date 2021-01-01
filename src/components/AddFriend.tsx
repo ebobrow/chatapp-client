@@ -34,8 +34,6 @@ export const AddFriend: React.FC<Props> = ({ open, setOpen, setRequests }) => {
       sender: user?.username
     });
 
-    console.log(data);
-
     if (!data.ok) {
       setErrors([data.error]);
       return;

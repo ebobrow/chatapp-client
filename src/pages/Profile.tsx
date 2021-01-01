@@ -18,7 +18,6 @@ export const Profile: React.FC<{}> = () => {
     dispatch: Dispatch<formDispatchAction>
   ) => {
     setErrors([]);
-    console.log(data);
 
     if (!data.errors) {
       setUserToken(data.token);
