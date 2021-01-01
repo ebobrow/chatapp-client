@@ -2,6 +2,7 @@ import { Button, Modal, TextField } from '@material-ui/core';
 import { Alert, AlertTitle, Autocomplete } from '@material-ui/lab';
 import React, { Dispatch, useCallback, useEffect, useState } from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
+import { useChatContext } from '../contexts/ChatContext';
 import { postRequest } from '../postRequest';
 import { FlexFiller, ModalForm } from './styled/Chat';
 
@@ -28,10 +29,10 @@ export const CreateChat: React.FC<Props> = ({
   refreshChats
 }) => {
   const [form, setForm] = useState<Array<string>>([]);
-  const [people, setPeople] = useState<Array<person>>([]);
   const [errors, setErrors] = useState<Array<string>>([]);
   const [friends, setFriends] = useState<Array<friend>>([]);
   const { user } = useAuthContext();
+  const { setChatId } = useChatContext();
 
   const getFriendNames = useCallback(async () => {
     if (!user) return;
@@ -41,16 +42,11 @@ export const CreateChat: React.FC<Props> = ({
     setFriends(data.names);
   }, [user]);
 
-  const removePerson = (username: string) => {
-    setPeople(curr => curr.filter(person => person.username !== username));
-  };
-
   const removeError = (error: string) => {
     setErrors(curr => curr.filter(err => err !== error));
   };
 
   const closeModal = () => {
-    setPeople([]);
     setErrors([]);
     setOpen(false);
   };
@@ -72,16 +68,13 @@ export const CreateChat: React.FC<Props> = ({
       return;
     }
     refreshChats();
+    setChatId(data.id);
     closeModal();
   };
 
   useEffect(() => {
     getFriendNames();
   }, [getFriendNames]);
-
-  useEffect(() => {
-    console.log(form);
-  }, [form]);
 
   return (
     <Modal open={open} onClose={closeModal}>
@@ -98,17 +91,6 @@ export const CreateChat: React.FC<Props> = ({
             severity="error"
             onClose={() => removeError(err)}>
             {err}
-          </Alert>
-        ))}
-        {people.map((person, index) => (
-          <Alert
-            key={`username-${index}`}
-            style={{ margin: '5px' }}
-            severity={person.found ? 'success' : 'error'}
-            icon={false}
-            onClose={() => removePerson(person.username)}>
-            <AlertTitle>{person.found ? person.name : 'Not Found'}</AlertTitle>
-            {person.username}
           </Alert>
         ))}
 
