@@ -1,8 +1,9 @@
-import { AppBar, ButtonGroup, Button } from '@material-ui/core';
+import { AppBar, ButtonGroup, Button, Badge } from '@material-ui/core';
 import React from 'react';
 import { UserInfo } from './UserInfo';
 import { FlexContainer, NavContainer, StyledLink } from './styled/Auth';
 import { useAuthContext } from '../contexts/AuthContext';
+import { useNotificationContext } from '../contexts/NotificationContext';
 
 const PROTECTED_ROUTES = [
   {
@@ -17,6 +18,7 @@ const PROTECTED_ROUTES = [
 
 export const Navbar: React.FC<{}> = () => {
   const { loggedIn } = useAuthContext();
+  const { notifications } = useNotificationContext();
 
   return (
     <AppBar position="relative" color="primary">
@@ -28,9 +30,17 @@ export const Navbar: React.FC<{}> = () => {
             </Button>
             {loggedIn
               ? PROTECTED_ROUTES.map(route => (
-                  <Button key={route.url}>
-                    <StyledLink to={route.url}>{route.name}</StyledLink>
-                  </Button>
+                  <Badge
+                    key={route.url}
+                    color="secondary"
+                    variant="dot"
+                    invisible={
+                      !notifications.find(not => not.name === route.name)?.new
+                    }>
+                    <Button>
+                      <StyledLink to={route.url}>{route.name}</StyledLink>
+                    </Button>
+                  </Badge>
                 ))
               : ''}
           </ButtonGroup>
