@@ -1,5 +1,5 @@
 import { Button, Modal, TextField } from '@material-ui/core';
-import { Alert, AlertTitle, Autocomplete } from '@material-ui/lab';
+import { Alert, Autocomplete } from '@material-ui/lab';
 import React, { Dispatch, useCallback, useEffect, useState } from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
 import { useChatContext } from '../contexts/ChatContext';
@@ -10,12 +10,6 @@ interface Props {
   open: boolean;
   setOpen: Dispatch<boolean>;
   refreshChats: () => Promise<void>;
-}
-
-interface person {
-  found: boolean;
-  name?: string;
-  username: string;
 }
 
 interface friend {
