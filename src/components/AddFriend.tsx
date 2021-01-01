@@ -58,6 +58,7 @@ export const AddFriend: React.FC<Props> = ({ open, setOpen, setRequests }) => {
         ))}
         <FlexFiller />
         <TextField
+          autoFocus
           type="text"
           value={form}
           onChange={e => setForm(e.target.value)}

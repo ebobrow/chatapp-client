@@ -111,7 +111,12 @@ export const CreateChat: React.FC<Props> = ({
               </div>
             )}
             renderInput={params => (
-              <TextField {...params} label="Add friend" value={form} />
+              <TextField
+                autoFocus
+                {...params}
+                label="Add friend"
+                value={form}
+              />
             )}
             onChange={(_e, value) => {
               setForm(value ? value.map(user => user.username) : []);
