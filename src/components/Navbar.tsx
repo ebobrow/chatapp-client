@@ -1,9 +1,10 @@
 import { AppBar, ButtonGroup, Button, Badge } from '@material-ui/core';
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { UserInfo } from './UserInfo';
 import { FlexContainer, NavContainer, StyledLink } from './styled/Auth';
 import { useAuthContext } from '../contexts/AuthContext';
 import { useNotificationContext } from '../contexts/NotificationContext';
+import { postRequest } from '../postRequest';
 
 const PROTECTED_ROUTES = [
   {
@@ -17,8 +18,31 @@ const PROTECTED_ROUTES = [
 ];
 
 export const Navbar: React.FC<{}> = () => {
-  const { loggedIn } = useAuthContext();
-  const { notifications } = useNotificationContext();
+  const { loggedIn, user } = useAuthContext();
+  const { notifications, setNotifications } = useNotificationContext();
+
+  const getNotifications = useCallback(async () => {
+    const recieved = await postRequest('/auth/friends/recievedrequests', {
+      username: user?.username
+    });
+
+    setNotifications((curr: any) =>
+      curr.map((not: { name: string }) =>
+        not.name === 'Friends'
+          ? {
+              ...not,
+              new: !!recieved.requests.find(
+                (req: { seen: boolean }) => !req.seen
+              )
+            }
+          : not
+      )
+    );
+  }, [setNotifications, user?.username]);
+
+  useEffect(() => {
+    getNotifications();
+  }, [getNotifications]);
 
   return (
     <AppBar position="relative" color="primary">

@@ -1,8 +1,8 @@
 import React, {
   Context,
   createContext,
-  Dispatch,
   useContext,
+  useEffect,
   useState
 } from 'react';
 
@@ -22,7 +22,7 @@ type NotificationItem =
 
 interface NotificationContextItem {
   notifications: Array<NotificationItem>;
-  setNotifications: Dispatch<Array<NotificationItem>>;
+  setNotifications: any;
 }
 
 const ContextItem: Context<NotificationContextItem> = createContext(
@@ -38,6 +38,10 @@ export const NotificationContext: React.FC<{}> = ({ children }) => {
     { name: 'Chat', new: false, chats: [] },
     { name: 'Friends', new: false }
   ]);
+
+  useEffect(() => {
+    console.log(notifications);
+  }, [notifications]);
 
   return (
     <ContextItem.Provider value={{ notifications, setNotifications }}>
