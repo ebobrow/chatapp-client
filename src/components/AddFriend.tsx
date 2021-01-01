@@ -3,16 +3,15 @@ import { Alert } from '@material-ui/lab';
 import React, { Dispatch, FormEvent, useState } from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
 import { postRequest } from '../postRequest';
-import { friend } from '../types';
 import { FlexFiller, ModalForm } from './styled/Chat';
 
 interface Props {
   open: boolean;
   setOpen: Dispatch<boolean>;
-  setFriends: any; // How to get proper typing here?
+  setRequests: any; // How to get proper typing here?
 }
 
-export const AddFriend: React.FC<Props> = ({ open, setOpen, setFriends }) => {
+export const AddFriend: React.FC<Props> = ({ open, setOpen, setRequests }) => {
   const [form, setForm] = useState('');
   const [errors, setErrors] = useState<Array<string>>([]);
   const { user } = useAuthContext();
@@ -30,9 +29,9 @@ export const AddFriend: React.FC<Props> = ({ open, setOpen, setFriends }) => {
   const add = async (e: FormEvent) => {
     e.preventDefault();
 
-    const data = await postRequest('/auth/friends/add', {
-      username: form,
-      id: user?.id
+    const data = await postRequest('/auth/friends/request', {
+      reciever: form,
+      sender: user?.username
     });
 
     console.log(data);
@@ -41,9 +40,8 @@ export const AddFriend: React.FC<Props> = ({ open, setOpen, setFriends }) => {
       setErrors([data.error]);
       return;
     }
-    const { name, username }: { name: string; username: string } = data.friend;
 
-    setFriends((curr: Array<friend>) => [...curr, { name, username }]);
+    setRequests((curr: any) => [...curr, form]);
     closeModal();
   };
 

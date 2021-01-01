@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { AddFriend } from '../components/AddFriend';
 import { Friend } from '../components/Friend';
-import { FriendsWrapper } from '../components/styled/Friends';
+import { FriendContainer, FriendsWrapper } from '../components/styled/Friends';
 import { Title } from '../components/Title';
 import { useAuthContext } from '../contexts/AuthContext';
 import { postRequest } from '../postRequest';
@@ -12,6 +12,8 @@ import { friend } from '../types';
 export const Friends: React.FC<{}> = () => {
   const { user, loggedIn } = useAuthContext();
   const [friends, setFriends] = useState<Array<friend>>([]);
+  const [recievedRequests, setRecievedRequests] = useState<Array<string>>([]);
+  const [sentRequests, setSentRequests] = useState<Array<string>>([]);
   const [modalOpen, setModalOpen] = useState(false);
 
   const getFriendNames = useCallback(async () => {
@@ -20,7 +22,6 @@ export const Friends: React.FC<{}> = () => {
     const data = await postRequest('/auth/friends/getnames', {
       ids: user.friends
     });
-    console.log(data.names);
 
     setFriends(
       data.names.map((friend: friend) => ({
@@ -30,13 +31,41 @@ export const Friends: React.FC<{}> = () => {
     );
   }, [user]);
 
-  useEffect(() => {
-    getFriendNames();
-  }, [user, getFriendNames]);
+  const getFriendRequests = useCallback(async () => {
+    if (!user) return;
+
+    const body = { username: user.username };
+
+    const recieved = await postRequest('/auth/friends/recievedrequests', body);
+
+    setRecievedRequests(
+      recieved.requests.map((request: { sender: string }) => request.sender)
+    );
+
+    const sent = await postRequest('/auth/friends/sentrequests', body);
+
+    setSentRequests(
+      sent.requests.map((request: { reciever: any }) => request.reciever)
+    );
+  }, [user]);
+
+  const acceptRequest = async (accept: boolean, sender: string) => {
+    const data = await postRequest('/auth/friends/accept', {
+      accept,
+      sender,
+      reciever: user?.username
+    });
+
+    setRecievedRequests(curr => curr.filter(req => req !== sender));
+    if (accept) {
+      setFriends(curr => [...curr, { username: sender, name: data.name }]);
+    }
+  };
 
   useEffect(() => {
-    console.log(friends);
-  }, [friends]);
+    getFriendNames();
+    getFriendRequests();
+  }, [getFriendNames, getFriendRequests]);
 
   return (
     <>
@@ -52,19 +81,66 @@ export const Friends: React.FC<{}> = () => {
             : 'No friends yet, loser'
           : 'Loading...'}
       </FriendsWrapper>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-around'
+        }}>
+        <div>
+          <h2>Pending requests</h2>
+          <FriendsWrapper>
+            {recievedRequests.map(sender => (
+              <FriendContainer key={sender}>
+                <strong>{sender}</strong>
+                <div>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    style={{ margin: 5 }}
+                    onClick={() => acceptRequest(true, sender)}
+                    disableElevation>
+                    Accept
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    style={{ margin: 5 }}
+                    onClick={() => acceptRequest(false, sender)}
+                    disableElevation>
+                    Decline
+                  </Button>
+                </div>
+              </FriendContainer>
+            ))}
+          </FriendsWrapper>
+        </div>
+
+        <div>
+          <h2>Sent requests</h2>
+          <FriendsWrapper>
+            {sentRequests.map(recipient => (
+              <FriendContainer key={recipient}>
+                <strong>{recipient}</strong>
+                <p>Pending</p>
+              </FriendContainer>
+            ))}
+          </FriendsWrapper>
+        </div>
+      </div>
       <Button
         variant="contained"
         color="secondary"
         onClick={() => setModalOpen(true)}
         style={{ margin: '5px' }}
         disableElevation>
-        Add friend
+        Request friend
       </Button>
       {modalOpen && (
         <AddFriend
           open={modalOpen}
           setOpen={setModalOpen}
-          setFriends={setFriends}
+          setRequests={setSentRequests}
         />
       )}
     </>

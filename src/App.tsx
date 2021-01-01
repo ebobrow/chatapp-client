@@ -27,6 +27,7 @@ const App: React.FC<{}> = () => {
           <ThemeProvider theme={theme}>
             <BrowserRouter>
               <Navbar />
+
               <Router />
             </BrowserRouter>
           </ThemeProvider>

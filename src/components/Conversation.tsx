@@ -114,7 +114,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
                           margin: '10px',
                           color:
                             participants
-                              .filter(p => p.username !== user?.username)
+                              .filter(p => p.username !== user?.username) // Is this part necessary?
                               .findIndex(p => p.username === message.sender) %
                               2 ===
                             0
