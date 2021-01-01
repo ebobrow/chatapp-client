@@ -90,41 +90,45 @@ export const Friends: React.FC<{}> = () => {
         <div>
           <h2>Pending requests</h2>
           <FriendsWrapper>
-            {recievedRequests.map(sender => (
-              <FriendContainer key={sender}>
-                <strong>{sender}</strong>
-                <div>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    style={{ margin: 5 }}
-                    onClick={() => acceptRequest(true, sender)}
-                    disableElevation>
-                    Accept
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    style={{ margin: 5 }}
-                    onClick={() => acceptRequest(false, sender)}
-                    disableElevation>
-                    Decline
-                  </Button>
-                </div>
-              </FriendContainer>
-            ))}
+            {recievedRequests.length
+              ? recievedRequests.map(sender => (
+                  <FriendContainer key={sender}>
+                    <strong>{sender}</strong>
+                    <div>
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        style={{ margin: 5 }}
+                        onClick={() => acceptRequest(true, sender)}
+                        disableElevation>
+                        Accept
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        style={{ margin: 5 }}
+                        onClick={() => acceptRequest(false, sender)}
+                        disableElevation>
+                        Decline
+                      </Button>
+                    </div>
+                  </FriendContainer>
+                ))
+              : 'None'}
           </FriendsWrapper>
         </div>
 
         <div>
           <h2>Sent requests</h2>
           <FriendsWrapper>
-            {sentRequests.map(recipient => (
-              <FriendContainer key={recipient}>
-                <strong>{recipient}</strong>
-                <p>Pending</p>
-              </FriendContainer>
-            ))}
+            {sentRequests.length
+              ? sentRequests.map(recipient => (
+                  <FriendContainer key={recipient}>
+                    <strong>{recipient}</strong>
+                    <p>Pending</p>
+                  </FriendContainer>
+                ))
+              : 'None'}
           </FriendsWrapper>
         </div>
       </div>
