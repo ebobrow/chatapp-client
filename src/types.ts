@@ -21,7 +21,7 @@ export type formDispatchAction =
 export type ChatObject = {
   id: string;
   participants: Array<string>;
-  messages?: Array<object>;
+  messages?: Array<{ sender: string; message: string }>;
 };
 
 export interface friend {

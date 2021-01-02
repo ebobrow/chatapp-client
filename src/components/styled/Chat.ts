@@ -18,7 +18,8 @@ export const MessagesContainer = styled.div`
 `;
 
 export const Message = styled.div<MessageProps>`
-  background-color: ${({ mymessage }) => (mymessage ? 'cornflowerblue' : 'gray')};
+  background-color: ${({ mymessage }) =>
+    mymessage ? 'cornflowerblue' : 'gray'};
   padding: 5px 0;
   border-radius: 8px 8px ${({ mymessage }) => (mymessage ? '0 8px' : '8px 0')};
 `;
@@ -57,10 +58,11 @@ export const ConversationWrapper = styled.div<{ active: boolean }>`
   flex-direction: column;
   background-color: ${({ active }) => (active ? PRIMARY_COLOR : 'gainsboro')};
   min-height: 50px;
-  margin: 10px;
+  margin-left: 10px;
   padding: 10px;
   align-content: center;
   transition: background-color 0.3s ease;
+  width: 100%;
 
   &:hover {
     background-color: ${({ active }) => (active ? PRIMARY_COLOR : 'grey')};

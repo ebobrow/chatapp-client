@@ -1,6 +1,8 @@
+import { Badge } from '@material-ui/core';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
 import { useChatContext } from '../contexts/ChatContext';
+import { useNotificationContext } from '../contexts/NotificationContext';
 import { useSocketContext } from '../contexts/SocketContext';
 import { postRequest } from '../postRequest';
 import { ChatObject } from '../types';
@@ -17,11 +19,14 @@ export const ConversationList: React.FC<Props> = ({ w }) => {
   const { user } = useAuthContext();
   const { setChatId, chatId } = useChatContext();
   const { socket } = useSocketContext();
+  const { notifications } = useNotificationContext();
 
   const getChats = useCallback(async () => {
     if (!user) return;
 
-    const data: { chats: Array<any> } = await postRequest('/chat/chats', { id: user.id });
+    const data: { chats: Array<any> } = await postRequest('/chat/chats', {
+      id: user.id
+    });
 
     setConversations(
       data.chats.map(chat => ({
@@ -49,10 +54,14 @@ export const ConversationList: React.FC<Props> = ({ w }) => {
     updateChat();
   }, [conversations, updateChat]);
 
-  const selectChat = (key: number) => {
+  const selectChat = async (key: number) => {
     if (chatId) {
       socket.emit('leave', chatId);
     }
+    await postRequest('/chat/setopen', {
+      username: user?.username,
+      chatId: conversations[key].id
+    });
     setChatId(conversations[key].id);
   };
 
@@ -65,19 +74,36 @@ export const ConversationList: React.FC<Props> = ({ w }) => {
       <h1>Conversations:</h1>
       {conversations &&
         conversations.map((conversation, index) => (
-          <ConversationWrapper
+          <Badge
             key={index}
-            onClick={_ => selectChat(index)}
-            active={conversation.id === chatId}>
-            <p>{conversation.participants?.join(', ')}</p>
-          </ConversationWrapper>
+            badgeContent={
+              (notifications.find(not => not.name === 'Chat') as any).chats
+                .length
+                ? (notifications.find(
+                    not => not.name === 'Chat'
+                  ) as any).chats.find(
+                    (chat: { id: string }) => chat.id === conversation.id
+                  ).amount
+                : 0 // This is so messy
+            }
+            color="secondary">
+            <ConversationWrapper
+              onClick={() => selectChat(index)}
+              active={conversation.id === chatId}>
+              <p>{conversation.participants?.join(', ')}</p>
+            </ConversationWrapper>
+          </Badge>
         ))}
       <FlexFiller />
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <FlexFiller />
         <Plus onClick={_ => setModalOpen(true)} />
       </div>
-      <CreateChat open={modalOpen} setOpen={setModalOpen} refreshChats={getChats} />
+      <CreateChat
+        open={modalOpen}
+        setOpen={setModalOpen}
+        refreshChats={getChats}
+      />
     </div>
   );
 };

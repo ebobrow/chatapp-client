@@ -1,6 +1,6 @@
 import { Button, Modal, TextField } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import React, { Dispatch, FormEvent, useState } from 'react';
+import React, { Dispatch, FormEvent, SetStateAction, useState } from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
 import { postRequest } from '../postRequest';
 import { FlexFiller, ModalForm } from './styled/Chat';
@@ -8,7 +8,7 @@ import { FlexFiller, ModalForm } from './styled/Chat';
 interface Props {
   open: boolean;
   setOpen: Dispatch<boolean>;
-  setRequests: any; // How to get proper typing here?
+  setRequests: (value: SetStateAction<string[]>) => void;
 }
 
 export const AddFriend: React.FC<Props> = ({ open, setOpen, setRequests }) => {
@@ -39,7 +39,7 @@ export const AddFriend: React.FC<Props> = ({ open, setOpen, setRequests }) => {
       return;
     }
 
-    setRequests((curr: any) => [...curr, form]);
+    setRequests(curr => [...curr, form]);
     closeModal();
   };
 

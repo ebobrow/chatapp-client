@@ -14,7 +14,7 @@ type NotificationItem =
       new: boolean;
       chats: {
         id: string;
-        amount: string;
+        amount: number;
       }[];
     }
   | {
