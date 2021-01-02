@@ -2,6 +2,7 @@ import React, {
   Context,
   createContext,
   SetStateAction,
+  useCallback,
   useContext,
   useEffect,
   useState
@@ -41,11 +42,14 @@ export const NotificationContext: React.FC<{}> = ({ children }) => {
     { name: 'Friends', new: false }
   ]);
 
-  const changeNew = (name: string, seen: boolean) => {
-    setNotifications(curr =>
-      curr.map(not => (not.name === name ? { ...not, new: seen } : not))
-    );
-  };
+  const changeNew = useCallback(
+    (name: string, seen: boolean) => {
+      setNotifications(curr =>
+        curr.map(not => (not.name === name ? { ...not, new: seen } : not))
+      );
+    },
+    [setNotifications]
+  );
 
   useEffect(() => {
     console.log(notifications);

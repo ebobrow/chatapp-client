@@ -1,5 +1,5 @@
 import { Button } from '@material-ui/core';
-import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { AddFriend } from '../components/AddFriend';
 import { Friend } from '../components/Friend';
@@ -18,13 +18,6 @@ export const Friends: React.FC<{}> = () => {
   const [sentRequests, setSentRequests] = useState<Array<string>>([]);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const requestBody = useMemo(
-    () => ({
-      username: user?.username
-    }),
-    [user]
-  );
-
   const getFriendNames = useCallback(async () => {
     if (!user || !user.friends) return;
 
@@ -41,34 +34,33 @@ export const Friends: React.FC<{}> = () => {
   }, [user]);
 
   const clearNotifications = useCallback(async () => {
-    console.log('clearing');
-
     if (!user) return;
 
-    await postRequest('/auth/friends/seen', requestBody);
+    await postRequest('/auth/friends/seen', {
+      username: user?.username
+    });
     changeNew('Friends', false);
-  }, [requestBody, user, changeNew]);
+  }, [user, changeNew]);
 
   const getFriendRequests = useCallback(async () => {
-    console.log('getting');
-
     if (!user) return;
 
-    const recieved = await postRequest(
-      '/auth/friends/recievedrequests',
-      requestBody
-    );
+    const recieved = await postRequest('/auth/friends/recievedrequests', {
+      username: user?.username
+    });
 
     setRecievedRequests(
       recieved.requests.map((request: { sender: string }) => request.sender)
     );
 
-    const sent = await postRequest('/auth/friends/sentrequests', requestBody);
+    const sent = await postRequest('/auth/friends/sentrequests', {
+      username: user?.username
+    });
 
     setSentRequests(
       sent.requests.map((request: { reciever: any }) => request.reciever)
     );
-  }, [user, requestBody]);
+  }, [user]);
 
   const acceptRequest = async (accept: boolean, sender: string) => {
     const data = await postRequest('/auth/friends/accept', {
