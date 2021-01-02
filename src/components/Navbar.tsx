@@ -19,26 +19,18 @@ const PROTECTED_ROUTES = [
 
 export const Navbar: React.FC<{}> = () => {
   const { loggedIn, user } = useAuthContext();
-  const { notifications, setNotifications } = useNotificationContext();
+  const { notifications, changeNew } = useNotificationContext();
 
   const getNotifications = useCallback(async () => {
     const recieved = await postRequest('/auth/friends/recievedrequests', {
       username: user?.username
     });
 
-    setNotifications((curr: any) =>
-      curr.map((not: { name: string }) =>
-        not.name === 'Friends'
-          ? {
-              ...not,
-              new: !!recieved.requests.find(
-                (req: { seen: boolean }) => !req.seen
-              )
-            }
-          : not
-      )
+    changeNew(
+      'Friends',
+      !!recieved.requests.find((req: { seen: boolean }) => !req.seen)
     );
-  }, [setNotifications, user?.username]);
+  }, [changeNew, user?.username]);
 
   useEffect(() => {
     getNotifications();

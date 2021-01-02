@@ -1,6 +1,7 @@
 import React, {
   Context,
   createContext,
+  SetStateAction,
   useContext,
   useEffect,
   useState
@@ -22,7 +23,8 @@ type NotificationItem =
 
 interface NotificationContextItem {
   notifications: Array<NotificationItem>;
-  setNotifications: any;
+  setNotifications: (value: SetStateAction<NotificationItem[]>) => void;
+  changeNew: (name: string, seen: boolean) => void;
 }
 
 const ContextItem: Context<NotificationContextItem> = createContext(
@@ -39,12 +41,19 @@ export const NotificationContext: React.FC<{}> = ({ children }) => {
     { name: 'Friends', new: false }
   ]);
 
+  const changeNew = (name: string, seen: boolean) => {
+    setNotifications(curr =>
+      curr.map(not => (not.name === name ? { ...not, new: seen } : not))
+    );
+  };
+
   useEffect(() => {
     console.log(notifications);
   }, [notifications]);
 
   return (
-    <ContextItem.Provider value={{ notifications, setNotifications }}>
+    <ContextItem.Provider
+      value={{ notifications, setNotifications, changeNew }}>
       {children}
     </ContextItem.Provider>
   );

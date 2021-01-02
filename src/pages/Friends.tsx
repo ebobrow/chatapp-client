@@ -1,20 +1,29 @@
 import { Button } from '@material-ui/core';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { Redirect } from 'react-router-dom';
 import { AddFriend } from '../components/AddFriend';
 import { Friend } from '../components/Friend';
 import { FriendContainer, FriendsWrapper } from '../components/styled/Friends';
 import { Title } from '../components/Title';
 import { useAuthContext } from '../contexts/AuthContext';
+import { useNotificationContext } from '../contexts/NotificationContext';
 import { postRequest } from '../postRequest';
 import { friend } from '../types';
 
 export const Friends: React.FC<{}> = () => {
   const { user, loggedIn } = useAuthContext();
+  const { changeNew } = useNotificationContext();
   const [friends, setFriends] = useState<Array<friend>>([]);
   const [recievedRequests, setRecievedRequests] = useState<Array<string>>([]);
   const [sentRequests, setSentRequests] = useState<Array<string>>([]);
   const [modalOpen, setModalOpen] = useState(false);
+
+  const body = useMemo(
+    () => ({
+      username: user?.username
+    }),
+    [user]
+  );
 
   const getFriendNames = useCallback(async () => {
     if (!user || !user.friends) return;
@@ -31,10 +40,19 @@ export const Friends: React.FC<{}> = () => {
     );
   }, [user]);
 
-  const getFriendRequests = useCallback(async () => {
+  const clearNotifications = useCallback(async () => {
+    console.log('clearing');
+
     if (!user) return;
 
-    const body = { username: user.username };
+    await postRequest('/auth/friends/seen', body);
+    changeNew('Friends', false);
+  }, [body, user, changeNew]);
+
+  const getFriendRequests = useCallback(async () => {
+    console.log('getting');
+
+    if (!user) return;
 
     const recieved = await postRequest('/auth/friends/recievedrequests', body);
 
@@ -47,7 +65,7 @@ export const Friends: React.FC<{}> = () => {
     setSentRequests(
       sent.requests.map((request: { reciever: any }) => request.reciever)
     );
-  }, [user]);
+  }, [user, body]);
 
   const acceptRequest = async (accept: boolean, sender: string) => {
     const data = await postRequest('/auth/friends/accept', {
@@ -65,7 +83,8 @@ export const Friends: React.FC<{}> = () => {
   useEffect(() => {
     getFriendNames();
     getFriendRequests();
-  }, [getFriendNames, getFriendRequests]);
+    setTimeout(clearNotifications, 1000);
+  }, [getFriendNames, getFriendRequests, clearNotifications]);
 
   return (
     <>
