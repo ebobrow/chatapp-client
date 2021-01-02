@@ -71,9 +71,11 @@ export const ProtectedRoutes: React.FC<{}> = () => {
 
   return (
     <ButtonGroup color="primary" variant="contained" disableElevation>
-      <Button>
-        <StyledLink to="/">Home</StyledLink>
-      </Button>
+      <Badge>
+        <Button>
+          <StyledLink to="/">Home</StyledLink>
+        </Button>
+      </Badge>
       {loggedIn
         ? PROTECTED_ROUTES.map(route => (
             <Badge
