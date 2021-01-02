@@ -18,7 +18,7 @@ export const Friends: React.FC<{}> = () => {
   const [sentRequests, setSentRequests] = useState<Array<string>>([]);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const body = useMemo(
+  const requestBody = useMemo(
     () => ({
       username: user?.username
     }),
@@ -45,27 +45,30 @@ export const Friends: React.FC<{}> = () => {
 
     if (!user) return;
 
-    await postRequest('/auth/friends/seen', body);
+    await postRequest('/auth/friends/seen', requestBody);
     changeNew('Friends', false);
-  }, [body, user, changeNew]);
+  }, [requestBody, user, changeNew]);
 
   const getFriendRequests = useCallback(async () => {
     console.log('getting');
 
     if (!user) return;
 
-    const recieved = await postRequest('/auth/friends/recievedrequests', body);
+    const recieved = await postRequest(
+      '/auth/friends/recievedrequests',
+      requestBody
+    );
 
     setRecievedRequests(
       recieved.requests.map((request: { sender: string }) => request.sender)
     );
 
-    const sent = await postRequest('/auth/friends/sentrequests', body);
+    const sent = await postRequest('/auth/friends/sentrequests', requestBody);
 
     setSentRequests(
       sent.requests.map((request: { reciever: any }) => request.reciever)
     );
-  }, [user, body]);
+  }, [user, requestBody]);
 
   const acceptRequest = async (accept: boolean, sender: string) => {
     const data = await postRequest('/auth/friends/accept', {
