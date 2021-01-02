@@ -16,9 +16,11 @@ export const Friends: React.FC<{}> = () => {
   const [friends, setFriends] = useState<Array<friend>>([]);
   const [recievedRequests, setRecievedRequests] = useState<Array<string>>([]);
   const [sentRequests, setSentRequests] = useState<Array<string>>([]);
+  const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
 
   const getFriendNames = useCallback(async () => {
+    setLoading(true);
     if (!user || !user.friends) return;
 
     const data = await postRequest('/auth/friends/getnames', {
@@ -31,6 +33,7 @@ export const Friends: React.FC<{}> = () => {
         username: friend.username
       }))
     );
+    setLoading(false);
   }, [user]);
 
   const clearNotifications = useCallback(async () => {
@@ -87,7 +90,7 @@ export const Friends: React.FC<{}> = () => {
       {!loggedIn && <Redirect to="/login" />}
       <h1>Friends</h1>
       <FriendsWrapper>
-        {user
+        {!loading
           ? friends.length
             ? friends?.map((friend, index) => (
                 <Friend friend={friend} key={index} />
