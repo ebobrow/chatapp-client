@@ -19,7 +19,7 @@ export const ConversationList: React.FC<Props> = ({ w }) => {
   const { user } = useAuthContext();
   const { setChatId, chatId } = useChatContext();
   const { socket } = useSocketContext();
-  const { notifications } = useNotificationContext();
+  const { notifications, setNotifications } = useNotificationContext();
 
   const getChats = useCallback(async () => {
     if (!user) return;
@@ -62,6 +62,22 @@ export const ConversationList: React.FC<Props> = ({ w }) => {
       username: user?.username,
       chatId: conversations[key].id
     });
+
+    setTimeout(() => {
+      setNotifications(curr =>
+        curr.map(not =>
+          not.name === 'Chat'
+            ? {
+                ...not,
+                new: false,
+                chats: not.chats.filter(
+                  chat => chat.id !== conversations[key].id
+                )
+              }
+            : not
+        )
+      );
+    }, 1000);
     setChatId(conversations[key].id);
   };
 
