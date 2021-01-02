@@ -58,6 +58,10 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     });
     setMessages(curr => [...curr, { sender: user!.username, message: form }]);
     setForm('');
+    postRequest('/chat/setopen', {
+      username: user?.username,
+      chatId
+    });
   };
 
   useEffect(() => {
@@ -67,6 +71,10 @@ export const Conversation: React.FC<Props> = ({ w }) => {
       ({ message, sender }: { message: string; sender: string }) => {
         scrollToBottom();
         setMessages(curr => [...curr, { message, sender }]);
+        postRequest('/chat/setopen', {
+          username: user?.username,
+          chatId
+        });
       }
     );
 
