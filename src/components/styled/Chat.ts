@@ -1,4 +1,4 @@
-import { FiPlus } from 'react-icons/fi';
+import { FiPlus, FiMenu, FiX } from 'react-icons/fi';
 import styled from 'styled-components';
 import { PRIMARY_COLOR } from '../../constants';
 import { FormWrapper } from './Auth';
@@ -104,4 +104,24 @@ export const ConversationListWrapper = styled.div<{ w: string }>`
   display: flex;
   flex-direction: column;
   min-width: fit-content;
+`;
+
+export const Hamburger = styled(FiMenu)`
+  width: 30px;
+  height: 30px;
+  margin: 20px;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const X = styled(FiX)`
+  width: 30px;
+  height: 30px;
+  margin: 20px;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;

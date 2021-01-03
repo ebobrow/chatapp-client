@@ -1,5 +1,5 @@
 import { Badge } from '@material-ui/core';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { Dispatch, useCallback, useEffect, useState } from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
 import { useChatContext } from '../contexts/ChatContext';
 import { useNotificationContext } from '../contexts/NotificationContext';
@@ -11,14 +11,18 @@ import {
   ConversationListWrapper,
   ConversationWrapper,
   FlexFiller,
-  Plus
+  Hamburger,
+  Plus,
+  X
 } from './styled/Chat';
 
 interface Props {
   w: string;
+  open: boolean;
+  setOpen: Dispatch<boolean>;
 }
 
-export const ConversationList: React.FC<Props> = ({ w }) => {
+export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
   const [conversations, setConversations] = useState<Array<ChatObject>>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const { user } = useAuthContext();
@@ -92,8 +96,22 @@ export const ConversationList: React.FC<Props> = ({ w }) => {
 
   return (
     <ConversationListWrapper w={w}>
-      <h1>Conversations:</h1>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-around'
+        }}>
+        {open && <h1>Conversations:</h1>}
+        {open ? (
+          <X onClick={() => setOpen(false)} />
+        ) : (
+          <Hamburger onClick={() => setOpen(true)} />
+        )}
+      </div>
       {conversations &&
+        open &&
         conversations.map((conversation, index) => (
           <Badge
             key={index}
@@ -118,7 +136,7 @@ export const ConversationList: React.FC<Props> = ({ w }) => {
       <FlexFiller />
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <FlexFiller />
-        <Plus onClick={_ => setModalOpen(true)} />
+        {open && <Plus onClick={_ => setModalOpen(true)} />}
       </div>
       <CreateChat
         open={modalOpen}
