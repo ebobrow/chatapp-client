@@ -48,6 +48,13 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     bottomRef.current.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
+  const setLastOpened = useCallback(() => {
+    postRequest('/chat/setopen', {
+      username: user?.username,
+      chatId
+    });
+  }, [user?.username, chatId]);
+
   const sendChat = (e: FormEvent) => {
     e.preventDefault();
     scrollToBottom();
@@ -58,10 +65,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     });
     setMessages(curr => [...curr, { sender: user!.username, message: form }]);
     setForm('');
-    postRequest('/chat/setopen', {
-      username: user?.username,
-      chatId
-    });
+    setLastOpened();
   };
 
   useEffect(() => {
@@ -71,17 +75,14 @@ export const Conversation: React.FC<Props> = ({ w }) => {
       ({ message, sender }: { message: string; sender: string }) => {
         scrollToBottom();
         setMessages(curr => [...curr, { message, sender }]);
-        postRequest('/chat/setopen', {
-          username: user?.username,
-          chatId
-        });
+        setLastOpened();
       }
     );
 
     return () => {
       socket.off();
     };
-  }, [socket, scrollToBottom]);
+  }, [socket, scrollToBottom, setLastOpened]);
 
   useEffect(() => {
     scrollToBottom();
