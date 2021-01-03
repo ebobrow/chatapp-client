@@ -98,3 +98,10 @@ export const ModalForm = styled.form`
 export const FlexFiller = styled.div`
   flex-grow: 1;
 `;
+
+export const ConversationListWrapper = styled.div<{ w: string }>`
+  width: ${({ w }) => w};
+  display: flex;
+  flex-direction: column;
+  min-width: fit-content;
+`;
