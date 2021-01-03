@@ -7,7 +7,12 @@ import { useSocketContext } from '../contexts/SocketContext';
 import { postRequest } from '../postRequest';
 import { ChatObject } from '../types';
 import { CreateChat } from './CreateChat';
-import { ConversationWrapper, FlexFiller, Plus } from './styled/Chat';
+import {
+  ConversationListWrapper,
+  ConversationWrapper,
+  FlexFiller,
+  Plus
+} from './styled/Chat';
 
 interface Props {
   w: string;
@@ -86,7 +91,7 @@ export const ConversationList: React.FC<Props> = ({ w }) => {
   }, [chatId, socket]);
 
   return (
-    <div style={{ width: w, display: 'flex', flexDirection: 'column' }}>
+    <ConversationListWrapper w={w}>
       <h1>Conversations:</h1>
       {conversations &&
         conversations.map((conversation, index) => (
@@ -120,6 +125,6 @@ export const ConversationList: React.FC<Props> = ({ w }) => {
         setOpen={setModalOpen}
         refreshChats={getChats}
       />
-    </div>
+    </ConversationListWrapper>
   );
 };
