@@ -43,8 +43,6 @@ export const ProtectedRoutes: React.FC<{}> = () => {
     });
 
     if (unreadChats.unread === null) {
-      console.log('fffffffkfkfkv');
-
       setNotifications(curr =>
         curr.map(not =>
           not.name === 'Chat' ? { ...not, new: false, chats: [] } : not

@@ -4,7 +4,6 @@ import React, {
   SetStateAction,
   useCallback,
   useContext,
-  useEffect,
   useState
 } from 'react';
 
@@ -50,10 +49,6 @@ export const NotificationContext: React.FC<{}> = ({ children }) => {
     },
     [setNotifications]
   );
-
-  useEffect(() => {
-    console.log(notifications);
-  }, [notifications]);
 
   return (
     <ContextItem.Provider
