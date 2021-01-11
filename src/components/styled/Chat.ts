@@ -49,7 +49,8 @@ export const ChatWrapper = styled(FormWrapper)<{ w: string }>`
   height: 93%;
   display: flex;
   flex-direction: column;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
   flex-wrap: nowrap;
 `;
 

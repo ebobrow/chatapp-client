@@ -16,12 +16,12 @@ export const Friends: React.FC<{}> = () => {
   const [friends, setFriends] = useState<Array<friend>>([]);
   const [recievedRequests, setRecievedRequests] = useState<Array<string>>([]);
   const [sentRequests, setSentRequests] = useState<Array<string>>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
   const getFriendNames = useCallback(async () => {
-    setLoading(true);
     if (!user || !user.friends) return;
+    setLoading(true);
 
     const data = await postRequest('/auth/friends/getnames', {
       ids: user.friends
