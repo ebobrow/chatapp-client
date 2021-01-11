@@ -38,12 +38,19 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
     });
 
     setConversations(
-      data.chats.map(chat => ({
-        ...chat,
-        participants: chat.participants.map((person: string) =>
-          person === user.name ? 'Me' : person
-        )
-      }))
+      data.chats
+        .map(chat => ({
+          ...chat,
+          participants: chat.participants.map((person: string) =>
+            person === user.name ? 'Me' : person
+          )
+        }))
+        .sort((a, b) => {
+          const aId = a.id.substring(0, 1);
+          const bId = b.id.substring(0, 1);
+
+          return aId !== bId ? (aId > bId ? 1 : -1) : 0;
+        })
     );
   }, [setConversations, user]);
 
