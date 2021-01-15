@@ -3,6 +3,7 @@ import './App.css';
 // Packages
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { HelmetProvider } from 'react-helmet-async';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import { BrowserRouter } from 'react-router-dom';
 import { PRIMARY_COLOR, SECONDARY_COLOR } from './constants';
@@ -30,22 +31,24 @@ const queryClient = new QueryClient();
 const App: React.FC<{}> = () => {
   return (
     <div className="App">
-      <QueryClientProvider client={queryClient}>
-        <AuthContext>
-          <ChatContext>
-            <NotificationContext>
-              <ThemeProvider theme={theme}>
-                <BrowserRouter>
-                  <Navbar />
+      <HelmetProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthContext>
+            <ChatContext>
+              <NotificationContext>
+                <ThemeProvider theme={theme}>
+                  <BrowserRouter>
+                    <Navbar />
 
-                  <Router />
-                </BrowserRouter>
-              </ThemeProvider>
-            </NotificationContext>
-          </ChatContext>
-        </AuthContext>
-        <ReactQueryDevtools />
-      </QueryClientProvider>
+                    <Router />
+                  </BrowserRouter>
+                </ThemeProvider>
+              </NotificationContext>
+            </ChatContext>
+          </AuthContext>
+          <ReactQueryDevtools />
+        </QueryClientProvider>
+      </HelmetProvider>
     </div>
   );
 };
