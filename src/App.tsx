@@ -1,11 +1,16 @@
-import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import React from 'react';
 import './App.css';
-import { AuthContext } from './contexts/AuthContext';
+// Packages
+import { QueryClientProvider, QueryClient } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import { BrowserRouter } from 'react-router-dom';
+import { PRIMARY_COLOR, SECONDARY_COLOR } from './constants';
+// Components
 import { Navbar } from './components/Navbar';
 import { Router } from './components/Router';
-import { PRIMARY_COLOR, SECONDARY_COLOR } from './constants';
+// Contexts
+import { AuthContext } from './contexts/AuthContext';
 import { ChatContext } from './contexts/ChatContext';
 import { NotificationContext } from './contexts/NotificationContext';
 
@@ -20,22 +25,27 @@ const theme = createMuiTheme({
   }
 });
 
+const queryClient = new QueryClient();
+
 const App: React.FC<{}> = () => {
   return (
     <div className="App">
-      <AuthContext>
-        <ChatContext>
-          <NotificationContext>
-            <ThemeProvider theme={theme}>
-              <BrowserRouter>
-                <Navbar />
+      <QueryClientProvider client={queryClient}>
+        <AuthContext>
+          <ChatContext>
+            <NotificationContext>
+              <ThemeProvider theme={theme}>
+                <BrowserRouter>
+                  <Navbar />
 
-                <Router />
-              </BrowserRouter>
-            </ThemeProvider>
-          </NotificationContext>
-        </ChatContext>
-      </AuthContext>
+                  <Router />
+                </BrowserRouter>
+              </ThemeProvider>
+            </NotificationContext>
+          </ChatContext>
+        </AuthContext>
+        <ReactQueryDevtools />
+      </QueryClientProvider>
     </div>
   );
 };
