@@ -33,9 +33,12 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
   const getChats = useCallback(async () => {
     if (!user) return;
 
-    const data: { chats: Array<any> } = await postRequest('/chat/chats', {
-      id: user.id
-    });
+    const data: { chats: Array<ChatObject> } = await postRequest(
+      '/chat/chats',
+      {
+        id: user.id
+      }
+    );
 
     setConversations(
       data.chats

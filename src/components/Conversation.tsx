@@ -19,6 +19,8 @@ import { useChatContext } from '../contexts/ChatContext';
 import { useSocketContext } from '../contexts/SocketContext';
 import { postRequest } from '../postRequest';
 import { PRIMARY_COLOR, SECONDARY_COLOR } from '../constants';
+import { useMessages } from '../hooks/useMessages';
+import { useParticipants } from '../hooks/useParticipants';
 
 interface Props {
   w: string;
@@ -36,12 +38,21 @@ interface participant {
 
 export const Conversation: React.FC<Props> = ({ w }) => {
   const { user } = useAuthContext();
-  const [messages, setMessages] = useState<Array<message>>([]);
-  const [participants, setParticipants] = useState<Array<participant>>([]);
+  const [messages, setMessages] = useState<Array<message> | undefined>([]);
+  const [participants, setParticipants] = useState<
+    Array<participant> | undefined
+  >([]);
   const [form, setForm] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
   const { chatId } = useChatContext();
   const { socket } = useSocketContext();
+
+  const {
+    data: messagesData,
+    isLoading: messagesLoading,
+    refetch
+  } = useMessages(chatId);
+  const { data: participantsData } = useParticipants(chatId);
 
   const scrollToBottom = useCallback(() => {
     if (!bottomRef.current) return;
@@ -63,7 +74,12 @@ export const Conversation: React.FC<Props> = ({ w }) => {
       sender: user!.username,
       room: chatId
     });
-    setMessages(curr => [...curr, { sender: user!.username, message: form }]);
+    refetch();
+    setMessages(curr =>
+      curr
+        ? [...curr, { sender: user!.username, message: form }]
+        : [{ sender: user!.username, message: form }]
+    );
     setForm('');
     setLastOpened();
   };
@@ -74,7 +90,9 @@ export const Conversation: React.FC<Props> = ({ w }) => {
       'message',
       ({ message, sender }: { message: string; sender: string }) => {
         scrollToBottom();
-        setMessages(curr => [...curr, { message, sender }]);
+        setMessages(curr =>
+          curr ? [...curr, { message, sender }] : [{ message, sender }]
+        );
         setLastOpened();
       }
     );
@@ -88,55 +106,52 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     scrollToBottom();
 
     if (!chatId) return;
-    postRequest('/chat/getmessages', { id: chatId }).then(data => {
-      setMessages(data.messages);
-    });
-
-    postRequest('/chat/getparticipants', { id: chatId }).then(data => {
-      setParticipants(data.participants);
-    });
+    setMessages(messagesData?.messages);
+    setParticipants(participantsData?.participants);
   }, [chatId, scrollToBottom]);
 
   return (
     <ChatWrapper w={w}>
+      {messagesLoading || (!participants && <h1>Loading...</h1>)}
       {chatId ? (
         <>
           <FlexFiller />
           <MessagesContainer>
-            {messages.map((message, index) => {
-              const isMine = message.sender === user?.username;
-              return (
-                <MessageWrapper key={index} mymessage={isMine} row={index}>
-                  <Message key={index} mymessage={isMine} row={index}>
-                    <TextNode ismine={isMine} padding={true}>
-                      {message.message}
+            {messages &&
+              messages.map((message, index) => {
+                const isMine = message.sender === user?.username;
+                return (
+                  <MessageWrapper key={index} mymessage={isMine} row={index}>
+                    <Message key={index} mymessage={isMine} row={index}>
+                      <TextNode ismine={isMine} padding={true}>
+                        {message.message}
+                      </TextNode>
+                    </Message>
+                    <TextNode ismine={isMine} padding={false}>
+                      {isMine
+                        ? 'Me'
+                        : participants!.find(p => p.username === message.sender)
+                            ?.name}
+                      {!isMine && (
+                        <small
+                          style={{
+                            margin: '10px',
+                            color:
+                              participants!
+                                .filter(p => p.username !== user?.username) // Is this part necessary?
+                                .findIndex(p => p.username === message.sender) %
+                                2 ===
+                              0
+                                ? PRIMARY_COLOR
+                                : SECONDARY_COLOR
+                          }}>
+                          {message.sender}
+                        </small>
+                      )}
                     </TextNode>
-                  </Message>
-                  <TextNode ismine={isMine} padding={false}>
-                    {isMine
-                      ? 'Me'
-                      : participants.find(p => p.username === message.sender)
-                          ?.name}
-                    {!isMine && (
-                      <small
-                        style={{
-                          margin: '10px',
-                          color:
-                            participants
-                              .filter(p => p.username !== user?.username) // Is this part necessary?
-                              .findIndex(p => p.username === message.sender) %
-                              2 ===
-                            0
-                              ? PRIMARY_COLOR
-                              : SECONDARY_COLOR
-                        }}>
-                        {message.sender}
-                      </small>
-                    )}
-                  </TextNode>
-                </MessageWrapper>
-              );
-            })}
+                  </MessageWrapper>
+                );
+              })}
           </MessagesContainer>
 
           <form onSubmit={sendChat}>
