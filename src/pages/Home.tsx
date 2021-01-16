@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { Title } from '../components/Title';
 import { useAuthContext } from '../contexts/AuthContext';
 
-export const Home: React.FC<{}> = () => {
+export const Home: React.FC = () => {
   const { loggedIn } = useAuthContext();
 
   return (

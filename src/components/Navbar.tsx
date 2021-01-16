@@ -4,7 +4,7 @@ import { UserInfo } from './UserInfo';
 import { FlexContainer, NavContainer } from './styled/Auth';
 import { ProtectedRoutes } from './ProtectedRoutes';
 
-export const Navbar: React.FC<{}> = () => {
+export const Navbar: React.FC = () => {
   return (
     <AppBar position="relative" color="primary">
       <NavContainer>

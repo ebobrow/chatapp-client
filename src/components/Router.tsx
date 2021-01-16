@@ -7,8 +7,9 @@ import { Login } from '../pages/Login';
 import { NotFound } from '../pages/NotFound';
 import { Profile } from '../pages/Profile';
 import { SignUp } from '../pages/Signup';
+import { TempSignup } from '../pages/TempSignup';
 
-export const Router: React.FC<{}> = () => {
+export const Router: React.FC = () => {
   return (
     <Switch>
       <Route path="/" exact component={Home} />
@@ -17,6 +18,7 @@ export const Router: React.FC<{}> = () => {
       <Route path="/profile" exact component={Profile} />
       <Route path="/chat" exact component={Chat} />
       <Route path="/friends" exact component={Friends} />
+      <Route path="/secretsignup" exact component={TempSignup} />
       <Route path="*" component={NotFound} />
     </Switch>
   );

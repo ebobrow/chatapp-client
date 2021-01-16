@@ -27,7 +27,7 @@ const theme = createMuiTheme({
 
 const queryClient = new QueryClient();
 
-const App: React.FC<{}> = () => {
+const App: React.FC = () => {
   return (
     <div className="App">
       <HelmetProvider>

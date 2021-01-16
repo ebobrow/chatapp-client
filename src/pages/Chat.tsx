@@ -6,7 +6,7 @@ import { ConversationList } from '../components/ConversationList';
 import { SocketContext } from '../contexts/SocketContext';
 import { Title } from '../components/Title';
 
-export const Chat: React.FC<{}> = () => {
+export const Chat: React.FC = () => {
   const { loggedIn } = useAuthContext();
   const [listOpen, setListOpen] = useState(window.innerWidth > 985);
 

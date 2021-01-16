@@ -6,7 +6,7 @@ import { errorType, formDispatchAction } from '../types';
 import { AuthForm } from '../components/AuthForm';
 import { Title } from '../components/Title';
 
-export const Login: React.FC<{}> = () => {
+export const Login: React.FC = () => {
   const linkStyle: React.CSSProperties = {
     color: 'blue',
     textDecoration: 'none'

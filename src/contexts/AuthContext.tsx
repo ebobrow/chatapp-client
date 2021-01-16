@@ -31,7 +31,7 @@ export const useAuthContext = () => {
   return useContext(UserContext);
 };
 
-export const AuthContext: React.FC<{}> = ({ children }) => {
+export const AuthContext: React.FC = ({ children }) => {
   // This is so messy
   const [userToken, setUserToken] = useState<null | string>(
     localStorage.getItem('auth')

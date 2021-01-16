@@ -6,7 +6,7 @@ import { AuthForm } from '../components/AuthForm';
 import { errorType, formDispatchAction } from '../types';
 import { Title } from '../components/Title';
 
-export const SignUp: React.FC<{}> = () => {
+export const SignUp: React.FC = () => {
   const [errors, setErrors] = useState<Array<string>>([]);
 
   const { loggedIn, setUserToken } = useAuthContext();

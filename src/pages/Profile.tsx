@@ -6,7 +6,7 @@ import { AuthForm } from '../components/AuthForm';
 import { formDispatchAction, errorType } from '../types';
 import { Title } from '../components/Title';
 
-export const Profile: React.FC<{}> = () => {
+export const Profile: React.FC = () => {
   const { user, loggedIn, setUserToken } = useAuthContext();
   const [errors, setErrors] = useState<Array<string>>([]);
   const accountAge = new Date(

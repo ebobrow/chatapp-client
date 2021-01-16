@@ -14,6 +14,6 @@ export const useSocketContext = () => {
   return useContext(Context);
 };
 
-export const SocketContext: React.FC<{}> = ({ children }) => {
+export const SocketContext: React.FC = ({ children }) => {
   return <Context.Provider value={{ socket }}>{children}</Context.Provider>;
 };

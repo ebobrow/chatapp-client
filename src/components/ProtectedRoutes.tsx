@@ -15,7 +15,7 @@ const PROTECTED_ROUTES = [
   }
 ];
 
-export const ProtectedRoutes: React.FC<{}> = () => {
+export const ProtectedRoutes: React.FC = () => {
   const { loggedIn, user } = useAuthContext();
   const { data } = useNotifications(user?.username, user?.id);
 

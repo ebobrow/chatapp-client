@@ -4,7 +4,7 @@ import { SECONDARY_COLOR } from '../constants';
 import { useAuthContext } from '../contexts/AuthContext';
 import { FlexContainer, StyledLink } from './styled/Auth';
 
-export const UserInfo: React.FC<{}> = () => {
+export const UserInfo: React.FC = () => {
   const { loggedIn, user, setUserToken } = useAuthContext();
   const [width, setWidth] = useState(window.innerWidth > 985 ? '15%' : '30%');
 

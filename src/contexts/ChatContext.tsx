@@ -19,7 +19,7 @@ export const useChatContext = () => {
   return useContext(ChatsContext);
 };
 
-export const ChatContext: React.FC<{}> = ({ children }) => {
+export const ChatContext: React.FC = ({ children }) => {
   const [chatId, setChatId] = useState<string>('');
 
   return (
