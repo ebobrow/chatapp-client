@@ -3,7 +3,7 @@ import { Alert, Autocomplete } from '@material-ui/lab';
 import React, { Dispatch, useCallback, useEffect, useState } from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
 import { useChatContext } from '../contexts/ChatContext';
-import { postRequest } from '../postRequest';
+import { postRequest } from '../api';
 import { FlexFiller, ModalForm } from './styled/Chat';
 
 interface Props {

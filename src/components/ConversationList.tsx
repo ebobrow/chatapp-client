@@ -4,7 +4,7 @@ import { useAuthContext } from '../contexts/AuthContext';
 import { useChatContext } from '../contexts/ChatContext';
 import { useSocketContext } from '../contexts/SocketContext';
 import { useNotifications } from '../hooks/useNotifications';
-import { postRequest } from '../postRequest';
+import { postRequest } from '../api';
 import { ChatObject } from '../types';
 import { CreateChat } from './CreateChat';
 import {

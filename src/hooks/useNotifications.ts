@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import { postRequest } from '../postRequest';
+import { postRequest } from '../api';
 
 type NotificationItem = {
   [key: string]: {

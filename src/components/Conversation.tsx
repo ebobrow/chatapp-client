@@ -17,7 +17,7 @@ import {
 } from './styled/Chat';
 import { useChatContext } from '../contexts/ChatContext';
 import { useSocketContext } from '../contexts/SocketContext';
-import { postRequest } from '../postRequest';
+import { postRequest } from '../api';
 import { PRIMARY_COLOR, SECONDARY_COLOR } from '../constants';
 import { useMessages } from '../hooks/useMessages';
 import { useParticipants } from '../hooks/useParticipants';
@@ -26,6 +26,13 @@ import { useNotifications } from '../hooks/useNotifications';
 interface Props {
   w: string;
 }
+
+const setRead = (username: string, chatId: string) => {
+  postRequest('/chat/setopen', {
+    username,
+    chatId
+  });
+};
 
 export const Conversation: React.FC<Props> = ({ w }) => {
   const { user } = useAuthContext();

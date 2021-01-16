@@ -1,7 +1,7 @@
 import { Button, TextField } from '@material-ui/core';
 import React, { ChangeEvent, Dispatch, FormEvent, useEffect } from 'react';
 import { useForm } from '../hooks/useForm';
-import { postRequest } from '../postRequest';
+import { postRequest } from '../api';
 import { formDispatchAction, inputObj } from '../types';
 import { FormWrapper } from './styled/Auth';
 

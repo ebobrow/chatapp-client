@@ -7,7 +7,7 @@ import React, {
   useEffect,
   useState
 } from 'react';
-import { postRequest } from '../postRequest';
+import { postRequest } from '../api';
 
 interface ContextObject {
   setUserToken: Dispatch<null | string>;

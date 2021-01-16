@@ -3,7 +3,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuthContext } from '../contexts/AuthContext';
 import { useChatContext } from '../contexts/ChatContext';
-import { postRequest } from '../postRequest';
+import { postRequest } from '../api';
 import { friend } from '../types';
 import { FriendContainer, Plus } from './styled/Friends';
 

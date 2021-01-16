@@ -2,7 +2,7 @@ import { Button, Modal, TextField } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import React, { Dispatch, FormEvent, SetStateAction, useState } from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
-import { postRequest } from '../postRequest';
+import { postRequest } from '../api';
 import { FlexFiller, ModalForm } from './styled/Chat';
 
 interface Props {

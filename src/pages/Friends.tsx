@@ -7,7 +7,7 @@ import { FriendContainer, FriendsWrapper } from '../components/styled/Friends';
 import { Title } from '../components/Title';
 import { useAuthContext } from '../contexts/AuthContext';
 import { useNotifications } from '../hooks/useNotifications';
-import { postRequest } from '../postRequest';
+import { postRequest } from '../api';
 import { friend } from '../types';
 
 export const Friends: React.FC<{}> = () => {
