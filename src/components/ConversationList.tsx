@@ -2,8 +2,8 @@ import { Badge } from '@material-ui/core';
 import React, { Dispatch, useCallback, useEffect, useState } from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
 import { useChatContext } from '../contexts/ChatContext';
-import { useNotificationContext } from '../contexts/NotificationContext';
 import { useSocketContext } from '../contexts/SocketContext';
+import { useNotifications } from '../hooks/useNotifications';
 import { postRequest } from '../postRequest';
 import { ChatObject } from '../types';
 import { CreateChat } from './CreateChat';
@@ -28,7 +28,7 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
   const { user } = useAuthContext();
   const { setChatId, chatId } = useChatContext();
   const { socket } = useSocketContext();
-  const { notifications, setNotifications } = useNotificationContext();
+  const { data, refetch } = useNotifications(user?.name, user?.id);
 
   const getChats = useCallback(async () => {
     if (!user) return;
@@ -59,11 +59,12 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
 
   const updateChat = useCallback(() => {
     if (chatId) {
+      refetch();
       const active = conversations.find(c => c.id === chatId);
       if (!active) return;
       setChatId(active.id);
     }
-  }, [chatId, conversations, setChatId]);
+  }, [chatId, conversations, setChatId, refetch]);
 
   useEffect(() => {
     getChats();
@@ -83,19 +84,7 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
     });
 
     setTimeout(() => {
-      setNotifications(curr =>
-        curr.map(not =>
-          not.name === 'Chat'
-            ? {
-                ...not,
-                new: false,
-                chats: not.chats.filter(
-                  chat => chat.id !== conversations[key].id
-                )
-              }
-            : not
-        )
-      );
+      refetch();
     }, 1000);
     setChatId(conversations[key].id);
   };
@@ -126,13 +115,10 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
           <Badge
             key={index}
             badgeContent={
-              (notifications.find(not => not.name === 'Chat') as any).chats
-                .length
-                ? (notifications.find(
-                    not => not.name === 'Chat'
-                  ) as any).chats.find(
+              (data?.notifications.Chat as any).chats.length
+                ? (data?.notifications.Chat as any).chats.find(
                     (chat: { id: string }) => chat.id === conversation.id
-                  ).amount
+                  )?.amount
                 : 0 // This is so messy
             }
             color="secondary">

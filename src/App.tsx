@@ -13,7 +13,6 @@ import { Router } from './components/Router';
 // Contexts
 import { AuthContext } from './contexts/AuthContext';
 import { ChatContext } from './contexts/ChatContext';
-import { NotificationContext } from './contexts/NotificationContext';
 
 const theme = createMuiTheme({
   palette: {
@@ -35,15 +34,13 @@ const App: React.FC<{}> = () => {
         <QueryClientProvider client={queryClient}>
           <AuthContext>
             <ChatContext>
-              <NotificationContext>
-                <ThemeProvider theme={theme}>
-                  <BrowserRouter>
-                    <Navbar />
+              <ThemeProvider theme={theme}>
+                <BrowserRouter>
+                  <Navbar />
 
-                    <Router />
-                  </BrowserRouter>
-                </ThemeProvider>
-              </NotificationContext>
+                  <Router />
+                </BrowserRouter>
+              </ThemeProvider>
             </ChatContext>
           </AuthContext>
           <ReactQueryDevtools />

@@ -6,13 +6,13 @@ import { Friend } from '../components/Friend';
 import { FriendContainer, FriendsWrapper } from '../components/styled/Friends';
 import { Title } from '../components/Title';
 import { useAuthContext } from '../contexts/AuthContext';
-import { useNotificationContext } from '../contexts/NotificationContext';
+import { useNotifications } from '../hooks/useNotifications';
 import { postRequest } from '../postRequest';
 import { friend } from '../types';
 
 export const Friends: React.FC<{}> = () => {
   const { user, loggedIn } = useAuthContext();
-  const { changeNew } = useNotificationContext();
+  const { refetch } = useNotifications(user?.name, user?.id);
   const [friends, setFriends] = useState<Array<friend>>([]);
   const [recievedRequests, setRecievedRequests] = useState<Array<string>>([]);
   const [sentRequests, setSentRequests] = useState<Array<string>>([]);
@@ -42,8 +42,9 @@ export const Friends: React.FC<{}> = () => {
     await postRequest('/auth/friends/seen', {
       username: user?.username
     });
-    changeNew('Friends', false);
-  }, [user, changeNew]);
+    refetch();
+    // changeNew('Friends', false);
+  }, [user, refetch]);
 
   const getFriendRequests = useCallback(async () => {
     if (!user) return;
