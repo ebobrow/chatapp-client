@@ -27,13 +27,6 @@ interface Props {
   w: string;
 }
 
-const setRead = (username: string, chatId: string) => {
-  postRequest('/chat/setopen', {
-    username,
-    chatId
-  });
-};
-
 export const Conversation: React.FC<Props> = ({ w }) => {
   const { user } = useAuthContext();
   const [form, setForm] = useState('');
@@ -51,7 +44,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     isLoading: participantsLoading
   } = useParticipants(chatId);
   const { refetch: refetchNotifications } = useNotifications(
-    user?.name,
+    user?.username,
     user?.id
   );
 
@@ -61,8 +54,6 @@ export const Conversation: React.FC<Props> = ({ w }) => {
   }, []);
 
   const setLastOpened = useCallback(() => {
-    console.log('fetching');
-
     postRequest('/chat/setopen', {
       username: user?.username,
       chatId

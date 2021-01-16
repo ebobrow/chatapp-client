@@ -28,7 +28,7 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
   const { user } = useAuthContext();
   const { setChatId, chatId } = useChatContext();
   const { socket } = useSocketContext();
-  const { data, refetch } = useNotifications(user?.name, user?.id);
+  const { data, refetch } = useNotifications(user?.username, user?.id);
 
   const getChats = useCallback(async () => {
     if (!user) return;

@@ -12,7 +12,7 @@ import { friend } from '../types';
 
 export const Friends: React.FC<{}> = () => {
   const { user, loggedIn } = useAuthContext();
-  const { refetch } = useNotifications(user?.name, user?.id);
+  const { refetch } = useNotifications(user?.username, user?.id);
   const [friends, setFriends] = useState<Array<friend>>([]);
   const [recievedRequests, setRecievedRequests] = useState<Array<string>>([]);
   const [sentRequests, setSentRequests] = useState<Array<string>>([]);
