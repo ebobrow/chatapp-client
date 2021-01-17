@@ -1,40 +1,41 @@
-import React, { Dispatch, useState } from 'react';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useAuthContext } from '../contexts/AuthContext';
 import { AuthError } from '../components/AuthError';
-import { AuthForm } from '../components/AuthForm';
-import { formDispatchAction, errorType } from '../types';
 import { Title } from '../components/Title';
+import { Button } from '@material-ui/core';
+import { Formik, Form, Field } from 'formik';
+import { postRequest } from '../api';
+import { FormWrapper } from '../components/styled/Auth';
+import { TextField } from 'formik-material-ui';
+import * as Yup from 'yup';
+
+const INPUTS = [
+  { label: 'Current Password', name: 'oldPassword', type: 'password' },
+  { label: 'New Password', name: 'newPassword', type: 'password' },
+  { label: 'Confirm New Password', name: 'newPasswordVerify', type: 'password' }
+];
+
+const INITIAL_VALUES = {
+  oldPassword: '',
+  newPassword: '',
+  newPasswordVerify: ''
+};
+
+const changePasswordSchema = Yup.object().shape({
+  oldPassword: Yup.string().required('Required'),
+  newPassword: Yup.string().required('Required'),
+  newPasswordVerify: Yup.string()
+    .oneOf([Yup.ref('newPassword')], 'Passwords do not match')
+    .required('Required')
+});
 
 export const Profile: React.FC = () => {
-  const { user, loggedIn, setUserToken } = useAuthContext();
-  const [errors, setErrors] = useState<Array<string>>([]);
+  const { user, loggedIn } = useAuthContext();
+  const [authErrors, setAuthErrors] = useState<Array<string>>([]);
   const accountAge = new Date(
     (new Date() as any) - (new Date(user?.created_at!) as any)
   );
-
-  const changePassword = async (
-    data: any,
-    dispatch: Dispatch<formDispatchAction>
-  ) => {
-    setErrors([]);
-
-    if (!data.errors) {
-      setUserToken(data.token);
-      dispatch({ type: 'reset-all' });
-    } else {
-      data.errors.forEach((err: errorType) => {
-        setErrors(c => [...c, err.message]);
-
-        // Remove password if not valid
-        if (err.target === 'newPasswordVerify') {
-          dispatch({ type: 'reset', target: 'New Password' });
-          dispatch({ type: 'reset', target: 'Confirm New Password' });
-        }
-      });
-      setUserToken(data.token);
-    }
-  };
 
   return (
     <>
@@ -47,22 +48,54 @@ export const Profile: React.FC = () => {
         {accountAge.getUTCMonth()} months ago
       </p>
       <p>Username: {user?.username}</p>
-      <AuthError messages={errors} setMessages={setErrors} />
-      <AuthForm
-        initialState={[
-          { name: 'Current Password', type: 'password', id: 'oldPassword' },
-          { name: 'New Password', type: 'password', id: 'newPassword' },
-          {
-            name: 'Confirm New Password',
-            type: 'password',
-            id: 'newPasswordVerify'
+      <AuthError messages={authErrors} setMessages={setAuthErrors} />
+      <Formik
+        initialValues={INITIAL_VALUES}
+        validationSchema={changePasswordSchema}
+        onSubmit={async (values, formik) => {
+          const data = await postRequest('/auth/password', {
+            ...values,
+            id: user?.id
+          });
+          setAuthErrors([]);
+          if (data.errors) {
+            data.errors.forEach((err: string) => {
+              setAuthErrors(c => [...c, err]);
+            });
+            formik.setSubmitting(false);
           }
-        ]}
-        actionName="Change Password"
-        postUrl={'/auth/password'}
-        submit={changePassword}
-        extraCredentials={{ id: user?.id }}
-      />
+          formik.resetForm();
+        }}>
+        {({ isSubmitting }) => (
+          <>
+            <br />
+            <Form>
+              <FormWrapper>
+                <h2>Sign Up</h2>
+                {INPUTS.map(input => (
+                  <Field
+                    key={input.name}
+                    style={{ margin: '5px' }}
+                    component={TextField}
+                    label={input.label}
+                    name={input.name}
+                    type={input.type}
+                  />
+                ))}
+
+                <Button
+                  disabled={isSubmitting}
+                  variant="contained"
+                  type="submit"
+                  disableElevation
+                  style={{ marginTop: '5px' }}>
+                  Change Password
+                </Button>
+              </FormWrapper>
+            </Form>
+          </>
+        )}
+      </Formik>
     </>
   );
 };

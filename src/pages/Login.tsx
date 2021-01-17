@@ -1,10 +1,29 @@
-import React, { Dispatch, useState } from 'react';
+import React, { useState } from 'react';
 import { AuthError } from '../components/AuthError';
 import { useAuthContext } from '../contexts/AuthContext';
 import { Link, Redirect } from 'react-router-dom';
-import { errorType, formDispatchAction } from '../types';
-import { AuthForm } from '../components/AuthForm';
 import { Title } from '../components/Title';
+import { Field, Form, Formik } from 'formik';
+import * as Yup from 'yup';
+import { postRequest } from '../api';
+import { Button } from '@material-ui/core';
+import { FormWrapper } from '../components/styled/Auth';
+import { TextField } from 'formik-material-ui';
+
+const INPUTS = [
+  { label: 'Username', name: 'username', type: 'text' },
+  { label: 'Password', name: 'password', type: 'password' }
+];
+
+const INITIAL_VALUES = {
+  username: '',
+  password: ''
+};
+
+const loginSchema = Yup.object().shape({
+  username: Yup.string().required('Required'),
+  password: Yup.string().required('Required')
+});
 
 export const Login: React.FC = () => {
   const linkStyle: React.CSSProperties = {
@@ -14,49 +33,69 @@ export const Login: React.FC = () => {
 
   const { loggedIn, setUserToken } = useAuthContext();
 
-  const [errors, setErrors] = useState<Array<string>>([]);
-
-  const loginUser = async (
-    data: any,
-    dispatch: Dispatch<formDispatchAction>
-  ) => {
-    setErrors([]);
-    if (!data.errors) {
-      setUserToken(data.token);
-      dispatch({ type: 'reset-all' });
-    } else {
-      data.errors.forEach((err: errorType) => {
-        setErrors(c => [...c, err.message]);
-
-        // Remove username if not valid
-        if (err.target === 'username') {
-          dispatch({ type: 'reset', target: 'Username' });
-        }
-        dispatch({ type: 'reset', target: 'Password' });
-      });
-    }
-  };
+  const [authErrors, setAuthErrors] = useState<Array<string>>([]);
 
   return (
     <>
       <Title>Login</Title>
-      <div>
-        {loggedIn && <Redirect to="/" />}
-        <AuthError messages={errors} setMessages={setErrors} />
-        <AuthForm
-          initialState={[
-            { name: 'Username', type: 'text', id: 'username' },
-            { name: 'Password', type: 'password', id: 'password' }
-          ]}
-          actionName="Log In"
-          submit={loginUser}
-          postUrl={'/auth/login'}
-        />
-        <br />
-        <Link style={linkStyle} to="/signup">
-          Don't have an account?
-        </Link>
-      </div>
+      {loggedIn && <Redirect to="/" />}
+      <AuthError messages={authErrors} setMessages={setAuthErrors} />
+      <Formik
+        initialValues={INITIAL_VALUES}
+        validationSchema={loginSchema}
+        onSubmit={async (values, formik) => {
+          const resetField = (fieldName: string) => {
+            formik.setFieldValue(fieldName, '', false);
+          };
+
+          const data = await postRequest('/auth/login', values);
+
+          setAuthErrors([]);
+          if (!data.errors) {
+            setUserToken(data.token);
+            formik.resetForm();
+          } else {
+            data.errors.forEach((err: string) => {
+              setAuthErrors(c => [...c, err]);
+            });
+            resetField('password');
+            formik.setSubmitting(false);
+          }
+        }}>
+        {({ isSubmitting }) => (
+          <>
+            <br />
+            <Form>
+              <FormWrapper>
+                <h2>Login</h2>
+                {INPUTS.map(input => (
+                  <Field
+                    key={input.name}
+                    style={{ margin: '5px' }}
+                    component={TextField}
+                    label={input.label}
+                    name={input.name}
+                    type={input.type}
+                  />
+                ))}
+
+                <Button
+                  disabled={isSubmitting}
+                  variant="contained"
+                  type="submit"
+                  disableElevation
+                  style={{ marginTop: '5px' }}>
+                  Login
+                </Button>
+              </FormWrapper>
+            </Form>
+          </>
+        )}
+      </Formik>
+      <br />
+      <Link style={linkStyle} to="/signup">
+        Don't have an account?
+      </Link>
     </>
   );
 };
