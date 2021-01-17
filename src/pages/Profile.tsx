@@ -71,7 +71,7 @@ export const Profile: React.FC = () => {
             <br />
             <Form>
               <FormWrapper>
-                <h2>Sign Up</h2>
+                <h2>Change Password</h2>
                 {INPUTS.map(input => (
                   <Field
                     key={input.name}
