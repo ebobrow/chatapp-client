@@ -16,7 +16,7 @@ export const Friend: React.FC<Props> = ({ friend }) => {
 
   const addChat = async () => {
     const { data: chat } = await axiosConfig.post('/chat/createchat', {
-      users: friend.username
+      users: [friend.username]
     });
     setChatId(chat.id);
     history.push('/chat');
