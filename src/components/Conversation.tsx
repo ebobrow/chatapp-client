@@ -60,7 +60,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     scrollToBottom();
     socket.emit('new-message', {
       message: form,
-      sender: user!.user.username,
+      sender: user!.username,
       room: chatId
     });
     refetch();
@@ -94,7 +94,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
           <MessagesContainer>
             {messagesData &&
               messagesData.messages.map((message, index) => {
-                const isMine = message.sender === user?.user.username;
+                const isMine = message.sender === user?.username;
                 return (
                   <MessageWrapper key={index} mymessage={isMine} row={index}>
                     <Message key={index} mymessage={isMine} row={index}>
@@ -114,9 +114,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
                             margin: '10px',
                             color:
                               participantsData?.participants
-                                ?.filter(
-                                  p => p.username !== user?.user.username
-                                ) // Is this part necessary?
+                                ?.filter(p => p.username !== user?.username) // Is this part necessary?
                                 .findIndex(
                                   p => p.username === message.sender
                                 ) || 2 % 2 === 0

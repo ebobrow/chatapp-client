@@ -29,7 +29,7 @@ export const Chat: React.FC = () => {
   return (
     <>
       <Title>Chat</Title>
-      {!data?.user && <Redirect to="/login" />}
+      {!data && <Redirect to="/login" />}
       <SocketContext>
         <div style={{ display: 'flex', flexDirection: 'row', height: '90%' }}>
           <ConversationList

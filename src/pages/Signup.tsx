@@ -49,7 +49,7 @@ export const SignUp: React.FC = () => {
   return (
     <>
       <Title>Sign Up</Title>
-      {user?.user && <Redirect to="/" />}
+      {user && <Redirect to="/" />}
       <AuthError messages={authErrors} setMessages={setAuthErrors} />
       <Formik
         initialValues={INITIAL_VALUES}

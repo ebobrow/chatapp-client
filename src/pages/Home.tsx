@@ -13,7 +13,7 @@ export const Home: React.FC = () => {
   return (
     <>
       <Title>Home</Title>
-      {!data?.user && <Redirect to="/login" />}
+      {!data && <Redirect to="/login" />}
       <h1>What's Appening</h1>
       <h4>What's app but worse.</h4>
     </>

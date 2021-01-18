@@ -35,11 +35,11 @@ export const UserInfo: React.FC = () => {
     };
   }, [setWidthCallback]);
 
-  if (user?.user && !isLoading) {
+  if (user && !isLoading) {
     return (
       <FlexContainer width={width}>
         <StyledLink to="/profile" hovercolor={SECONDARY_COLOR}>
-          {user.user.name}
+          {user.name}
         </StyledLink>
         <Button
           variant="contained"

@@ -20,8 +20,6 @@ export const Friends: React.FC = () => {
     refetch: refetchFriends
   } = useFriends();
   const { refetch } = useNotifications();
-  // const [recievedRequests, setRecievedRequests] = useState<Array<string>>([]);
-  // const [sentRequests, setSentRequests] = useState<Array<string>>([]);
   const {
     data: recievedRequests,
     refetch: refetchRecieved
@@ -36,31 +34,12 @@ export const Friends: React.FC = () => {
     refetch();
   }, [user, refetch]);
 
-  // const getFriendRequests = useCallback(async () => {
-  //   if (!user) return;
-
-  //   const { data: recieved } = await axios.get(
-  //     '/auth/friends/recievedrequests'
-  //   );
-
-  //   setRecievedRequests(
-  //     recieved.requests.map((request: { sender: string }) => request.sender)
-  //   );
-
-  //   const { data: sent } = await axios.get('/auth/friends/sentrequests');
-
-  //   setSentRequests(
-  //     sent.requests.map((request: { reciever: any }) => request.reciever)
-  //   );
-  // }, [user]);
-
   const acceptRequest = async (accept: boolean, sender: string) => {
     await axios.post('/auth/friends/accept', {
       accept,
       sender
     });
 
-    // setRecievedRequests(curr => curr.filter(req => req !== sender));
     refetchRecieved();
     if (accept) {
       refetchFriends();
@@ -68,7 +47,6 @@ export const Friends: React.FC = () => {
   };
 
   useEffect(() => {
-    // getFriendRequests();
     setTimeout(clearNotifications, 1000);
   }, [clearNotifications]);
 
@@ -79,7 +57,7 @@ export const Friends: React.FC = () => {
   return (
     <>
       <Title>Friends</Title>
-      {!user?.user && <Redirect to="/login" />}
+      {!user && <Redirect to="/login" />}
       <h1>Friends</h1>
       <FriendsWrapper>
         {!friendsLoading

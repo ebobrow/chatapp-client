@@ -11,10 +11,10 @@ interface User {
   modified_at: string;
 }
 
-const fetcher = async (): Promise<{ user: User } | undefined> => {
+const fetcher = async (): Promise<User | undefined> => {
   try {
     const { data } = await axios.get('/auth/token');
-    return data;
+    return data.user;
   } catch (error) {
     console.log(error);
     return;

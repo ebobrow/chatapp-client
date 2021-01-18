@@ -1,5 +1,5 @@
 import { Badge } from '@material-ui/core';
-import React, { Dispatch, useCallback, useEffect, useState } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import { useChatContext } from '../contexts/ChatContext';
 import { useSocketContext } from '../contexts/SocketContext';
 import { useNotifications } from '../hooks/useNotifications';
@@ -24,11 +24,10 @@ interface Props {
 
 export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
   const { data: user } = useUser();
-  // const [conversations, setConversations] = useState<Array<ChatObject>>([]);
   const conversations = useConversations()?.data?.map(chat => ({
     ...chat,
     participants: chat.participants.map((person: string) =>
-      person === user?.user.name ? 'Me' : person
+      person === user?.name ? 'Me' : person
     )
   }));
   const [modalOpen, setModalOpen] = useState(false);

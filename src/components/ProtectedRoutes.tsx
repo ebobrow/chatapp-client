@@ -26,7 +26,7 @@ export const ProtectedRoutes: React.FC = () => {
           <StyledLink to="/">Home</StyledLink>
         </Button>
       </Badge>
-      {user?.user && !isLoading
+      {user && !isLoading
         ? PROTECTED_ROUTES.map(route => (
             <Badge
               key={route.url}
