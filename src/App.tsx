@@ -11,7 +11,6 @@ import { PRIMARY_COLOR, SECONDARY_COLOR } from './constants';
 import { Navbar } from './components/Navbar';
 import { Router } from './components/Router';
 // Contexts
-import { AuthContext } from './contexts/AuthContext';
 import { ChatContext } from './contexts/ChatContext';
 
 const theme = createMuiTheme({
@@ -32,17 +31,15 @@ const App: React.FC = () => {
     <div className="App">
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
-          <AuthContext>
-            <ChatContext>
-              <ThemeProvider theme={theme}>
-                <BrowserRouter>
-                  <Navbar />
+          <ChatContext>
+            <ThemeProvider theme={theme}>
+              <BrowserRouter>
+                <Navbar />
 
-                  <Router />
-                </BrowserRouter>
-              </ThemeProvider>
-            </ChatContext>
-          </AuthContext>
+                <Router />
+              </BrowserRouter>
+            </ThemeProvider>
+          </ChatContext>
           <ReactQueryDevtools />
         </QueryClientProvider>
       </HelmetProvider>

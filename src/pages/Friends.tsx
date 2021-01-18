@@ -5,16 +5,14 @@ import { AddFriend } from '../components/AddFriend';
 import { Friend } from '../components/Friend';
 import { FriendContainer, FriendsWrapper } from '../components/styled/Friends';
 import { Title } from '../components/Title';
-import { useAuthContext } from '../contexts/AuthContext';
 import { useNotifications } from '../hooks/useNotifications';
-import { postRequest } from '../api';
+import { axiosConfig } from '../api';
 import { friend } from '../types';
 import { useUser } from '../hooks/useUser';
 
 export const Friends: React.FC = () => {
-  const { userToken, loggedIn } = useAuthContext();
-  const { data: user } = useUser(userToken);
-  const { refetch } = useNotifications(user?.username, user?.id);
+  const { data: user, isLoading } = useUser();
+  const { refetch } = useNotifications();
   const [friends, setFriends] = useState<Array<friend>>([]);
   const [recievedRequests, setRecievedRequests] = useState<Array<string>>([]);
   const [sentRequests, setSentRequests] = useState<Array<string>>([]);
@@ -22,12 +20,10 @@ export const Friends: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const getFriendNames = useCallback(async () => {
-    if (!user || !user.friends) return;
+    if (!user || !user.user.friends) return;
     setLoading(true);
 
-    const data = await postRequest('/auth/friends/getnames', {
-      ids: user.friends
-    });
+    const { data } = await axiosConfig.get('/auth/friends/getnames');
 
     setFriends(
       data.names.map((friend: friend) => ({
@@ -41,9 +37,7 @@ export const Friends: React.FC = () => {
   const clearNotifications = useCallback(async () => {
     if (!user) return;
 
-    await postRequest('/auth/friends/seen', {
-      username: user?.username
-    });
+    await axiosConfig.get('/auth/friends/seen');
     refetch();
     // changeNew('Friends', false);
   }, [user, refetch]);
@@ -51,17 +45,15 @@ export const Friends: React.FC = () => {
   const getFriendRequests = useCallback(async () => {
     if (!user) return;
 
-    const recieved = await postRequest('/auth/friends/recievedrequests', {
-      username: user?.username
-    });
+    const { data: recieved } = await axiosConfig.get(
+      '/auth/friends/recievedrequests'
+    );
 
     setRecievedRequests(
       recieved.requests.map((request: { sender: string }) => request.sender)
     );
 
-    const sent = await postRequest('/auth/friends/sentrequests', {
-      username: user?.username
-    });
+    const { data: sent } = await axiosConfig.get('/auth/friends/sentrequests');
 
     setSentRequests(
       sent.requests.map((request: { reciever: any }) => request.reciever)
@@ -69,10 +61,9 @@ export const Friends: React.FC = () => {
   }, [user]);
 
   const acceptRequest = async (accept: boolean, sender: string) => {
-    const data = await postRequest('/auth/friends/accept', {
+    const { data } = await axiosConfig.post('/auth/friends/accept', {
       accept,
-      sender,
-      reciever: user?.username
+      sender
     });
 
     setRecievedRequests(curr => curr.filter(req => req !== sender));
@@ -87,10 +78,14 @@ export const Friends: React.FC = () => {
     setTimeout(clearNotifications, 1000);
   }, [getFriendNames, getFriendRequests, clearNotifications]);
 
+  if (isLoading) {
+    return <h1>Loading...</h1>;
+  }
+
   return (
     <>
       <Title>Friends</Title>
-      {!loggedIn && <Redirect to="/login" />}
+      {!user?.user && <Redirect to="/login" />}
       <h1>Friends</h1>
       <FriendsWrapper>
         {!loading

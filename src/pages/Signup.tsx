@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import { useAuthContext } from '../contexts/AuthContext';
 import { AuthError } from '../components/AuthError';
 import { Title } from '../components/Title';
 import * as Yup from 'yup';
 import { Button } from '@material-ui/core';
 import { Formik, Form, Field } from 'formik';
-import { postRequest } from '../api';
+import { axiosConfig } from '../api';
 import { FormWrapper } from '../components/styled/Auth';
 import { TextField } from 'formik-material-ui';
+import { useUser } from '../hooks/useUser';
+import { useQueryClient } from 'react-query';
 
 const INPUTS = [
   { label: 'Name', name: 'name', type: 'text' },
@@ -38,12 +39,17 @@ const SignUpSchema = Yup.object().shape({
 
 export const SignUp: React.FC = () => {
   const [authErrors, setAuthErrors] = useState<string[]>([]);
-  const { setUserToken, loggedIn } = useAuthContext();
+  const queryClient = useQueryClient();
+  const { data: user, isLoading } = useUser();
+
+  if (isLoading) {
+    return <h1>Loading...</h1>;
+  }
 
   return (
     <>
       <Title>Sign Up</Title>
-      {loggedIn && <Redirect to="/" />}
+      {user?.user && <Redirect to="/" />}
       <AuthError messages={authErrors} setMessages={setAuthErrors} />
       <Formik
         initialValues={INITIAL_VALUES}
@@ -53,11 +59,11 @@ export const SignUp: React.FC = () => {
             formik.setFieldValue(fieldName, '', false);
           };
 
-          const data = await postRequest('/auth/register', values);
+          const { data } = await axiosConfig.post('/auth/register', values);
 
           setAuthErrors([]);
           if (!data.errors) {
-            setUserToken(data.token);
+            queryClient.invalidateQueries();
             formik.resetForm();
           } else {
             data.errors.forEach((err: string) => {

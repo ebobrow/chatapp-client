@@ -1,10 +1,8 @@
 import { Button, Modal, TextField } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import React, { Dispatch, FormEvent, SetStateAction, useState } from 'react';
-import { useAuthContext } from '../contexts/AuthContext';
-import { postRequest } from '../api';
+import { axiosConfig } from '../api';
 import { FlexFiller, ModalForm } from './styled/Chat';
-import { useUser } from '../hooks/useUser';
 
 interface Props {
   open: boolean;
@@ -15,8 +13,6 @@ interface Props {
 export const AddFriend: React.FC<Props> = ({ open, setOpen, setRequests }) => {
   const [form, setForm] = useState('');
   const [errors, setErrors] = useState<Array<string>>([]);
-  const { userToken } = useAuthContext();
-  const { data: user } = useUser(userToken);
 
   const closeModal = () => {
     setErrors([]);
@@ -31,9 +27,8 @@ export const AddFriend: React.FC<Props> = ({ open, setOpen, setRequests }) => {
   const add = async (e: FormEvent) => {
     e.preventDefault();
 
-    const data = await postRequest('/auth/friends/request', {
-      reciever: form,
-      sender: user?.username
+    const { data } = await axiosConfig.post('/auth/friends/request', {
+      reciever: form
     });
 
     if (!data.ok) {

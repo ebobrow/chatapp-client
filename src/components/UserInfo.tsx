@@ -1,17 +1,26 @@
 import { Button, ButtonGroup } from '@material-ui/core';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useQueryClient } from 'react-query';
 import { SECONDARY_COLOR } from '../constants';
-import { useAuthContext } from '../contexts/AuthContext';
+import { useLogOut } from '../hooks/useLogOut';
 import { useUser } from '../hooks/useUser';
 import { FlexContainer, StyledLink } from './styled/Auth';
 
 export const UserInfo: React.FC = () => {
-  const { userToken, loggedIn, setUserToken } = useAuthContext();
-  const { data: user } = useUser(userToken);
+  const { data: user, isLoading } = useUser();
   const [width, setWidth] = useState(window.innerWidth > 985 ? '15%' : '30%');
+  const { mutate } = useLogOut();
+  const queryClient = useQueryClient();
 
   const logOut = () => {
-    setUserToken(null);
+    mutate(
+      {},
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries();
+        }
+      }
+    );
   };
 
   const setWidthCallback = useCallback(() => {
@@ -26,11 +35,11 @@ export const UserInfo: React.FC = () => {
     };
   }, [setWidthCallback]);
 
-  if (loggedIn && user) {
+  if (user?.user && !isLoading) {
     return (
       <FlexContainer width={width}>
         <StyledLink to="/profile" hovercolor={SECONDARY_COLOR}>
-          {user.name}
+          {user.user.name}
         </StyledLink>
         <Button
           variant="contained"

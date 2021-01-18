@@ -1,6 +1,5 @@
 import { Badge, Button, ButtonGroup } from '@material-ui/core';
 import React from 'react';
-import { useAuthContext } from '../contexts/AuthContext';
 import { useNotifications } from '../hooks/useNotifications';
 import { useUser } from '../hooks/useUser';
 import { StyledLink } from './styled/Auth';
@@ -17,9 +16,8 @@ const PROTECTED_ROUTES = [
 ];
 
 export const ProtectedRoutes: React.FC = () => {
-  const { loggedIn, userToken } = useAuthContext();
-  const { data: userData } = useUser(userToken);
-  const { data } = useNotifications(userData?.username, userData?.id);
+  const { data: user, isLoading } = useUser();
+  const { data } = useNotifications();
 
   return (
     <ButtonGroup color="primary" variant="contained" disableElevation>
@@ -28,7 +26,7 @@ export const ProtectedRoutes: React.FC = () => {
           <StyledLink to="/">Home</StyledLink>
         </Button>
       </Badge>
-      {loggedIn
+      {user?.user && !isLoading
         ? PROTECTED_ROUTES.map(route => (
             <Badge
               key={route.url}

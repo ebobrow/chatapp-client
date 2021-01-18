@@ -1,9 +1,8 @@
 import { Button, Modal, TextField } from '@material-ui/core';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import React, { Dispatch, useCallback, useEffect, useState } from 'react';
-import { useAuthContext } from '../contexts/AuthContext';
 import { useChatContext } from '../contexts/ChatContext';
-import { postRequest } from '../api';
+import { axiosConfig } from '../api';
 import { FlexFiller, ModalForm } from './styled/Chat';
 import { useUser } from '../hooks/useUser';
 
@@ -26,14 +25,13 @@ export const CreateChat: React.FC<Props> = ({
   const [form, setForm] = useState<Array<string>>([]);
   const [errors, setErrors] = useState<Array<string>>([]);
   const [friends, setFriends] = useState<Array<friend>>([]);
-  const { userToken } = useAuthContext();
-  const { data: user } = useUser(userToken);
+  const { data: user } = useUser();
   const { setChatId } = useChatContext();
 
   const getFriendNames = useCallback(async () => {
     if (!user) return;
-    const data = await postRequest('/auth/friends/getnames', {
-      ids: user.friends
+    const { data } = await axiosConfig.post('/auth/friends/getnames', {
+      ids: user.user.friends
     });
     setFriends(data.names);
   }, [user]);
@@ -55,8 +53,8 @@ export const CreateChat: React.FC<Props> = ({
   };
 
   const create = async () => {
-    const data = await postRequest('/chat/createchat', {
-      users: [...form, user?.username]
+    const { data } = await axiosConfig.post('/chat/createchat', {
+      users: form
     });
 
     if (!data.ok) {

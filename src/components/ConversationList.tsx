@@ -1,10 +1,9 @@
 import { Badge } from '@material-ui/core';
 import React, { Dispatch, useCallback, useEffect, useState } from 'react';
-import { useAuthContext } from '../contexts/AuthContext';
 import { useChatContext } from '../contexts/ChatContext';
 import { useSocketContext } from '../contexts/SocketContext';
 import { useNotifications } from '../hooks/useNotifications';
-import { postRequest } from '../api';
+import { axiosConfig } from '../api';
 import { ChatObject } from '../types';
 import { CreateChat } from './CreateChat';
 import {
@@ -26,20 +25,16 @@ interface Props {
 export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
   const [conversations, setConversations] = useState<Array<ChatObject>>([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const { userToken } = useAuthContext();
-  const { data: user } = useUser(userToken);
+  const { data: user } = useUser();
   const { setChatId, chatId } = useChatContext();
   const { socket } = useSocketContext();
-  const { data, refetch } = useNotifications(user?.username, user?.id);
+  const { data, refetch } = useNotifications();
 
   const getChats = useCallback(async () => {
     if (!user) return;
 
-    const data: { chats: Array<ChatObject> } = await postRequest(
-      '/chat/chats',
-      {
-        id: user.id
-      }
+    const data: { chats: Array<ChatObject> } = await axiosConfig.get(
+      '/chat/chats'
     );
 
     setConversations(
@@ -47,7 +42,7 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
         .map(chat => ({
           ...chat,
           participants: chat.participants.map((person: string) =>
-            person === user.name ? 'Me' : person
+            person === user.user.name ? 'Me' : person
           )
         }))
         .sort((a, b) => {
@@ -80,10 +75,7 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
     if (chatId) {
       socket.emit('leave', chatId);
     }
-    await postRequest('/chat/setopen', {
-      username: user?.username,
-      chatId: conversations[key].id
-    });
+    await axiosConfig.post('/chat/setopen', { chatId: conversations[key].id });
 
     setTimeout(() => {
       refetch();

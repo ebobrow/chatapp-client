@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import { useAuthContext } from '../contexts/AuthContext';
 import { AuthError } from '../components/AuthError';
 import { Title } from '../components/Title';
 import { Button } from '@material-ui/core';
 import { Formik, Form, Field } from 'formik';
-import { postRequest } from '../api';
+import { axiosConfig } from '../api';
 import { FormWrapper } from '../components/styled/Auth';
 import { TextField } from 'formik-material-ui';
 import * as Yup from 'yup';
@@ -32,32 +31,34 @@ const changePasswordSchema = Yup.object().shape({
 });
 
 export const Profile: React.FC = () => {
-  const { userToken, loggedIn } = useAuthContext();
-  const { data: user } = useUser(userToken);
+  const { data: user, isLoading } = useUser();
   const [authErrors, setAuthErrors] = useState<Array<string>>([]);
   const accountAge = new Date(
-    (new Date() as any) - (new Date(user?.created_at!) as any)
+    (new Date() as any) - (new Date(user?.user.created_at!) as any)
   );
+
+  if (isLoading) {
+    return <h1>Loading...</h1>;
+  }
 
   return (
     <>
       <Title>Profile</Title>
-      {!loggedIn && <Redirect to="/login" />}
-      {user ? <h1>Hi, {user.name}</h1> : <h1>Loading...</h1>}
+      {!user?.user && <Redirect to="/login" />}
+      {user ? <h1>Hi, {user.user.name}</h1> : <h1>Loading...</h1>}
       <h3>Account Info</h3>
       <p>
         Created {accountAge.getUTCFullYear() - 1970} years,{' '}
         {accountAge.getUTCMonth()} months ago
       </p>
-      <p>Username: {user?.username}</p>
+      <p>Username: {user?.user.username}</p>
       <AuthError messages={authErrors} setMessages={setAuthErrors} />
       <Formik
         initialValues={INITIAL_VALUES}
         validationSchema={changePasswordSchema}
         onSubmit={async (values, formik) => {
-          const data = await postRequest('/auth/password', {
-            ...values,
-            id: user?.id
+          const { data } = await axiosConfig.post('/auth/password', {
+            ...values
           });
           setAuthErrors([]);
           if (data.errors) {

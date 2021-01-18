@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import { postRequest } from '../api';
+import { axiosConfig } from '../api';
 
 const fetcher = async (
   id: string
@@ -7,7 +7,8 @@ const fetcher = async (
   { participants: Array<{ name: string; username: string }> } | undefined
 > => {
   try {
-    return postRequest('/chat/getparticipants', { id });
+    const { data } = await axiosConfig.post('/chat/getparticipants', { id });
+    return data;
   } catch (error) {
     console.log(error);
     return;

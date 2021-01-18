@@ -6,7 +6,6 @@ import React, {
   useRef,
   useState
 } from 'react';
-import { useAuthContext } from '../contexts/AuthContext';
 import {
   MessagesContainer,
   MessageWrapper,
@@ -17,7 +16,7 @@ import {
 } from './styled/Chat';
 import { useChatContext } from '../contexts/ChatContext';
 import { useSocketContext } from '../contexts/SocketContext';
-import { postRequest } from '../api';
+import { axiosConfig } from '../api';
 import { PRIMARY_COLOR, SECONDARY_COLOR } from '../constants';
 import { useMessages } from '../hooks/useMessages';
 import { useParticipants } from '../hooks/useParticipants';
@@ -29,8 +28,7 @@ interface Props {
 }
 
 export const Conversation: React.FC<Props> = ({ w }) => {
-  const { userToken } = useAuthContext();
-  const { data: user } = useUser(userToken);
+  const { data: user } = useUser();
   const [form, setForm] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
   const { chatId } = useChatContext();
@@ -45,10 +43,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     data: participantsData,
     isLoading: participantsLoading
   } = useParticipants(chatId);
-  const { refetch: refetchNotifications } = useNotifications(
-    user?.username,
-    user?.id
-  );
+  const { refetch: refetchNotifications } = useNotifications();
 
   const scrollToBottom = useCallback(() => {
     if (!bottomRef.current) return;
@@ -56,19 +51,16 @@ export const Conversation: React.FC<Props> = ({ w }) => {
   }, []);
 
   const setLastOpened = useCallback(() => {
-    postRequest('/chat/setopen', {
-      username: user?.username,
-      chatId
-    });
+    axiosConfig.post('/chat/setopen', { chatId });
     refetchNotifications();
-  }, [user?.username, chatId, refetchNotifications]);
+  }, [chatId, refetchNotifications]);
 
   const sendChat = (e: FormEvent) => {
     e.preventDefault();
     scrollToBottom();
     socket.emit('new-message', {
       message: form,
-      sender: user!.username,
+      sender: user!.user.username,
       room: chatId
     });
     refetch();
@@ -102,7 +94,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
           <MessagesContainer>
             {messagesData &&
               messagesData.messages.map((message, index) => {
-                const isMine = message.sender === user?.username;
+                const isMine = message.sender === user?.user.username;
                 return (
                   <MessageWrapper key={index} mymessage={isMine} row={index}>
                     <Message key={index} mymessage={isMine} row={index}>
@@ -122,7 +114,9 @@ export const Conversation: React.FC<Props> = ({ w }) => {
                             margin: '10px',
                             color:
                               participantsData?.participants
-                                ?.filter(p => p.username !== user?.username) // Is this part necessary?
+                                ?.filter(
+                                  p => p.username !== user?.user.username
+                                ) // Is this part necessary?
                                 .findIndex(
                                   p => p.username === message.sender
                                 ) || 2 % 2 === 0

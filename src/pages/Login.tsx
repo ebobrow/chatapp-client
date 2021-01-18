@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { AuthError } from '../components/AuthError';
-import { useAuthContext } from '../contexts/AuthContext';
 import { Link, Redirect } from 'react-router-dom';
 import { Title } from '../components/Title';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import { postRequest } from '../api';
+import { axiosConfig } from '../api';
 import { Button } from '@material-ui/core';
 import { FormWrapper } from '../components/styled/Auth';
 import { TextField } from 'formik-material-ui';
+import { useUser } from '../hooks/useUser';
+import { useQueryClient } from 'react-query';
 
 const INPUTS = [
   { label: 'Username', name: 'username', type: 'text' },
@@ -31,14 +32,19 @@ export const Login: React.FC = () => {
     textDecoration: 'none'
   };
 
-  const { loggedIn, setUserToken } = useAuthContext();
+  const queryClient = useQueryClient();
+  const { data: user, isLoading } = useUser();
 
   const [authErrors, setAuthErrors] = useState<Array<string>>([]);
+
+  if (isLoading) {
+    return <h1>Loading...</h1>;
+  }
 
   return (
     <>
       <Title>Login</Title>
-      {loggedIn && <Redirect to="/" />}
+      {user?.user && <Redirect to="/" />}
       <AuthError messages={authErrors} setMessages={setAuthErrors} />
       <Formik
         initialValues={INITIAL_VALUES}
@@ -48,11 +54,11 @@ export const Login: React.FC = () => {
             formik.setFieldValue(fieldName, '', false);
           };
 
-          const data = await postRequest('/auth/login', values);
+          const { data } = await axiosConfig.post('/auth/login', values);
 
           setAuthErrors([]);
           if (!data.errors) {
-            setUserToken(data.token);
+            queryClient.invalidateQueries();
             formik.resetForm();
           } else {
             data.errors.forEach((err: string) => {
