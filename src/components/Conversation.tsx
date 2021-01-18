@@ -22,13 +22,15 @@ import { PRIMARY_COLOR, SECONDARY_COLOR } from '../constants';
 import { useMessages } from '../hooks/useMessages';
 import { useParticipants } from '../hooks/useParticipants';
 import { useNotifications } from '../hooks/useNotifications';
+import { useUser } from '../hooks/useUser';
 
 interface Props {
   w: string;
 }
 
 export const Conversation: React.FC<Props> = ({ w }) => {
-  const { user } = useAuthContext();
+  const { userToken } = useAuthContext();
+  const { data: user } = useUser(userToken);
   const [form, setForm] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
   const { chatId } = useChatContext();

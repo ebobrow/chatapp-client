@@ -5,6 +5,7 @@ import { useAuthContext } from '../contexts/AuthContext';
 import { useChatContext } from '../contexts/ChatContext';
 import { postRequest } from '../api';
 import { FlexFiller, ModalForm } from './styled/Chat';
+import { useUser } from '../hooks/useUser';
 
 interface Props {
   open: boolean;
@@ -25,7 +26,8 @@ export const CreateChat: React.FC<Props> = ({
   const [form, setForm] = useState<Array<string>>([]);
   const [errors, setErrors] = useState<Array<string>>([]);
   const [friends, setFriends] = useState<Array<friend>>([]);
-  const { user } = useAuthContext();
+  const { userToken } = useAuthContext();
+  const { data: user } = useUser(userToken);
   const { setChatId } = useChatContext();
 
   const getFriendNames = useCallback(async () => {

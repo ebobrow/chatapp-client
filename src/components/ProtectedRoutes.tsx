@@ -2,6 +2,7 @@ import { Badge, Button, ButtonGroup } from '@material-ui/core';
 import React from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
 import { useNotifications } from '../hooks/useNotifications';
+import { useUser } from '../hooks/useUser';
 import { StyledLink } from './styled/Auth';
 
 const PROTECTED_ROUTES = [
@@ -16,8 +17,9 @@ const PROTECTED_ROUTES = [
 ];
 
 export const ProtectedRoutes: React.FC = () => {
-  const { loggedIn, user } = useAuthContext();
-  const { data } = useNotifications(user?.username, user?.id);
+  const { loggedIn, userToken } = useAuthContext();
+  const { data: userData } = useUser(userToken);
+  const { data } = useNotifications(userData?.username, userData?.id);
 
   return (
     <ButtonGroup color="primary" variant="contained" disableElevation>

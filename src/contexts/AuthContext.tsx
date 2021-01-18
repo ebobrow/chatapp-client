@@ -11,18 +11,8 @@ import { postRequest } from '../api';
 
 interface ContextObject {
   setUserToken: Dispatch<null | string>;
-  user: User | null;
   loggedIn: boolean;
-}
-
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  password: string;
-  friends?: number[];
-  created_at: string;
-  modified_at: string;
+  userToken: string | null;
 }
 
 const UserContext: Context<ContextObject> = createContext({} as ContextObject);
@@ -38,40 +28,26 @@ export const AuthContext: React.FC = ({ children }) => {
   );
   const loggedIn = userToken !== null;
 
-  const [user, setUser] = useState<User | null>(null);
+  const checkValidToken = useCallback(async token => {
+    const data = await postRequest('/auth/token', { auth: token });
 
-  const checkValidToken = useCallback(
-    async token => {
-      const data = await postRequest('/auth/token', { auth: token });
+    if (!data || !data.ok) {
+      setUserToken(null);
 
-      if (!data || !data.ok) {
-        setUserToken(null);
-        setUser(null);
+      localStorage.removeItem('auth');
+      return;
+    }
 
-        localStorage.removeItem('auth');
-        return;
-      }
-
-      if (data.user) {
-        setUser(data.user);
-      }
-
-      if (token) {
-        localStorage.setItem('auth', token);
-      } else {
-        localStorage.removeItem('auth');
-      }
-    },
-    [setUser]
-  );
+    if (token) {
+      localStorage.setItem('auth', token);
+    } else {
+      localStorage.removeItem('auth');
+    }
+  }, []);
 
   const onStorageChange = useCallback(
     (e: StorageEvent) => {
       if (e.key === 'auth') {
-        // if (!e.newValue) {
-        //   setUser(null);
-        //   setUserToken(null);
-        // }
         checkValidToken(e.newValue);
       }
     },
@@ -90,7 +66,7 @@ export const AuthContext: React.FC = ({ children }) => {
   });
 
   return (
-    <UserContext.Provider value={{ setUserToken, user, loggedIn }}>
+    <UserContext.Provider value={{ setUserToken, loggedIn, userToken }}>
       {children}
     </UserContext.Provider>
   );

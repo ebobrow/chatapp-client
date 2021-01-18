@@ -9,9 +9,11 @@ import { useAuthContext } from '../contexts/AuthContext';
 import { useNotifications } from '../hooks/useNotifications';
 import { postRequest } from '../api';
 import { friend } from '../types';
+import { useUser } from '../hooks/useUser';
 
 export const Friends: React.FC = () => {
-  const { user, loggedIn } = useAuthContext();
+  const { userToken, loggedIn } = useAuthContext();
+  const { data: user } = useUser(userToken);
   const { refetch } = useNotifications(user?.username, user?.id);
   const [friends, setFriends] = useState<Array<friend>>([]);
   const [recievedRequests, setRecievedRequests] = useState<Array<string>>([]);

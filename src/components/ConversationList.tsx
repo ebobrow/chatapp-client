@@ -15,6 +15,7 @@ import {
   Plus,
   X
 } from './styled/Chat';
+import { useUser } from '../hooks/useUser';
 
 interface Props {
   w: string;
@@ -25,7 +26,8 @@ interface Props {
 export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
   const [conversations, setConversations] = useState<Array<ChatObject>>([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const { user } = useAuthContext();
+  const { userToken } = useAuthContext();
+  const { data: user } = useUser(userToken);
   const { setChatId, chatId } = useChatContext();
   const { socket } = useSocketContext();
   const { data, refetch } = useNotifications(user?.username, user?.id);

@@ -6,13 +6,15 @@ import { useChatContext } from '../contexts/ChatContext';
 import { postRequest } from '../api';
 import { friend } from '../types';
 import { FriendContainer, Plus } from './styled/Friends';
+import { useUser } from '../hooks/useUser';
 
 interface Props {
   friend: friend;
 }
 
 export const Friend: React.FC<Props> = ({ friend }) => {
-  const { user } = useAuthContext();
+  const { userToken } = useAuthContext();
+  const { data: user } = useUser(userToken);
   const { setChatId } = useChatContext();
   let history = useHistory();
 

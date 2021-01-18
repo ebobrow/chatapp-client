@@ -4,6 +4,7 @@ import React, { Dispatch, FormEvent, SetStateAction, useState } from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
 import { postRequest } from '../api';
 import { FlexFiller, ModalForm } from './styled/Chat';
+import { useUser } from '../hooks/useUser';
 
 interface Props {
   open: boolean;
@@ -14,7 +15,8 @@ interface Props {
 export const AddFriend: React.FC<Props> = ({ open, setOpen, setRequests }) => {
   const [form, setForm] = useState('');
   const [errors, setErrors] = useState<Array<string>>([]);
-  const { user } = useAuthContext();
+  const { userToken } = useAuthContext();
+  const { data: user } = useUser(userToken);
 
   const closeModal = () => {
     setErrors([]);

@@ -9,6 +9,7 @@ import { postRequest } from '../api';
 import { FormWrapper } from '../components/styled/Auth';
 import { TextField } from 'formik-material-ui';
 import * as Yup from 'yup';
+import { useUser } from '../hooks/useUser';
 
 const INPUTS = [
   { label: 'Current Password', name: 'oldPassword', type: 'password' },
@@ -31,7 +32,8 @@ const changePasswordSchema = Yup.object().shape({
 });
 
 export const Profile: React.FC = () => {
-  const { user, loggedIn } = useAuthContext();
+  const { userToken, loggedIn } = useAuthContext();
+  const { data: user } = useUser(userToken);
   const [authErrors, setAuthErrors] = useState<Array<string>>([]);
   const accountAge = new Date(
     (new Date() as any) - (new Date(user?.created_at!) as any)

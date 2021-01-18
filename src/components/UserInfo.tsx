@@ -2,10 +2,12 @@ import { Button, ButtonGroup } from '@material-ui/core';
 import React, { useCallback, useEffect, useState } from 'react';
 import { SECONDARY_COLOR } from '../constants';
 import { useAuthContext } from '../contexts/AuthContext';
+import { useUser } from '../hooks/useUser';
 import { FlexContainer, StyledLink } from './styled/Auth';
 
 export const UserInfo: React.FC = () => {
-  const { loggedIn, user, setUserToken } = useAuthContext();
+  const { userToken, loggedIn, setUserToken } = useAuthContext();
+  const { data: user } = useUser(userToken);
   const [width, setWidth] = useState(window.innerWidth > 985 ? '15%' : '30%');
 
   const logOut = () => {
