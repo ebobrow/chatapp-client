@@ -1,20 +1,15 @@
 import { Button, Modal, TextField } from '@material-ui/core';
 import { Alert, Autocomplete } from '@material-ui/lab';
-import React, { Dispatch, useCallback, useEffect, useState } from 'react';
+import React, { Dispatch, useState } from 'react';
 import { useChatContext } from '../contexts/ChatContext';
 import { FlexFiller, ModalForm } from './styled/Chat';
-import { useUser } from '../hooks/useUser';
 import axios from 'axios';
+import { useFriends } from '../hooks/useFriends';
 
 interface Props {
   open: boolean;
   setOpen: Dispatch<boolean>;
   refreshChats: () => Promise<void>;
-}
-
-interface friend {
-  name: string;
-  username: string;
 }
 
 export const CreateChat: React.FC<Props> = ({
@@ -24,15 +19,8 @@ export const CreateChat: React.FC<Props> = ({
 }) => {
   const [form, setForm] = useState<Array<string>>([]);
   const [errors, setErrors] = useState<Array<string>>([]);
-  const [friends, setFriends] = useState<Array<friend>>([]);
-  const { data: user } = useUser();
+  const { data: friendsData, isLoading } = useFriends();
   const { setChatId } = useChatContext();
-
-  const getFriendNames = useCallback(async () => {
-    if (!user) return;
-    const { data } = await axios.get('/auth/friends/getnames');
-    setFriends(data.names);
-  }, [user]);
 
   const removeError = (error: string) => {
     setErrors(curr => curr.filter(err => err !== error));
@@ -64,9 +52,9 @@ export const CreateChat: React.FC<Props> = ({
     closeModal();
   };
 
-  useEffect(() => {
-    getFriendNames();
-  }, [getFriendNames]);
+  if (isLoading) {
+    return <h1>Loading...</h1>;
+  }
 
   return (
     <Modal open={open} onClose={closeModal}>
@@ -96,7 +84,7 @@ export const CreateChat: React.FC<Props> = ({
           }}>
           <Autocomplete
             multiple
-            options={friends}
+            options={friendsData?.friends || []}
             getOptionLabel={option => option.username}
             getOptionSelected={(option, value) =>
               option.username === value.username

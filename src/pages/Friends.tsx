@@ -6,40 +6,27 @@ import { Friend } from '../components/Friend';
 import { FriendContainer, FriendsWrapper } from '../components/styled/Friends';
 import { Title } from '../components/Title';
 import { useNotifications } from '../hooks/useNotifications';
-import { friend } from '../types';
 import { useUser } from '../hooks/useUser';
 import axios from 'axios';
+import { useFriends } from '../hooks/useFriends';
 
 export const Friends: React.FC = () => {
-  const { data: user, isLoading } = useUser();
+  const { data: user, isLoading: userLoading } = useUser();
+  const {
+    data: friendsData,
+    isLoading: friendsLoading,
+    refetch: refetchFriends
+  } = useFriends();
   const { refetch } = useNotifications();
-  const [friends, setFriends] = useState<Array<friend>>([]);
   const [recievedRequests, setRecievedRequests] = useState<Array<string>>([]);
   const [sentRequests, setSentRequests] = useState<Array<string>>([]);
-  const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-
-  const getFriendNames = useCallback(async () => {
-    if (!user || !user.user.friends) return;
-    setLoading(true);
-
-    const { data } = await axios.get('/auth/friends/getnames');
-
-    setFriends(
-      data.names.map((friend: friend) => ({
-        name: friend.name,
-        username: friend.username
-      }))
-    );
-    setLoading(false);
-  }, [user]);
 
   const clearNotifications = useCallback(async () => {
     if (!user) return;
 
     await axios.get('/auth/friends/seen');
     refetch();
-    // changeNew('Friends', false);
   }, [user, refetch]);
 
   const getFriendRequests = useCallback(async () => {
@@ -61,24 +48,23 @@ export const Friends: React.FC = () => {
   }, [user]);
 
   const acceptRequest = async (accept: boolean, sender: string) => {
-    const { data } = await axios.post('/auth/friends/accept', {
+    await axios.post('/auth/friends/accept', {
       accept,
       sender
     });
 
     setRecievedRequests(curr => curr.filter(req => req !== sender));
     if (accept) {
-      setFriends(curr => [...curr, { username: sender, name: data.name }]);
+      refetchFriends();
     }
   };
 
   useEffect(() => {
-    getFriendNames();
     getFriendRequests();
     setTimeout(clearNotifications, 1000);
-  }, [getFriendNames, getFriendRequests, clearNotifications]);
+  }, [getFriendRequests, clearNotifications]);
 
-  if (isLoading) {
+  if (userLoading) {
     return <h1>Loading...</h1>;
   }
 
@@ -88,9 +74,9 @@ export const Friends: React.FC = () => {
       {!user?.user && <Redirect to="/login" />}
       <h1>Friends</h1>
       <FriendsWrapper>
-        {!loading
-          ? friends.length
-            ? friends?.map((friend, index) => (
+        {!friendsLoading
+          ? friendsData?.friends.length
+            ? friendsData.friends.map((friend, index) => (
                 <Friend friend={friend} key={index} />
               ))
             : 'No friends yet, loser'
