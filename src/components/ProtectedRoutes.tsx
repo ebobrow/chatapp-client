@@ -32,7 +32,7 @@ export const ProtectedRoutes: React.FC = () => {
               key={route.url}
               color="secondary"
               variant="dot"
-              invisible={!data?.notifications[route.name].new}>
+              invisible={!data || !data[route.name]?.new}>
               <Button>
                 <StyledLink to={route.url}>{route.name}</StyledLink>
               </Button>

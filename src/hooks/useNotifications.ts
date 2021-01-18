@@ -11,10 +11,11 @@ type NotificationItem = {
   };
 };
 
-const fetcher = async (): Promise<{ notifications: NotificationItem }> => {
+const fetcher = async (): Promise<NotificationItem> => {
   const { data } = await axios.get('/chat/notifications');
-  return data;
+  return data.notifications;
 };
+
 export const useNotifications = () => {
   const queryObj = useQuery('notifications', () => fetcher());
 
