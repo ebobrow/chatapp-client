@@ -13,3 +13,10 @@ export interface friend {
   name: string;
   username: string;
 }
+
+export interface FriendRequest {
+  id: number;
+  sender: string;
+  reciever: string;
+  seen: boolean;
+}

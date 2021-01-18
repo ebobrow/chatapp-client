@@ -1,14 +1,8 @@
 import axios from 'axios';
 import { useQuery } from 'react-query';
+import { FriendRequest } from '../types';
 
-const fetcher = async (): Promise<
-  {
-    id: number;
-    sender: string;
-    reciever: string;
-    seen: boolean;
-  }[]
-> => {
+const fetcher = async (): Promise<FriendRequest[]> => {
   const { data } = await axios.get('/auth/friends/recievedrequests');
 
   return data.requests;

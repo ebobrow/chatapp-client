@@ -108,8 +108,8 @@ export const Friends: React.FC = () => {
         <div>
           <h2>Sent requests</h2>
           <FriendsWrapper>
-            {sentRequests && sentRequests.requests.length
-              ? sentRequests.requests.map((recipient: any) => (
+            {sentRequests && sentRequests.length
+              ? sentRequests.map((recipient: any) => (
                   <FriendContainer key={recipient}>
                     <strong>{recipient.reciever}</strong>
                     <p>Pending</p>
