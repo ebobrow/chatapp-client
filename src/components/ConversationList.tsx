@@ -3,7 +3,6 @@ import React, { Dispatch, useCallback, useEffect, useState } from 'react';
 import { useChatContext } from '../contexts/ChatContext';
 import { useSocketContext } from '../contexts/SocketContext';
 import { useNotifications } from '../hooks/useNotifications';
-import { axiosConfig } from '../api';
 import { ChatObject } from '../types';
 import { CreateChat } from './CreateChat';
 import {
@@ -15,6 +14,7 @@ import {
   X
 } from './styled/Chat';
 import { useUser } from '../hooks/useUser';
+import axios from 'axios';
 
 interface Props {
   w: string;
@@ -33,7 +33,7 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
   const getChats = useCallback(async () => {
     if (!user) return;
 
-    const { data } = await axiosConfig.get('/chat/chats');
+    const { data } = await axios.get('/chat/chats');
 
     setConversations(
       data.chats
@@ -73,7 +73,7 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
     if (chatId) {
       socket.emit('leave', chatId);
     }
-    await axiosConfig.post('/chat/setopen', { chatId: conversations[key].id });
+    await axios.post('/chat/setopen', { chatId: conversations[key].id });
 
     setTimeout(() => {
       refetch();

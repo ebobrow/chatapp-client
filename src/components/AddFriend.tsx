@@ -1,7 +1,7 @@
 import { Button, Modal, TextField } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
+import axios from 'axios';
 import React, { Dispatch, FormEvent, SetStateAction, useState } from 'react';
-import { axiosConfig } from '../api';
 import { FlexFiller, ModalForm } from './styled/Chat';
 
 interface Props {
@@ -27,7 +27,7 @@ export const AddFriend: React.FC<Props> = ({ open, setOpen, setRequests }) => {
   const add = async (e: FormEvent) => {
     e.preventDefault();
 
-    const { data } = await axiosConfig.post('/auth/friends/request', {
+    const { data } = await axios.post('/auth/friends/request', {
       reciever: form
     });
 

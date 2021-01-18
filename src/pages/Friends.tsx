@@ -6,9 +6,9 @@ import { Friend } from '../components/Friend';
 import { FriendContainer, FriendsWrapper } from '../components/styled/Friends';
 import { Title } from '../components/Title';
 import { useNotifications } from '../hooks/useNotifications';
-import { axiosConfig } from '../api';
 import { friend } from '../types';
 import { useUser } from '../hooks/useUser';
+import axios from 'axios';
 
 export const Friends: React.FC = () => {
   const { data: user, isLoading } = useUser();
@@ -23,7 +23,7 @@ export const Friends: React.FC = () => {
     if (!user || !user.user.friends) return;
     setLoading(true);
 
-    const { data } = await axiosConfig.get('/auth/friends/getnames');
+    const { data } = await axios.get('/auth/friends/getnames');
 
     setFriends(
       data.names.map((friend: friend) => ({
@@ -37,7 +37,7 @@ export const Friends: React.FC = () => {
   const clearNotifications = useCallback(async () => {
     if (!user) return;
 
-    await axiosConfig.get('/auth/friends/seen');
+    await axios.get('/auth/friends/seen');
     refetch();
     // changeNew('Friends', false);
   }, [user, refetch]);
@@ -45,7 +45,7 @@ export const Friends: React.FC = () => {
   const getFriendRequests = useCallback(async () => {
     if (!user) return;
 
-    const { data: recieved } = await axiosConfig.get(
+    const { data: recieved } = await axios.get(
       '/auth/friends/recievedrequests'
     );
 
@@ -53,7 +53,7 @@ export const Friends: React.FC = () => {
       recieved.requests.map((request: { sender: string }) => request.sender)
     );
 
-    const { data: sent } = await axiosConfig.get('/auth/friends/sentrequests');
+    const { data: sent } = await axios.get('/auth/friends/sentrequests');
 
     setSentRequests(
       sent.requests.map((request: { reciever: any }) => request.reciever)
@@ -61,7 +61,7 @@ export const Friends: React.FC = () => {
   }, [user]);
 
   const acceptRequest = async (accept: boolean, sender: string) => {
-    const { data } = await axiosConfig.post('/auth/friends/accept', {
+    const { data } = await axios.post('/auth/friends/accept', {
       accept,
       sender
     });

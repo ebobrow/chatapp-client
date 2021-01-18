@@ -16,12 +16,12 @@ import {
 } from './styled/Chat';
 import { useChatContext } from '../contexts/ChatContext';
 import { useSocketContext } from '../contexts/SocketContext';
-import { axiosConfig } from '../api';
 import { PRIMARY_COLOR, SECONDARY_COLOR } from '../constants';
 import { useMessages } from '../hooks/useMessages';
 import { useParticipants } from '../hooks/useParticipants';
 import { useNotifications } from '../hooks/useNotifications';
 import { useUser } from '../hooks/useUser';
+import axios from 'axios';
 
 interface Props {
   w: string;
@@ -51,7 +51,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
   }, []);
 
   const setLastOpened = useCallback(() => {
-    axiosConfig.post('/chat/setopen', { chatId });
+    axios.post('/chat/setopen', { chatId });
     refetchNotifications();
   }, [chatId, refetchNotifications]);
 

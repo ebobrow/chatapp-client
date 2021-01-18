@@ -1,5 +1,5 @@
+import axios from 'axios';
 import { useQuery } from 'react-query';
-import { axiosConfig } from '../api';
 
 interface User {
   id: number;
@@ -13,7 +13,7 @@ interface User {
 
 const fetcher = async (): Promise<{ user: User } | undefined> => {
   try {
-    const { data } = await axiosConfig.get('/auth/token');
+    const { data } = await axios.get('/auth/token');
     return data;
   } catch (error) {
     console.log(error);

@@ -1,8 +1,8 @@
+import axios from 'axios';
 import { useMutation } from 'react-query';
-import { axiosConfig } from '../api';
 
 const fetcher = async () => {
-  const { data } = await axiosConfig.post('/auth/logout', {});
+  const { data } = await axios.post('/auth/logout', {});
 
   return data;
 };

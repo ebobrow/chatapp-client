@@ -4,11 +4,11 @@ import { AuthError } from '../components/AuthError';
 import { Title } from '../components/Title';
 import { Button } from '@material-ui/core';
 import { Formik, Form, Field } from 'formik';
-import { axiosConfig } from '../api';
 import { FormWrapper } from '../components/styled/Auth';
 import { TextField } from 'formik-material-ui';
 import * as Yup from 'yup';
 import { useUser } from '../hooks/useUser';
+import axios from 'axios';
 
 const INPUTS = [
   { label: 'Current Password', name: 'oldPassword', type: 'password' },
@@ -57,7 +57,7 @@ export const Profile: React.FC = () => {
         initialValues={INITIAL_VALUES}
         validationSchema={changePasswordSchema}
         onSubmit={async (values, formik) => {
-          const { data } = await axiosConfig.post('/auth/password', {
+          const { data } = await axios.post('/auth/password', {
             ...values
           });
           setAuthErrors([]);

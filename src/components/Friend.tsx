@@ -2,9 +2,9 @@ import { Button } from '@material-ui/core';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useChatContext } from '../contexts/ChatContext';
-import { axiosConfig } from '../api';
 import { friend } from '../types';
 import { FriendContainer, Plus } from './styled/Friends';
+import axios from 'axios';
 
 interface Props {
   friend: friend;
@@ -15,7 +15,7 @@ export const Friend: React.FC<Props> = ({ friend }) => {
   let history = useHistory();
 
   const addChat = async () => {
-    const { data: chat } = await axiosConfig.post('/chat/createchat', {
+    const { data: chat } = await axios.post('/chat/createchat', {
       users: [friend.username]
     });
     setChatId(chat.id);

@@ -4,12 +4,12 @@ import { Link, Redirect } from 'react-router-dom';
 import { Title } from '../components/Title';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import { axiosConfig } from '../api';
 import { Button } from '@material-ui/core';
 import { FormWrapper } from '../components/styled/Auth';
 import { TextField } from 'formik-material-ui';
 import { useUser } from '../hooks/useUser';
 import { useQueryClient } from 'react-query';
+import axios from 'axios';
 
 const INPUTS = [
   { label: 'Username', name: 'username', type: 'text' },
@@ -54,7 +54,7 @@ export const Login: React.FC = () => {
             formik.setFieldValue(fieldName, '', false);
           };
 
-          const { data } = await axiosConfig.post('/auth/login', values);
+          const { data } = await axios.post('/auth/login', values);
 
           setAuthErrors([]);
           if (!data.errors) {

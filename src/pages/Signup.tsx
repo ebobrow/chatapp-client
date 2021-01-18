@@ -5,11 +5,11 @@ import { Title } from '../components/Title';
 import * as Yup from 'yup';
 import { Button } from '@material-ui/core';
 import { Formik, Form, Field } from 'formik';
-import { axiosConfig } from '../api';
 import { FormWrapper } from '../components/styled/Auth';
 import { TextField } from 'formik-material-ui';
 import { useUser } from '../hooks/useUser';
 import { useQueryClient } from 'react-query';
+import axios from 'axios';
 
 const INPUTS = [
   { label: 'Name', name: 'name', type: 'text' },
@@ -59,7 +59,7 @@ export const SignUp: React.FC = () => {
             formik.setFieldValue(fieldName, '', false);
           };
 
-          const { data } = await axiosConfig.post('/auth/register', values);
+          const { data } = await axios.post('/auth/register', values);
 
           setAuthErrors([]);
           if (!data.errors) {

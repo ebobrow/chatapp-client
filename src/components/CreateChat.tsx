@@ -2,9 +2,9 @@ import { Button, Modal, TextField } from '@material-ui/core';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import React, { Dispatch, useCallback, useEffect, useState } from 'react';
 import { useChatContext } from '../contexts/ChatContext';
-import { axiosConfig } from '../api';
 import { FlexFiller, ModalForm } from './styled/Chat';
 import { useUser } from '../hooks/useUser';
+import axios from 'axios';
 
 interface Props {
   open: boolean;
@@ -30,7 +30,7 @@ export const CreateChat: React.FC<Props> = ({
 
   const getFriendNames = useCallback(async () => {
     if (!user) return;
-    const { data } = await axiosConfig.get('/auth/friends/getnames');
+    const { data } = await axios.get('/auth/friends/getnames');
     setFriends(data.names);
   }, [user]);
 
@@ -51,7 +51,7 @@ export const CreateChat: React.FC<Props> = ({
   };
 
   const create = async () => {
-    const { data } = await axiosConfig.post('/chat/createchat', {
+    const { data } = await axios.post('/chat/createchat', {
       users: form
     });
 
