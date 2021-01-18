@@ -30,9 +30,7 @@ export const CreateChat: React.FC<Props> = ({
 
   const getFriendNames = useCallback(async () => {
     if (!user) return;
-    const { data } = await axiosConfig.post('/auth/friends/getnames', {
-      ids: user.user.friends
-    });
+    const { data } = await axiosConfig.get('/auth/friends/getnames');
     setFriends(data.names);
   }, [user]);
 

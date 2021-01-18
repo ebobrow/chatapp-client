@@ -33,19 +33,17 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
   const getChats = useCallback(async () => {
     if (!user) return;
 
-    const data: { chats: Array<ChatObject> } = await axiosConfig.get(
-      '/chat/chats'
-    );
+    const { data } = await axiosConfig.get('/chat/chats');
 
     setConversations(
       data.chats
-        .map(chat => ({
+        .map((chat: { participants: string[] }) => ({
           ...chat,
           participants: chat.participants.map((person: string) =>
             person === user.user.name ? 'Me' : person
           )
         }))
-        .sort((a, b) => {
+        .sort((a: { id: string }, b: { id: string }) => {
           const aId = a.id.substring(0, 1);
           const bId = b.id.substring(0, 1);
 
