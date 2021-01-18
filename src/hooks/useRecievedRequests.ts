@@ -1,10 +1,17 @@
 import axios from 'axios';
 import { useQuery } from 'react-query';
 
-const fetcher = async () => {
+const fetcher = async (): Promise<
+  {
+    id: number;
+    sender: string;
+    reciever: string;
+    seen: boolean;
+  }[]
+> => {
   const { data } = await axios.get('/auth/friends/recievedrequests');
 
-  return data;
+  return data.requests;
 };
 
 export const useRecievedRequests = () => {
