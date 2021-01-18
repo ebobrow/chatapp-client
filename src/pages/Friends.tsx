@@ -15,7 +15,7 @@ import { useSentRequests } from '../hooks/useSentRequests';
 export const Friends: React.FC = () => {
   const { data: user, isLoading: userLoading } = useUser();
   const {
-    data: friendsData,
+    data: friends,
     isLoading: friendsLoading,
     refetch: refetchFriends
   } = useFriends();
@@ -61,8 +61,8 @@ export const Friends: React.FC = () => {
       <h1>Friends</h1>
       <FriendsWrapper>
         {!friendsLoading
-          ? friendsData?.friends.length
-            ? friendsData.friends.map((friend, index) => (
+          ? friends?.length
+            ? friends?.map((friend, index) => (
                 <Friend friend={friend} key={index} />
               ))
             : 'No friends yet, loser'

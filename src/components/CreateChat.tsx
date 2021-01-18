@@ -15,7 +15,7 @@ interface Props {
 export const CreateChat: React.FC<Props> = ({ open, setOpen }) => {
   const [form, setForm] = useState<Array<string>>([]);
   const [errors, setErrors] = useState<Array<string>>([]);
-  const { data: friendsData, isLoading } = useFriends();
+  const { data: friends, isLoading } = useFriends();
   const { setChatId } = useChatContext();
   const { refetch } = useConversations();
 
@@ -81,7 +81,7 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen }) => {
           }}>
           <Autocomplete
             multiple
-            options={friendsData?.friends || []}
+            options={friends || []}
             getOptionLabel={option => option.username}
             getOptionSelected={(option, value) =>
               option.username === value.username
