@@ -5,22 +5,19 @@ import { useChatContext } from '../contexts/ChatContext';
 import { FlexFiller, ModalForm } from './styled/Chat';
 import axios from 'axios';
 import { useFriends } from '../hooks/useFriends';
+import { useConversations } from '../hooks/useConversations';
 
 interface Props {
   open: boolean;
   setOpen: Dispatch<boolean>;
-  refreshChats: () => Promise<void>;
 }
 
-export const CreateChat: React.FC<Props> = ({
-  open,
-  setOpen,
-  refreshChats
-}) => {
+export const CreateChat: React.FC<Props> = ({ open, setOpen }) => {
   const [form, setForm] = useState<Array<string>>([]);
   const [errors, setErrors] = useState<Array<string>>([]);
   const { data: friendsData, isLoading } = useFriends();
   const { setChatId } = useChatContext();
+  const { refetch } = useConversations();
 
   const removeError = (error: string) => {
     setErrors(curr => curr.filter(err => err !== error));
@@ -47,7 +44,7 @@ export const CreateChat: React.FC<Props> = ({
       setErrorsNoRepeats(data.error);
       return;
     }
-    refreshChats();
+    refetch();
     setChatId(data.id);
     closeModal();
   };

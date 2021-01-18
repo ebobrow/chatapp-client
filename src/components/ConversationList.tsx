@@ -3,7 +3,6 @@ import React, { Dispatch, useCallback, useEffect, useState } from 'react';
 import { useChatContext } from '../contexts/ChatContext';
 import { useSocketContext } from '../contexts/SocketContext';
 import { useNotifications } from '../hooks/useNotifications';
-import { ChatObject } from '../types';
 import { CreateChat } from './CreateChat';
 import {
   ConversationListWrapper,
@@ -15,6 +14,7 @@ import {
 } from './styled/Chat';
 import { useUser } from '../hooks/useUser';
 import axios from 'axios';
+import { useConversations } from '../hooks/useConversations';
 
 interface Props {
   w: string;
@@ -23,62 +23,32 @@ interface Props {
 }
 
 export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
-  const [conversations, setConversations] = useState<Array<ChatObject>>([]);
-  const [modalOpen, setModalOpen] = useState(false);
   const { data: user } = useUser();
+  // const [conversations, setConversations] = useState<Array<ChatObject>>([]);
+  const conversations = useConversations()?.data?.map(chat => ({
+    ...chat,
+    participants: chat.participants.map((person: string) =>
+      person === user?.user.name ? 'Me' : person
+    )
+  }));
+  const [modalOpen, setModalOpen] = useState(false);
   const { setChatId, chatId } = useChatContext();
   const { socket } = useSocketContext();
   const { data, refetch } = useNotifications();
 
-  const getChats = useCallback(async () => {
-    if (!user) return;
-
-    const { data } = await axios.get('/chat/chats');
-
-    setConversations(
-      data.chats
-        .map((chat: { participants: string[] }) => ({
-          ...chat,
-          participants: chat.participants.map((person: string) =>
-            person === user.user.name ? 'Me' : person
-          )
-        }))
-        .sort((a: { id: string }, b: { id: string }) => {
-          const aId = a.id.substring(0, 1);
-          const bId = b.id.substring(0, 1);
-
-          return aId !== bId ? (aId > bId ? 1 : -1) : 0;
-        })
-    );
-  }, [setConversations, user]);
-
-  const updateChat = useCallback(() => {
-    if (chatId) {
-      refetch();
-      const active = conversations.find(c => c.id === chatId);
-      if (!active) return;
-      setChatId(active.id);
-    }
-  }, [chatId, conversations, setChatId, refetch]);
-
-  useEffect(() => {
-    getChats();
-  }, [getChats, chatId]);
-
-  useEffect(() => {
-    updateChat();
-  }, [conversations, updateChat]);
-
-  const selectChat = async (key: number) => {
+  const selectChat = (key: number) => {
     if (chatId) {
       socket.emit('leave', chatId);
     }
-    await axios.post('/chat/setopen', { chatId: conversations[key].id });
 
-    setTimeout(() => {
-      refetch();
-    }, 1000);
+    if (!conversations) {
+      return;
+    }
+
+    axios.post('/chat/setopen', { chatId: conversations[key].id });
+
     setChatId(conversations[key].id);
+    refetch();
   };
 
   useEffect(() => {
@@ -126,11 +96,7 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
         <FlexFiller />
         {open && <Plus onClick={_ => setModalOpen(true)} />}
       </div>
-      <CreateChat
-        open={modalOpen}
-        setOpen={setModalOpen}
-        refreshChats={getChats}
-      />
+      <CreateChat open={modalOpen} setOpen={setModalOpen} />
     </ConversationListWrapper>
   );
 };

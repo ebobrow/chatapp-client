@@ -1,18 +1,19 @@
 import { Button, Modal, TextField } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import axios from 'axios';
-import React, { Dispatch, FormEvent, SetStateAction, useState } from 'react';
+import React, { Dispatch, FormEvent, useState } from 'react';
+import { useSentRequests } from '../hooks/useSentRequests';
 import { FlexFiller, ModalForm } from './styled/Chat';
 
 interface Props {
   open: boolean;
   setOpen: Dispatch<boolean>;
-  setRequests: (value: SetStateAction<string[]>) => void;
 }
 
-export const AddFriend: React.FC<Props> = ({ open, setOpen, setRequests }) => {
+export const AddFriend: React.FC<Props> = ({ open, setOpen }) => {
   const [form, setForm] = useState('');
   const [errors, setErrors] = useState<Array<string>>([]);
+  const { refetch } = useSentRequests();
 
   const closeModal = () => {
     setErrors([]);
@@ -36,7 +37,7 @@ export const AddFriend: React.FC<Props> = ({ open, setOpen, setRequests }) => {
       return;
     }
 
-    setRequests(curr => [...curr, form]);
+    refetch();
     closeModal();
   };
 

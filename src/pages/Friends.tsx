@@ -9,6 +9,8 @@ import { useNotifications } from '../hooks/useNotifications';
 import { useUser } from '../hooks/useUser';
 import axios from 'axios';
 import { useFriends } from '../hooks/useFriends';
+import { useRecievedRequests } from '../hooks/useRecievedRequests';
+import { useSentRequests } from '../hooks/useSentRequests';
 
 export const Friends: React.FC = () => {
   const { data: user, isLoading: userLoading } = useUser();
@@ -18,8 +20,13 @@ export const Friends: React.FC = () => {
     refetch: refetchFriends
   } = useFriends();
   const { refetch } = useNotifications();
-  const [recievedRequests, setRecievedRequests] = useState<Array<string>>([]);
-  const [sentRequests, setSentRequests] = useState<Array<string>>([]);
+  // const [recievedRequests, setRecievedRequests] = useState<Array<string>>([]);
+  // const [sentRequests, setSentRequests] = useState<Array<string>>([]);
+  const {
+    data: recievedRequests,
+    refetch: refetchRecieved
+  } = useRecievedRequests();
+  const { data: sentRequests } = useSentRequests();
   const [modalOpen, setModalOpen] = useState(false);
 
   const clearNotifications = useCallback(async () => {
@@ -29,23 +36,23 @@ export const Friends: React.FC = () => {
     refetch();
   }, [user, refetch]);
 
-  const getFriendRequests = useCallback(async () => {
-    if (!user) return;
+  // const getFriendRequests = useCallback(async () => {
+  //   if (!user) return;
 
-    const { data: recieved } = await axios.get(
-      '/auth/friends/recievedrequests'
-    );
+  //   const { data: recieved } = await axios.get(
+  //     '/auth/friends/recievedrequests'
+  //   );
 
-    setRecievedRequests(
-      recieved.requests.map((request: { sender: string }) => request.sender)
-    );
+  //   setRecievedRequests(
+  //     recieved.requests.map((request: { sender: string }) => request.sender)
+  //   );
 
-    const { data: sent } = await axios.get('/auth/friends/sentrequests');
+  //   const { data: sent } = await axios.get('/auth/friends/sentrequests');
 
-    setSentRequests(
-      sent.requests.map((request: { reciever: any }) => request.reciever)
-    );
-  }, [user]);
+  //   setSentRequests(
+  //     sent.requests.map((request: { reciever: any }) => request.reciever)
+  //   );
+  // }, [user]);
 
   const acceptRequest = async (accept: boolean, sender: string) => {
     await axios.post('/auth/friends/accept', {
@@ -53,16 +60,17 @@ export const Friends: React.FC = () => {
       sender
     });
 
-    setRecievedRequests(curr => curr.filter(req => req !== sender));
+    // setRecievedRequests(curr => curr.filter(req => req !== sender));
+    refetchRecieved();
     if (accept) {
       refetchFriends();
     }
   };
 
   useEffect(() => {
-    getFriendRequests();
+    // getFriendRequests();
     setTimeout(clearNotifications, 1000);
-  }, [getFriendRequests, clearNotifications]);
+  }, [clearNotifications]);
 
   if (userLoading) {
     return <h1>Loading...</h1>;
@@ -91,10 +99,10 @@ export const Friends: React.FC = () => {
         <div>
           <h2>Pending requests</h2>
           <FriendsWrapper>
-            {recievedRequests.length
-              ? recievedRequests.map(sender => (
+            {recievedRequests && recievedRequests.requests.length
+              ? recievedRequests.requests.map((sender: any) => (
                   <FriendContainer key={sender}>
-                    <strong>{sender}</strong>
+                    <strong>{sender.sender}</strong>
                     <div>
                       <Button
                         variant="outlined"
@@ -122,10 +130,10 @@ export const Friends: React.FC = () => {
         <div>
           <h2>Sent requests</h2>
           <FriendsWrapper>
-            {sentRequests.length
-              ? sentRequests.map(recipient => (
+            {sentRequests && sentRequests.requests.length
+              ? sentRequests.requests.map((recipient: any) => (
                   <FriendContainer key={recipient}>
-                    <strong>{recipient}</strong>
+                    <strong>{recipient.reciever}</strong>
                     <p>Pending</p>
                   </FriendContainer>
                 ))
@@ -141,13 +149,7 @@ export const Friends: React.FC = () => {
         disableElevation>
         Request friend
       </Button>
-      {modalOpen && (
-        <AddFriend
-          open={modalOpen}
-          setOpen={setModalOpen}
-          setRequests={setSentRequests}
-        />
-      )}
+      {modalOpen && <AddFriend open={modalOpen} setOpen={setModalOpen} />}
     </>
   );
 };
