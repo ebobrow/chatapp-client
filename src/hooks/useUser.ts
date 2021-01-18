@@ -22,7 +22,7 @@ const fetcher = async (): Promise<{ user: User } | undefined> => {
 };
 
 export const useUser = () => {
-  const queryObj = useQuery(['user'], () => fetcher());
+  const queryObj = useQuery('user', () => fetcher());
 
   return queryObj;
 };
