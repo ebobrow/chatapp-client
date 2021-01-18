@@ -38,7 +38,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     chatId
   );
   const {
-    data: participantsData,
+    data: participants,
     isLoading: participantsLoading
   } = useParticipants(chatId);
   const { refetch: refetchNotifications } = useNotifications();
@@ -103,15 +103,14 @@ export const Conversation: React.FC<Props> = ({ w }) => {
                     <TextNode ismine={isMine} padding={false}>
                       {isMine
                         ? 'Me'
-                        : participantsData?.participants.find(
-                            p => p.username === message.sender
-                          )?.name}
+                        : participants?.find(p => p.username === message.sender)
+                            ?.name}
                       {!isMine && (
                         <small
                           style={{
                             margin: '10px',
                             color:
-                              participantsData?.participants
+                              participants
                                 ?.filter(p => p.username !== user?.username) // Is this part necessary?
                                 .findIndex(
                                   p => p.username === message.sender

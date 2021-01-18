@@ -3,12 +3,10 @@ import { useQuery } from 'react-query';
 
 const fetcher = async (
   id: string
-): Promise<
-  { participants: Array<{ name: string; username: string }> } | undefined
-> => {
+): Promise<Array<{ name: string; username: string }> | undefined> => {
   try {
     const { data } = await axios.post('/chat/getparticipants', { id });
-    return data;
+    return data.participants;
   } catch (error) {
     console.log(error);
     return;
