@@ -34,11 +34,9 @@ export const Conversation: React.FC<Props> = ({ w }) => {
   const { chatId } = useChatContext();
   const { socket } = useSocketContext();
 
-  const {
-    data: messagesData,
-    isLoading: messagesLoading,
-    refetch
-  } = useMessages(chatId);
+  const { data: messages, isLoading: messagesLoading, refetch } = useMessages(
+    chatId
+  );
   const {
     data: participantsData,
     isLoading: participantsLoading
@@ -92,8 +90,8 @@ export const Conversation: React.FC<Props> = ({ w }) => {
         <>
           <FlexFiller />
           <MessagesContainer>
-            {messagesData &&
-              messagesData.messages.map((message, index) => {
+            {messages &&
+              messages.map((message, index) => {
                 const isMine = message.sender === user?.username;
                 return (
                   <MessageWrapper key={index} mymessage={isMine} row={index}>

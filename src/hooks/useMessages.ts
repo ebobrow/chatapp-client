@@ -3,12 +3,10 @@ import { useQuery } from 'react-query';
 
 const fetcher = async (
   id: string
-): Promise<
-  { messages: Array<{ message: string; sender: string }> } | undefined
-> => {
+): Promise<Array<{ message: string; sender: string }> | undefined> => {
   try {
     const { data } = await axios.post('/chat/getmessages', { id });
-    return data;
+    return data.messages;
   } catch (error) {
     console.log(error);
     return;
