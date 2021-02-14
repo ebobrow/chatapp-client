@@ -58,7 +58,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     scrollToBottom();
     socket.emit('new-message', {
       message: form,
-      sender: user!.username,
+      sender: user!.id,
       room: chatId
     });
     refetch();

@@ -30,12 +30,12 @@ export const Friends: React.FC = () => {
   const clearNotifications = useCallback(async () => {
     if (!user) return;
 
-    await axios.get('/auth/friends/seen');
+    await axios.put('/auth/friends/seen');
     refetch();
   }, [user, refetch]);
 
   const acceptRequest = async (accept: boolean, sender: string) => {
-    await axios.post('/auth/friends/accept', {
+    await axios.put('/auth/friends/accept', {
       accept,
       sender
     });
@@ -78,9 +78,9 @@ export const Friends: React.FC = () => {
           <h2>Pending requests</h2>
           <FriendsWrapper>
             {recievedRequests && recievedRequests.length
-              ? recievedRequests.map((sender: any) => (
+              ? recievedRequests.map(sender => (
                   <FriendContainer key={sender}>
-                    <strong>{sender.sender}</strong>
+                    <strong>{sender}</strong>
                     <div>
                       <Button
                         variant="outlined"
@@ -109,9 +109,9 @@ export const Friends: React.FC = () => {
           <h2>Sent requests</h2>
           <FriendsWrapper>
             {sentRequests && sentRequests.length
-              ? sentRequests.map((recipient: any) => (
+              ? sentRequests.map(recipient => (
                   <FriendContainer key={recipient}>
-                    <strong>{recipient.reciever}</strong>
+                    <strong>{recipient}</strong>
                     <p>Pending</p>
                   </FriendContainer>
                 ))

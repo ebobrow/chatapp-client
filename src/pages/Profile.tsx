@@ -57,7 +57,7 @@ export const Profile: React.FC = () => {
         initialValues={INITIAL_VALUES}
         validationSchema={changePasswordSchema}
         onSubmit={async (values, formik) => {
-          const { data } = await axios.post('/auth/password', {
+          const { data } = await axios.put('/auth/password', {
             ...values
           });
           setAuthErrors([]);
