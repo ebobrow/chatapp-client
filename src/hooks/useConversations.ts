@@ -5,12 +5,7 @@ import { ChatObject } from '../types';
 const fetcher = async (): Promise<ChatObject[]> => {
   const { data } = await axios.get('/chat/chats');
 
-  return data.chats.sort((a: { id: string }, b: { id: string }) => {
-    const aId = a.id.substring(0, 1);
-    const bId = b.id.substring(0, 1);
-
-    return aId !== bId ? (aId > bId ? 1 : -1) : 0;
-  });
+  return data.chats;
 };
 
 export const useConversations = () => {

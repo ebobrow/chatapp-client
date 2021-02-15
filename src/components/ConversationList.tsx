@@ -24,7 +24,8 @@ interface Props {
 
 export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
   const { data: user } = useUser();
-  const conversations = useConversations()?.data?.map(chat => ({
+  const { data: chats, refetch: refetchConversations } = useConversations();
+  const conversations = chats?.map(chat => ({
     ...chat,
     participants: chat.participants.map((person: string) =>
       person === user?.name ? 'Me' : person
@@ -33,21 +34,20 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const { setChatId, chatId } = useChatContext();
   const { socket } = useSocketContext();
-  const { data, refetch } = useNotifications();
+  const { data, refetch: refetchNotifications } = useNotifications();
 
   const selectChat = (key: number) => {
     if (chatId) {
       socket.emit('leave', chatId);
     }
 
-    if (!conversations) {
-      return;
-    }
+    if (!conversations) return;
 
     axios.post('/chat/setopen', { chatId: conversations[key].id });
 
     setChatId(conversations[key].id);
-    refetch();
+    refetchNotifications();
+    refetchConversations();
   };
 
   useEffect(() => {

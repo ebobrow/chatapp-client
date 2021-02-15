@@ -7,11 +7,7 @@ const fetcher = async (
   try {
     const { data } = await axios.post('/chat/getmessages', { id });
 
-    // I don't like that the sorting happens outside the db query
-    return data.messages.sort(
-      // @ts-ignore
-      (a: any, b: any) => new Date(a.sent_at) - new Date(b.sent_at)
-    );
+    return data.messages;
   } catch (error) {
     console.log(error);
     return;
