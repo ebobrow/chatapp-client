@@ -8,7 +8,7 @@ interface SocketContextObject {
 
 const socket = io(API_URL);
 
-const Context = createContext({} as SocketContextObject);
+const Context = createContext<SocketContextObject>({ socket });
 
 export const useSocketContext = () => {
   return useContext(Context);

@@ -127,7 +127,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
               })}
           </MessagesContainer>
 
-          <form onSubmit={sendChat}>
+          <form onSubmit={sendChat} style={{ paddingBottom: '10px' }}>
             <TextField
               type="text"
               value={form}
@@ -144,8 +144,8 @@ export const Conversation: React.FC<Props> = ({ w }) => {
               style={{ marginTop: '5px' }}>
               Send
             </Button>
-            <div ref={bottomRef} style={{ height: '10px' }} />
           </form>
+          <div ref={bottomRef} />
         </>
       ) : (
         <h1>No chat selected</h1>

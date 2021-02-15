@@ -29,7 +29,6 @@ export const MessageWrapper = styled.div<MessageProps>`
   grid-column: ${({ mymessage }) => (mymessage ? '3' : '1')} / span 1;
   display: flex;
   flex-direction: column;
-  margin: 10px;
   min-width: fit-content;
 
   p {
