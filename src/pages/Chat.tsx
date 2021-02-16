@@ -6,7 +6,7 @@ import { SocketContext } from '../contexts/SocketContext';
 import { Title } from '../components/Title';
 import { useUser } from '../hooks/useUser';
 
-export const Chat: React.FC = () => {
+const Chat: React.FC = () => {
   const { data, isLoading } = useUser();
   const [listOpen, setListOpen] = useState(window.innerWidth > 985);
 
@@ -43,3 +43,5 @@ export const Chat: React.FC = () => {
     </>
   );
 };
+
+export default Chat;

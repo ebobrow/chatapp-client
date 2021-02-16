@@ -37,7 +37,7 @@ const SignUpSchema = Yup.object().shape({
     .required('Required')
 });
 
-export const SignUp: React.FC = () => {
+const SignUp: React.FC = () => {
   const [authErrors, setAuthErrors] = useState<string[]>([]);
   const queryClient = useQueryClient();
   const { data: user, isLoading } = useUser();
@@ -107,3 +107,5 @@ export const SignUp: React.FC = () => {
     </>
   );
 };
+
+export default SignUp;

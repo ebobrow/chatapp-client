@@ -31,7 +31,7 @@ const changePasswordSchema = Yup.object().shape({
     .required('Required')
 });
 
-export const Profile: React.FC = () => {
+const Profile: React.FC = () => {
   const { data: user, isLoading } = useUser();
   const [authErrors, setAuthErrors] = useState<string[]>([]);
   const accountAge = new Date(
@@ -107,3 +107,5 @@ export const Profile: React.FC = () => {
     </>
   );
 };
+
+export default Profile;

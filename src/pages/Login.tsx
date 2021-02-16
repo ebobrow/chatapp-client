@@ -27,7 +27,7 @@ const loginSchema = Yup.object().shape({
   password: Yup.string().required('Required')
 });
 
-export const Login: React.FC = () => {
+const Login: React.FC = () => {
   const linkStyle: React.CSSProperties = {
     color: 'blue',
     textDecoration: 'none'
@@ -109,3 +109,5 @@ export const Login: React.FC = () => {
     </>
   );
 };
+
+export default Login;

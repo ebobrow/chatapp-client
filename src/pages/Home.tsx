@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { Title } from '../components/Title';
 import { useUser } from '../hooks/useUser';
 
-export const Home: React.FC = () => {
+const Home: React.FC = () => {
   const { data, isLoading } = useUser();
 
   if (isLoading) {
@@ -19,3 +19,5 @@ export const Home: React.FC = () => {
     </>
   );
 };
+
+export default Home;

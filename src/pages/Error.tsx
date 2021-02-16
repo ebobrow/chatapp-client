@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
-export const Error: React.FC = () => {
+const Error: React.FC = () => {
   const query = new URLSearchParams(useLocation().search);
 
   return (
@@ -11,3 +11,5 @@ export const Error: React.FC = () => {
     </div>
   );
 };
+
+export default Error;

@@ -13,7 +13,7 @@ import { useRecievedRequests } from '../hooks/useRecievedRequests';
 import { useSentRequests } from '../hooks/useSentRequests';
 import { catcher } from '../api';
 
-export const Friends: React.FC = () => {
+const Friends: React.FC = () => {
   const { data: user, isLoading: userLoading } = useUser();
   const {
     data: friends,
@@ -136,3 +136,5 @@ export const Friends: React.FC = () => {
     </>
   );
 };
+
+export default Friends;

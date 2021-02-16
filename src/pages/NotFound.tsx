@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Title } from '../components/Title';
 
-export const NotFound: React.FC = () => {
+const NotFound: React.FC = () => {
   const location = useLocation();
   return (
     <>
@@ -14,3 +14,5 @@ export const NotFound: React.FC = () => {
     </>
   );
 };
+
+export default NotFound;

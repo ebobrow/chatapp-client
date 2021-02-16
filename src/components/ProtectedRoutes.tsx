@@ -14,7 +14,7 @@ const PROTECTED_ROUTES = [
   }
 ];
 
-export const ProtectedRoutes: React.FC = () => {
+const ProtectedRoutes: React.FC = () => {
   const { data } = useNotifications();
 
   return (
@@ -38,3 +38,5 @@ export const ProtectedRoutes: React.FC = () => {
     </ButtonGroup>
   );
 };
+
+export default ProtectedRoutes;

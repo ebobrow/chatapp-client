@@ -1,9 +1,10 @@
 import { AppBar } from '@material-ui/core';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { UserInfo } from './UserInfo';
 import { FlexContainer, NavContainer } from './styled/Auth';
-import { ProtectedRoutes } from './ProtectedRoutes';
 import { useUser } from '../hooks/useUser';
+
+const ProtectedRoutes = React.lazy(() => import('./ProtectedRoutes'));
 
 export const Navbar: React.FC = () => {
   const { data: user, isLoading } = useUser();
@@ -12,7 +13,13 @@ export const Navbar: React.FC = () => {
     <AppBar position="relative" color="primary">
       <NavContainer>
         <FlexContainer width="100%">
-          {user && !isLoading ? <ProtectedRoutes /> : <div></div>}
+          {user && !isLoading ? (
+            <Suspense fallback={<div></div>}>
+              <ProtectedRoutes />
+            </Suspense>
+          ) : (
+            <div></div>
+          )}
 
           <UserInfo />
         </FlexContainer>
