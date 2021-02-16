@@ -32,7 +32,7 @@ const changePasswordSchema = Yup.object().shape({
 
 export const Profile: React.FC = () => {
   const { data: user, isLoading } = useUser();
-  const [authErrors, setAuthErrors] = useState<Array<string>>([]);
+  const [authErrors, setAuthErrors] = useState<string[]>([]);
   const accountAge = new Date(
     (new Date() as any) - (new Date(user?.created_at!) as any)
   );

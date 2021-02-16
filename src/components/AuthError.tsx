@@ -3,8 +3,8 @@ import { ErrorContainer } from './styled/Auth';
 import { Alert } from '@material-ui/lab';
 
 interface Props {
-  messages: Array<string>;
-  setMessages: Dispatch<Array<string>>;
+  messages: string[];
+  setMessages: Dispatch<string[]>;
 }
 
 export const AuthError: React.FC<Props> = ({ messages, setMessages }) => {

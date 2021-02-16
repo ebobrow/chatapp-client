@@ -35,7 +35,7 @@ export const Login: React.FC = () => {
   const queryClient = useQueryClient();
   const { data: user, isLoading } = useUser();
 
-  const [authErrors, setAuthErrors] = useState<Array<string>>([]);
+  const [authErrors, setAuthErrors] = useState<string[]>([]);
 
   if (isLoading) {
     return <h1>Loading...</h1>;

@@ -12,7 +12,7 @@ interface Props {
 
 export const AddFriend: React.FC<Props> = ({ open, setOpen }) => {
   const [form, setForm] = useState('');
-  const [errors, setErrors] = useState<Array<string>>([]);
+  const [errors, setErrors] = useState<string[]>([]);
   const { refetch } = useSentRequests();
 
   const closeModal = () => {

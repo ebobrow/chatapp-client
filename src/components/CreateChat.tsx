@@ -13,8 +13,8 @@ interface Props {
 }
 
 export const CreateChat: React.FC<Props> = ({ open, setOpen }) => {
-  const [form, setForm] = useState<Array<string>>([]);
-  const [errors, setErrors] = useState<Array<string>>([]);
+  const [form, setForm] = useState<string[]>([]);
+  const [errors, setErrors] = useState<string[]>([]);
   const { data: friends, isLoading } = useFriends();
   const { setChatId } = useChatContext();
   const { refetch } = useConversations();
