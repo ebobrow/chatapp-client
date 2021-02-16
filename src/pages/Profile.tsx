@@ -9,6 +9,7 @@ import { TextField } from 'formik-material-ui';
 import * as Yup from 'yup';
 import { useUser } from '../hooks/useUser';
 import axios from 'axios';
+import { catcher } from '../api';
 
 const INPUTS = [
   { label: 'Current Password', name: 'oldPassword', type: 'password' },
@@ -57,12 +58,16 @@ export const Profile: React.FC = () => {
         initialValues={INITIAL_VALUES}
         validationSchema={changePasswordSchema}
         onSubmit={async (values, formik) => {
-          const { data } = await axios.put('/auth/password', {
-            ...values
+          const res = await catcher<any>(async () => {
+            const { data } = await axios.put('/auth/password', {
+              ...values
+            });
+            return data;
           });
+
           setAuthErrors([]);
-          if (data.errors) {
-            data.errors.forEach((err: string) => {
+          if (res.errors) {
+            res.errors.forEach((err: string) => {
               setAuthErrors(c => [...c, err]);
             });
             formik.setSubmitting(false);

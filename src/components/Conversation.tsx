@@ -22,6 +22,7 @@ import { useParticipants } from '../hooks/useParticipants';
 import { useNotifications } from '../hooks/useNotifications';
 import { useUser } from '../hooks/useUser';
 import axios from 'axios';
+import { catcher } from '../api';
 
 interface Props {
   w: string;
@@ -48,8 +49,10 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     bottomRef.current.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  const setLastOpened = useCallback(() => {
-    axios.post('/chat/setopen', { chatId });
+  const setLastOpened = useCallback(async () => {
+    await catcher(async () => {
+      await axios.post('/chat/setopen', { chatId });
+    });
     refetchNotifications();
   }, [chatId, refetchNotifications]);
 

@@ -10,6 +10,7 @@ import { TextField } from 'formik-material-ui';
 import { useUser } from '../hooks/useUser';
 import { useQueryClient } from 'react-query';
 import axios from 'axios';
+import { catcher } from '../api';
 
 const INPUTS = [
   { label: 'Username', name: 'username', type: 'text' },
@@ -54,14 +55,17 @@ export const Login: React.FC = () => {
             formik.setFieldValue(fieldName, '', false);
           };
 
-          const { data } = await axios.post('/auth/login', values);
+          const res = await catcher<any>(async () => {
+            const { data } = await axios.post('/auth/login', values);
+            return data;
+          });
 
           setAuthErrors([]);
-          if (!data.errors) {
+          if (!res.errors) {
             queryClient.invalidateQueries();
             formik.resetForm();
           } else {
-            data.errors.forEach((err: string) => {
+            res.errors.forEach((err: string) => {
               setAuthErrors(c => [...c, err]);
             });
             resetField('password');

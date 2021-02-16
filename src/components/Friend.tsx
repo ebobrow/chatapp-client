@@ -5,6 +5,7 @@ import { useChatContext } from '../contexts/ChatContext';
 import { Friend as FriendType } from '../types';
 import { FriendContainer, Plus } from './styled/Friends';
 import axios from 'axios';
+import { catcher } from '../api';
 
 interface Props {
   friend: FriendType;
@@ -15,9 +16,13 @@ export const Friend: React.FC<Props> = ({ friend }) => {
   let history = useHistory();
 
   const addChat = async () => {
-    const { data: chat } = await axios.post('/chat/createchat', {
-      users: [friend.username]
+    const chat = await catcher<any>(async () => {
+      const { data } = await axios.post('/chat/createchat', {
+        users: [friend.username]
+      });
+      return data;
     });
+
     setChatId(chat.id);
     history.push('/chat');
   };

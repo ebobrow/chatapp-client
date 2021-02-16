@@ -6,6 +6,7 @@ import { FlexFiller, ModalForm } from './styled/Chat';
 import axios from 'axios';
 import { useFriends } from '../hooks/useFriends';
 import { useConversations } from '../hooks/useConversations';
+import { catcher } from '../api';
 
 interface Props {
   open: boolean;
@@ -36,16 +37,20 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen }) => {
   };
 
   const create = async () => {
-    const { data } = await axios.post('/chat/createchat', {
-      users: form
+    const res = await catcher<any>(async () => {
+      const { data } = await axios.post('/chat/createchat', {
+        users: form
+      });
+
+      return data;
     });
 
-    if (!data.ok) {
-      setErrorsNoRepeats(data.error);
+    if (!res.ok) {
+      setErrorsNoRepeats(res.error);
       return;
     }
     refetch();
-    setChatId(data.id);
+    setChatId(res.id);
     closeModal();
   };
 

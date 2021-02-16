@@ -11,6 +11,7 @@ import axios from 'axios';
 import { useFriends } from '../hooks/useFriends';
 import { useRecievedRequests } from '../hooks/useRecievedRequests';
 import { useSentRequests } from '../hooks/useSentRequests';
+import { catcher } from '../api';
 
 export const Friends: React.FC = () => {
   const { data: user, isLoading: userLoading } = useUser();
@@ -30,14 +31,18 @@ export const Friends: React.FC = () => {
   const clearNotifications = useCallback(async () => {
     if (!user) return;
 
-    await axios.put('/auth/friends/seen');
+    await catcher(async () => {
+      await axios.put('/auth/friends/seen');
+    });
     refetch();
   }, [user, refetch]);
 
   const acceptRequest = async (accept: boolean, sender: string) => {
-    await axios.put('/auth/friends/accept', {
-      accept,
-      sender
+    await catcher(async () => {
+      await axios.put('/auth/friends/accept', {
+        accept,
+        sender
+      });
     });
 
     refetchRecieved();

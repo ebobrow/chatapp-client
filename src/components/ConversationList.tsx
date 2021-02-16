@@ -15,6 +15,7 @@ import {
 import { useUser } from '../hooks/useUser';
 import axios from 'axios';
 import { useConversations } from '../hooks/useConversations';
+import { catcher } from '../api';
 
 interface Props {
   w: string;
@@ -36,14 +37,16 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
   const { socket } = useSocketContext();
   const { data, refetch: refetchNotifications } = useNotifications();
 
-  const selectChat = (key: number) => {
+  const selectChat = async (key: number) => {
     if (chatId) {
       socket.emit('leave', chatId);
     }
 
     if (!conversations) return;
 
-    axios.post('/chat/setopen', { chatId: conversations[key].id });
+    await catcher(async () => {
+      await axios.post('/chat/setopen', { chatId: conversations[key].id });
+    });
 
     setChatId(conversations[key].id);
     refetchNotifications();
