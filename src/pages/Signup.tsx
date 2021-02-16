@@ -31,7 +31,7 @@ const SignUpSchema = Yup.object().shape({
     .matches(/^[a-zA-Z0-9]+$/, 'Invalid characters in name')
     .required('Required'),
   username: Yup.string().max(150, 'Too long').required('Required'),
-  password: Yup.string().required('Required'),
+  password: Yup.string().min(5, 'Too short').required('Required'),
   passwordVerify: Yup.string()
     .oneOf([Yup.ref('password')], 'Passwords do not match')
     .required('Required')
