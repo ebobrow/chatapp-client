@@ -28,7 +28,7 @@ const INITIAL_VALUES = {
 const SignUpSchema = Yup.object().shape({
   name: Yup.string()
     .max(50, 'Too long')
-    .matches(/^[a-zA-Z0-9]+$/, 'Invalid characters in name')
+    .matches(/^[a-zA-Z ]+$/, 'Invalid characters in name')
     .required('Required'),
   username: Yup.string().max(150, 'Too long').required('Required'),
   password: Yup.string().min(5, 'Too short').required('Required'),
