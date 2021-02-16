@@ -64,7 +64,9 @@ export const Conversation: React.FC<Props> = ({ w }) => {
       sender: user!.id,
       room: chatId
     });
-    refetch();
+
+    messages?.push({ message: form, sender: user!.username });
+    // refetch();
     setForm('');
     setLastOpened();
   };
