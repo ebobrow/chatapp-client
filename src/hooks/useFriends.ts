@@ -1,15 +1,16 @@
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { friend } from '../types';
+import { catcher } from '../api';
+import { Friend } from '../types';
 
-const fetcher = async (): Promise<friend[]> => {
+const fetcher = async () => {
   const { data } = await axios.get('/auth/friends/getnames');
 
   return data.friends;
 };
 
 export const useFriends = () => {
-  const queryObj = useQuery('friends', () => fetcher());
+  const queryObj = useQuery('friends', () => catcher<Friend[]>(fetcher));
 
   return queryObj;
 };

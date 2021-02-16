@@ -2,12 +2,12 @@ import { Button } from '@material-ui/core';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useChatContext } from '../contexts/ChatContext';
-import { friend } from '../types';
+import { Friend as FriendType } from '../types';
 import { FriendContainer, Plus } from './styled/Friends';
 import axios from 'axios';
 
 interface Props {
-  friend: friend;
+  friend: FriendType;
 }
 
 export const Friend: React.FC<Props> = ({ friend }) => {

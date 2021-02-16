@@ -3,13 +3,18 @@ export interface errorType {
   target?: string | undefined;
 }
 
-export type ChatObject = {
-  id: string;
-  participants: Array<string>;
-  messages?: Array<{ sender: string; message: string }>;
-};
+export interface Message {
+  sender: string;
+  message: string;
+}
 
-export interface friend {
+export interface ChatObject {
+  id: string;
+  participants: string[];
+  messages?: Message[];
+}
+
+export interface Friend {
   name: string;
   username: string;
 }

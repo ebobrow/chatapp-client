@@ -1,6 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { Chat } from '../pages/Chat';
+import { Error } from '../pages/Error';
 import { Friends } from '../pages/Friends';
 import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
@@ -17,6 +18,7 @@ export const Router: React.FC = () => {
       <Route path="/profile" exact component={Profile} />
       <Route path="/chat" exact component={Chat} />
       <Route path="/friends" exact component={Friends} />
+      <Route path="/error" component={Error} />
       <Route path="*" component={NotFound} />
     </Switch>
   );

@@ -1,16 +1,16 @@
 import axios from 'axios';
 import { useQuery } from 'react-query';
+import { catcher } from '../api';
 
 interface User {
   id: number;
   name: string;
   username: string;
-  password: string;
   created_at: string;
   modified_at: string;
 }
 
-const fetcher = async (): Promise<User | undefined> => {
+const fetcher = async () => {
   try {
     const { data } = await axios.get('/auth/token');
     return data.user;
@@ -21,7 +21,7 @@ const fetcher = async (): Promise<User | undefined> => {
 };
 
 export const useUser = () => {
-  const queryObj = useQuery('user', () => fetcher());
+  const queryObj = useQuery('user', () => catcher<User>(fetcher));
 
   return queryObj;
 };
