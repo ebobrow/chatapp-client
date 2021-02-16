@@ -13,7 +13,8 @@ const SignUp = React.lazy(() => import('../pages/Signup'));
 export const Router: React.FC = () => {
   return (
     <Switch>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Route path="/error" component={Error} />
+      <Suspense fallback={<h1>Loading...</h1>}>
         <Route path="/" exact component={Home} />
         <Route path="/login" exact component={Login} />
         <Route path="/signup" exact component={SignUp} />
@@ -21,7 +22,6 @@ export const Router: React.FC = () => {
         <Route path="/chat" exact component={Chat} />
         <Route path="/friends" exact component={Friends} />
       </Suspense>
-      <Route path="/error" component={Error} />
       <Route path="*" component={NotFound} />
     </Switch>
   );
