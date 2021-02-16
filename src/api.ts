@@ -3,7 +3,6 @@ export async function catcher<T>(fn: () => any): Promise<T | undefined> {
     return await fn();
   } catch (error) {
     let status, message;
-    console.log(error);
 
     if (error.response) {
       status = error.response.status;
