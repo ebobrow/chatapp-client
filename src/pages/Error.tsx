@@ -6,8 +6,8 @@ export const Error: React.FC = () => {
 
   return (
     <div>
-      <h1>Error | {query.get('status')}</h1>
-      <p>{query.get('message')}</p>
+      <h1>Error | {query.get('status') || 500}</h1>
+      <p>{query.get('message') || 'Something went wrong'}</p>
     </div>
   );
 };
