@@ -6,7 +6,7 @@ export const Title: React.FC = ({ children }) => {
   return (
     <Helmet>
       <title>
-        {APP_NAME} | {children}
+        {children} | {APP_NAME}
       </title>
     </Helmet>
   );
