@@ -4,7 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { Title } from '../components/Title';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import { Button } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
 import { FormWrapper } from '../components/styled/Auth';
 import { TextField } from 'formik-material-ui';
 import { useUser } from '../hooks/useUser';

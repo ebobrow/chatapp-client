@@ -1,6 +1,6 @@
 import React, { Dispatch } from 'react';
 import { ErrorContainer } from './styled/Auth';
-import { Alert } from '@material-ui/lab';
+import Alert from '@material-ui/lab/Alert';
 
 interface Props {
   messages: string[];

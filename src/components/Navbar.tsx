@@ -1,8 +1,8 @@
-import { AppBar } from '@material-ui/core';
 import React, { Suspense } from 'react';
 import { UserInfo } from './UserInfo';
 import { FlexContainer, NavContainer } from './styled/Auth';
 import { useUser } from '../hooks/useUser';
+import AppBar from '@material-ui/core/AppBar';
 
 const ProtectedRoutes = React.lazy(() => import('./ProtectedRoutes'));
 

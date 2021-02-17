@@ -1,4 +1,3 @@
-import { Badge } from '@material-ui/core';
 import React, { Dispatch, useEffect, useState } from 'react';
 import { useChatContext } from '../contexts/ChatContext';
 import { useSocketContext } from '../contexts/SocketContext';
@@ -16,6 +15,7 @@ import { useUser } from '../hooks/useUser';
 import axios from 'axios';
 import { useConversations } from '../hooks/useConversations';
 import { catcher } from '../api';
+import Badge from '@material-ui/core/Badge';
 
 interface Props {
   w: string;

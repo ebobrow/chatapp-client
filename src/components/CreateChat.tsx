@@ -1,5 +1,3 @@
-import { Button, Modal, TextField } from '@material-ui/core';
-import { Alert, Autocomplete } from '@material-ui/lab';
 import React, { Dispatch, useState } from 'react';
 import { useChatContext } from '../contexts/ChatContext';
 import { FlexFiller, ModalForm } from './styled/Chat';
@@ -8,6 +6,11 @@ import { useFriends } from '../hooks/useFriends';
 import { useConversations } from '../hooks/useConversations';
 import { catcher } from '../api';
 import { Loading } from './Loading';
+import Modal from '@material-ui/core/Modal';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import Alert from '@material-ui/lab/Alert';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 interface Props {
   open: boolean;

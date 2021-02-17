@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { AuthError } from '../components/AuthError';
 import { Title } from '../components/Title';
 import * as Yup from 'yup';
-import { Button } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
 import { Formik, Form, Field } from 'formik';
 import { FormWrapper } from '../components/styled/Auth';
 import { TextField } from 'formik-material-ui';

@@ -1,4 +1,6 @@
-import { Badge, Button, ButtonGroup } from '@material-ui/core';
+import Badge from '@material-ui/core/Badge';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Button from '@material-ui/core/Button';
 import React from 'react';
 import { useNotifications } from '../hooks/useNotifications';
 import { StyledLink } from './styled/Auth';

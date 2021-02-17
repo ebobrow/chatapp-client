@@ -1,4 +1,3 @@
-import { Button } from '@material-ui/core';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useChatContext } from '../contexts/ChatContext';
@@ -6,6 +5,7 @@ import { Friend as FriendType } from '../types';
 import { FriendContainer, Plus } from './styled/Friends';
 import axios from 'axios';
 import { catcher } from '../api';
+import Button from '@material-ui/core/Button';
 
 interface Props {
   friend: FriendType;

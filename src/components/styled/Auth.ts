@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { FormGroup, TextField } from '@material-ui/core';
+import FormGroup from '@material-ui/core/FormGroup';
+import TextField from '@material-ui/core/TextField';
 
 export const ErrorContainer = styled.div`
   width: 100%;

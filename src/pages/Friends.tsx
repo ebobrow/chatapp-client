@@ -1,4 +1,3 @@
-import { Button } from '@material-ui/core';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { AddFriend } from '../components/AddFriend';
@@ -13,6 +12,7 @@ import { useRecievedRequests } from '../hooks/useRecievedRequests';
 import { useSentRequests } from '../hooks/useSentRequests';
 import { catcher } from '../api';
 import { Loading } from '../components/Loading';
+import Button from '@material-ui/core/Button';
 
 const Friends: React.FC = () => {
   const { data: user, isLoading: userLoading } = useUser();

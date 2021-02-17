@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css';
+import { PRIMARY_COLOR, SECONDARY_COLOR } from './constants';
 // Packages
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { HelmetProvider } from 'react-helmet-async';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import { BrowserRouter } from 'react-router-dom';
-import { PRIMARY_COLOR, SECONDARY_COLOR } from './constants';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 // Components
 import { Navbar } from './components/Navbar';
 import { Router } from './components/Router';
