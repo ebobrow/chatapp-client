@@ -79,7 +79,7 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
           <Badge
             key={index}
             badgeContent={
-              (data?.Chat as any).chats.length
+              data?.Chat && (data?.Chat as any).chats.length
                 ? (data?.Chat as any).chats.find(
                     (chat: { id: string }) => chat.id === conversation.id
                   )?.amount
