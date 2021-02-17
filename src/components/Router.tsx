@@ -15,7 +15,6 @@ export const Router: React.FC = () => {
   return (
     <Switch>
       <Route path="/error" component={Error} />
-      <Route path="/l" exact component={Loading} />
       <Suspense fallback={<Loading />}>
         <Route path="/" exact component={Home} />
         <Route path="/login" exact component={Login} />
