@@ -11,6 +11,7 @@ import { useUser } from '../hooks/useUser';
 import { useQueryClient } from 'react-query';
 import axios from 'axios';
 import { catcher } from '../api';
+import { Loading } from '../components/Loading';
 
 const INPUTS = [
   { label: 'Username', name: 'username', type: 'text' },
@@ -39,7 +40,7 @@ const Login: React.FC = () => {
   const [authErrors, setAuthErrors] = useState<string[]>([]);
 
   if (isLoading) {
-    return <h1>Loading...</h1>;
+    return <Loading />;
   }
 
   return (

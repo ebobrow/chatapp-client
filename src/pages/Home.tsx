@@ -1,5 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
+import { Loading } from '../components/Loading';
 import { Title } from '../components/Title';
 import { useUser } from '../hooks/useUser';
 
@@ -7,7 +8,7 @@ const Home: React.FC = () => {
   const { data, isLoading } = useUser();
 
   if (isLoading) {
-    return <h1>Loading...</h1>;
+    return <Loading />;
   }
 
   return (

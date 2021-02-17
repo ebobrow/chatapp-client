@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useFriends } from '../hooks/useFriends';
 import { useConversations } from '../hooks/useConversations';
 import { catcher } from '../api';
+import { Loading } from './Loading';
 
 interface Props {
   open: boolean;
@@ -55,7 +56,7 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen }) => {
   };
 
   if (isLoading) {
-    return <h1>Loading...</h1>;
+    return <Loading />;
   }
 
   return (

@@ -5,6 +5,7 @@ import { ConversationList } from '../components/ConversationList';
 import { SocketContext } from '../contexts/SocketContext';
 import { Title } from '../components/Title';
 import { useUser } from '../hooks/useUser';
+import { Loading } from '../components/Loading';
 
 const Chat: React.FC = () => {
   const { data, isLoading } = useUser();
@@ -23,7 +24,7 @@ const Chat: React.FC = () => {
   }, [closeMenu]);
 
   if (isLoading) {
-    return <h1>Loading...</h1>;
+    return <Loading />;
   }
 
   return (

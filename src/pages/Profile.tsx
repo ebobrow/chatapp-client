@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 import { useUser } from '../hooks/useUser';
 import axios from 'axios';
 import { catcher } from '../api';
+import { Loading } from '../components/Loading';
 
 const INPUTS = [
   { label: 'Current Password', name: 'oldPassword', type: 'password' },
@@ -39,14 +40,13 @@ const Profile: React.FC = () => {
   );
 
   if (isLoading) {
-    return <h1>Loading...</h1>;
+    return <Loading />;
   }
 
   return (
     <>
       <Title>Profile</Title>
-      {!user && <Redirect to="/login" />}
-      {user ? <h1>Hi, {user.name}</h1> : <h1>Loading...</h1>}
+      {user ? <h1>Hi, {user.name}</h1> : <Redirect to="/login" />}
       <h3>Account Info</h3>
       <p>
         Created {accountAge.getUTCFullYear() - 1970} years,{' '}

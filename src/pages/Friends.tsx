@@ -12,6 +12,7 @@ import { useFriends } from '../hooks/useFriends';
 import { useRecievedRequests } from '../hooks/useRecievedRequests';
 import { useSentRequests } from '../hooks/useSentRequests';
 import { catcher } from '../api';
+import { Loading } from '../components/Loading';
 
 const Friends: React.FC = () => {
   const { data: user, isLoading: userLoading } = useUser();
@@ -56,7 +57,7 @@ const Friends: React.FC = () => {
   }, [clearNotifications]);
 
   if (userLoading) {
-    return <h1>Loading...</h1>;
+    return <Loading />;
   }
 
   return (
@@ -65,13 +66,17 @@ const Friends: React.FC = () => {
       {!user && <Redirect to="/login" />}
       <h1>Friends</h1>
       <FriendsWrapper>
-        {!friendsLoading
-          ? friends?.length
-            ? friends?.map((friend, index) => (
-                <Friend friend={friend} key={index} />
-              ))
-            : 'No friends yet, loser'
-          : 'Loading...'}
+        {!friendsLoading ? (
+          friends?.length ? (
+            friends?.map((friend, index) => (
+              <Friend friend={friend} key={index} />
+            ))
+          ) : (
+            'No friends yet, loser'
+          )
+        ) : (
+          <Loading />
+        )}
       </FriendsWrapper>
       <div
         style={{

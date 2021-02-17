@@ -10,6 +10,7 @@ import { TextField } from 'formik-material-ui';
 import { useUser } from '../hooks/useUser';
 import { useQueryClient } from 'react-query';
 import axios from 'axios';
+import { Loading } from '../components/Loading';
 
 const INPUTS = [
   { label: 'Name', name: 'name', type: 'text' },
@@ -43,7 +44,7 @@ const SignUp: React.FC = () => {
   const { data: user, isLoading } = useUser();
 
   if (isLoading) {
-    return <h1>Loading...</h1>;
+    return <Loading />;
   }
 
   return (
