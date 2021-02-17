@@ -1,4 +1,6 @@
-import { FiPlus, FiMenu, FiX } from 'react-icons/fi';
+import AddIcon from '@material-ui/icons/Add';
+import MenuIcon from '@material-ui/icons/Menu';
+import CloseIcon from '@material-ui/icons/Close';
 import styled from 'styled-components';
 import { PRIMARY_COLOR } from '../../constants';
 
@@ -74,7 +76,7 @@ export const ConversationWrapper = styled.div<{ active: boolean }>`
   }
 `;
 
-export const Plus = styled(FiPlus)`
+export const Plus = styled(AddIcon)`
   width: 30px;
   height: auto;
   margin: 20px 30px;
@@ -113,7 +115,7 @@ export const ConversationListWrapper = styled.div<{ w: string; open: boolean }>`
   min-width: fit-content;
 `;
 
-export const Hamburger = styled(FiMenu)`
+export const Hamburger = styled(MenuIcon)`
   width: 30px;
   height: 30px;
   margin: 20px;
@@ -123,7 +125,7 @@ export const Hamburger = styled(FiMenu)`
   }
 `;
 
-export const X = styled(FiX)`
+export const X = styled(CloseIcon)`
   width: 30px;
   height: 30px;
   margin: 20px;

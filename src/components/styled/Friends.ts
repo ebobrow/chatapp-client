@@ -1,4 +1,4 @@
-import { FiPlus } from 'react-icons/fi';
+import AddIcon from '@material-ui/icons/Add';
 import styled from 'styled-components';
 
 export const FriendContainer = styled.div`
@@ -13,7 +13,7 @@ export const FriendContainer = styled.div`
   flex-direction: column;
 `;
 
-export const Plus = styled(FiPlus)`
+export const Plus = styled(AddIcon)`
   width: 15px;
   height: auto;
 `;
