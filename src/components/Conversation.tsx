@@ -60,7 +60,6 @@ export const Conversation: React.FC<Props> = ({ w }) => {
 
   const sendChat = (e: FormEvent) => {
     e.preventDefault();
-    scrollToBottom();
     socket.emit('new-message', {
       message: form,
       sender: user!.id,
@@ -71,14 +70,15 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     // refetch();
     setForm('');
     setLastOpened();
+    scrollToBottom();
   };
 
   useEffect(() => {
     scrollToBottom();
     socket.on('message', () => {
-      scrollToBottom();
       refetch();
       setLastOpened();
+      scrollToBottom();
     });
 
     return () => {
