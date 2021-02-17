@@ -58,7 +58,7 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
   }, [chatId, socket]);
 
   return (
-    <ConversationListWrapper w={w}>
+    <ConversationListWrapper w={w} open={open}>
       <div
         style={{
           display: 'flex',
@@ -66,7 +66,7 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
           alignItems: 'center',
           justifyContent: 'space-around'
         }}>
-        {open && <h1>Conversations:</h1>}
+        <FlexFiller />
         {open ? (
           <X onClick={() => setOpen(false)} />
         ) : (

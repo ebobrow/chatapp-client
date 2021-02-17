@@ -3,6 +3,8 @@ import React, {
   FormEvent,
   useCallback,
   useEffect,
+  useLayoutEffect,
+  useMemo,
   useRef,
   useState
 } from 'react';
@@ -12,7 +14,8 @@ import {
   Message,
   ChatWrapper,
   TextNode,
-  FlexFiller
+  FlexFiller,
+  MessageForm
 } from './styled/Chat';
 import { useChatContext } from '../contexts/ChatContext';
 import { useSocketContext } from '../contexts/SocketContext';
@@ -24,7 +27,6 @@ import { useUser } from '../hooks/useUser';
 import axios from 'axios';
 import { catcher } from '../api';
 import { Loading } from './Loading';
-import { JsxElement } from 'typescript';
 
 interface Props {
   w: string;
@@ -33,6 +35,7 @@ interface Props {
 export const Conversation: React.FC<Props> = ({ w }) => {
   const { data: user } = useUser();
   const [form, setForm] = useState('');
+  const [atBottom, setAtBottom] = useState(true);
   const bottomRef = useRef<HTMLDivElement>(null);
   const { chatId } = useChatContext();
   const { socket } = useSocketContext();
@@ -45,6 +48,17 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     isLoading: participantsLoading
   } = useParticipants(chatId);
   const { refetch: refetchNotifications } = useNotifications();
+
+  const processedMessages = useMemo(
+    () =>
+      messages?.map((message, index) => ({
+        ...message,
+        last:
+          index === messages.length - 1 ||
+          message.sender !== messages[index + 1].sender
+      })),
+    [messages]
+  );
 
   const scrollToBottom = useCallback(() => {
     if (!bottomRef.current) return;
@@ -66,18 +80,22 @@ export const Conversation: React.FC<Props> = ({ w }) => {
       room: chatId
     });
 
-    messages?.push({ message: form, sender: user!.username });
-    // refetch();
+    processedMessages?.push({
+      message: form,
+      sender: user!.username,
+      last: true
+    });
+    refetch();
     setForm('');
     setLastOpened();
     scrollToBottom();
   };
 
   useEffect(() => {
-    scrollToBottom();
     socket.on('message', () => {
       refetch();
       setLastOpened();
+      setTimeout(scrollToBottom, 500);
       scrollToBottom();
     });
 
@@ -86,9 +104,16 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     };
   }, [socket, scrollToBottom, setLastOpened, refetch]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     scrollToBottom();
   }, [chatId, scrollToBottom]);
+
+  const handleScroll = () => {
+    if (!bottomRef.current) return;
+    const top = bottomRef.current.getBoundingClientRect().top;
+    const visible = top >= 0 && top <= window.innerHeight;
+    setAtBottom(visible);
+  };
 
   let content: JSX.Element;
 
@@ -98,44 +123,51 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     content = (
       <>
         <FlexFiller />
-        <MessagesContainer>
-          {messages &&
-            messages.map((message, index) => {
-              const isMine = message.sender === user?.username;
-              return (
-                <MessageWrapper key={index} mymessage={isMine} row={index}>
-                  <Message key={index} mymessage={isMine} row={index}>
-                    <TextNode ismine={isMine} padding={true}>
-                      {message.message}
-                    </TextNode>
-                  </Message>
-                  <TextNode ismine={isMine} padding={false}>
-                    {isMine
-                      ? 'Me'
-                      : participants?.find(p => p.username === message.sender)
-                          ?.name}
-                    {!isMine && (
-                      <small
-                        style={{
-                          margin: '10px',
-                          color:
-                            participants
-                              ?.filter(p => p.username !== user?.username) // Is this part necessary?
-                              .findIndex(p => p.username === message.sender) ||
-                            2 % 2 === 0
-                              ? PRIMARY_COLOR
-                              : SECONDARY_COLOR
-                        }}>
-                        {message.sender}
-                      </small>
+        <div style={{ overflowY: 'scroll' }} onScroll={handleScroll}>
+          <MessagesContainer>
+            {processedMessages &&
+              processedMessages.map((message, index) => {
+                const isMine = message.sender === user?.username;
+                return (
+                  <MessageWrapper key={index} mymessage={isMine} row={index}>
+                    <Message key={index} mymessage={isMine} row={index}>
+                      <TextNode ismine={isMine} padding={true}>
+                        {message.message}
+                      </TextNode>
+                    </Message>
+                    {message.last && (
+                      <TextNode ismine={isMine} padding={false}>
+                        {isMine
+                          ? 'Me'
+                          : participants?.find(
+                              p => p.username === message.sender
+                            )?.name}
+                        {!isMine && (
+                          <small
+                            style={{
+                              margin: '10px',
+                              color:
+                                participants
+                                  ?.filter(p => p.username !== user?.username) // Is this part necessary?
+                                  .findIndex(
+                                    p => p.username === message.sender
+                                  ) || 2 % 2 === 0
+                                  ? PRIMARY_COLOR
+                                  : SECONDARY_COLOR
+                            }}>
+                            {message.sender}
+                          </small>
+                        )}
+                      </TextNode>
                     )}
-                  </TextNode>
-                </MessageWrapper>
-              );
-            })}
-        </MessagesContainer>
+                  </MessageWrapper>
+                );
+              })}
+          </MessagesContainer>
+          <div ref={bottomRef} />
+        </div>
 
-        <form onSubmit={sendChat} style={{ paddingBottom: '10px' }}>
+        <MessageForm onSubmit={sendChat} atBottom={atBottom}>
           <TextField
             type="text"
             value={form}
@@ -152,8 +184,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
             style={{ marginTop: '5px' }}>
             Send
           </Button>
-        </form>
-        <div ref={bottomRef} />
+        </MessageForm>
       </>
     );
   } else {
