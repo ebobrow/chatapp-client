@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Loading } from '../components/Loading';
 import { Title } from '../components/Title';
 import { useUser } from '../hooks/useUser';
@@ -7,6 +7,10 @@ import { useUser } from '../hooks/useUser';
 const Home: React.FC = () => {
   const history = useHistory();
   const { data, isLoading, isError } = useUser();
+
+  if (!data) {
+    history.push('/login');
+  }
 
   if (isError) {
     history.push('/error');
@@ -19,7 +23,6 @@ const Home: React.FC = () => {
   return (
     <>
       <Title>Home</Title>
-      {!data && <Redirect to="/login" />}
       <h1>What's Appening</h1>
       <h4>What's app but worse.</h4>
     </>

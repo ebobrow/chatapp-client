@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { AuthError } from '../components/AuthError';
 import { Title } from '../components/Title';
 import * as Yup from 'yup';
@@ -44,6 +44,10 @@ const SignUp: React.FC = () => {
   const queryClient = useQueryClient();
   const { data: user, isLoading, isError } = useUser();
 
+  if (user) {
+    history.push('/');
+  }
+
   if (isError) {
     history.push('/error');
   }
@@ -55,7 +59,6 @@ const SignUp: React.FC = () => {
   return (
     <>
       <Title>Sign Up</Title>
-      {user && <Redirect to="/" />}
       <AuthError messages={authErrors} setMessages={setAuthErrors} />
       <Formik
         initialValues={INITIAL_VALUES}

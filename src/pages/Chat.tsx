@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Redirect, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Conversation } from '../components/Conversation';
 import { ConversationList } from '../components/ConversationList';
 import { SocketContext } from '../contexts/SocketContext';
@@ -24,6 +24,10 @@ const Chat: React.FC = () => {
     };
   }, [closeMenu]);
 
+  if (!data) {
+    history.push('/login');
+  }
+
   if (isError) {
     history.push('/error');
   }
@@ -35,7 +39,6 @@ const Chat: React.FC = () => {
   return (
     <>
       <Title>Chat</Title>
-      {!data && <Redirect to="/login" />}
       <SocketContext>
         <div style={{ display: 'flex', flexDirection: 'row', height: '90%' }}>
           <ConversationList

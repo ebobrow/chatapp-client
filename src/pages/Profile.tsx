@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { AuthError } from '../components/AuthError';
 import { Title } from '../components/Title';
 import Button from '@material-ui/core/Button';
@@ -39,6 +39,10 @@ const Profile: React.FC = () => {
     (new Date() as any) - (new Date(user?.created_at!) as any)
   );
 
+  if (!user) {
+    history.push('/login');
+  }
+
   if (isError) {
     history.push('/error');
   }
@@ -50,7 +54,7 @@ const Profile: React.FC = () => {
   return (
     <>
       <Title>Profile</Title>
-      {user ? <h1>Hi, {user.name}</h1> : <Redirect to="/login" />}
+      <h1>Hi, {user!.name}</h1>
       <h3>Account Info</h3>
       <p>
         Created {accountAge.getUTCFullYear() - 1970} years,{' '}

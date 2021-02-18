@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AuthError } from '../components/AuthError';
-import { Link, Redirect, useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Title } from '../components/Title';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -39,6 +39,10 @@ const Login: React.FC = () => {
 
   const [authErrors, setAuthErrors] = useState<string[]>([]);
 
+  if (user) {
+    history.push('/');
+  }
+
   if (isError) {
     history.push('/error');
   }
@@ -50,7 +54,6 @@ const Login: React.FC = () => {
   return (
     <>
       <Title>Login</Title>
-      {user && <Redirect to="/" />}
       <AuthError messages={authErrors} setMessages={setAuthErrors} />
       <Formik
         initialValues={INITIAL_VALUES}
