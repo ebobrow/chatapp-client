@@ -10,7 +10,6 @@ import axios from 'axios';
 import { useFriends } from '../hooks/useFriends';
 import { useRecievedRequests } from '../hooks/useRecievedRequests';
 import { useSentRequests } from '../hooks/useSentRequests';
-import { catcher } from '../api';
 import { Loading } from '../components/Loading';
 import Button from '@material-ui/core/Button';
 
@@ -35,18 +34,14 @@ const Friends: React.FC = () => {
   const clearNotifications = useCallback(async () => {
     if (!user) return;
 
-    await catcher(async () => {
-      await axios.put('/auth/friends/seen');
-    });
+    await axios.put('/auth/friends/seen');
     refetch();
   }, [user, refetch]);
 
   const acceptRequest = async (accept: boolean, sender: string) => {
-    await catcher(async () => {
-      await axios.put('/auth/friends/accept', {
-        accept,
-        sender
-      });
+    await axios.put('/auth/friends/accept', {
+      accept,
+      sender
     });
 
     refetchRecieved();
