@@ -4,7 +4,6 @@ import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
 import axios from 'axios';
 import React, { Dispatch, FormEvent, useState } from 'react';
-import { catcher } from '../api';
 import { useSentRequests } from '../hooks/useSentRequests';
 import { FlexFiller, ModalForm } from './styled/Chat';
 
@@ -31,15 +30,12 @@ export const AddFriend: React.FC<Props> = ({ open, setOpen }) => {
   const add = async (e: FormEvent) => {
     e.preventDefault();
 
-    const res = await catcher<any>(async () => {
-      const { data } = await axios.post('/auth/friends/request', {
-        reciever: form
-      });
-      return data;
+    const { data } = await axios.post('/auth/friends/request', {
+      reciever: form
     });
 
-    if (!res || !res.ok) {
-      setErrors([res.error]);
+    if (!data || !data.ok) {
+      setErrors([data.error]);
       return;
     }
 

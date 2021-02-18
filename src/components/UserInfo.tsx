@@ -6,9 +6,11 @@ import { useUser } from '../hooks/useUser';
 import { FlexContainer, StyledLink } from './styled/Auth';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import { useHistory } from 'react-router-dom';
 
 export const UserInfo: React.FC = () => {
-  const { data: user, isLoading } = useUser();
+  const history = useHistory();
+  const { data: user, isLoading, isError } = useUser();
   const [width, setWidth] = useState(window.innerWidth > 985 ? '15%' : '30%');
   const { mutate } = useLogOut();
   const queryClient = useQueryClient();
@@ -35,6 +37,10 @@ export const UserInfo: React.FC = () => {
       window.removeEventListener('resize', setWidthCallback);
     };
   }, [setWidthCallback]);
+
+  if (isError) {
+    history.push('/error');
+  }
 
   if (user && !isLoading) {
     return (

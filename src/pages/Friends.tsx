@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import { AddFriend } from '../components/AddFriend';
 import { Friend } from '../components/Friend';
 import { FriendContainer, FriendsWrapper } from '../components/styled/Friends';
@@ -15,16 +15,19 @@ import { Loading } from '../components/Loading';
 import Button from '@material-ui/core/Button';
 
 const Friends: React.FC = () => {
-  const { data: user, isLoading: userLoading } = useUser();
+  const history = useHistory();
+  const { data: user, isLoading: userLoading, isError: userError } = useUser();
   const {
     data: friends,
     isLoading: friendsLoading,
-    refetch: refetchFriends
+    refetch: refetchFriends,
+    isError: friendsError
   } = useFriends();
   const { refetch } = useNotifications();
   const {
     data: recievedRequests,
-    refetch: refetchRecieved
+    refetch: refetchRecieved,
+    isError: requestsError
   } = useRecievedRequests();
   const { data: sentRequests } = useSentRequests();
   const [modalOpen, setModalOpen] = useState(false);
@@ -56,27 +59,28 @@ const Friends: React.FC = () => {
     setTimeout(clearNotifications, 1000);
   }, [clearNotifications]);
 
-  if (userLoading) {
+  if (userLoading || friendsLoading) {
     return <Loading />;
+  }
+
+  if (!user) {
+    history.push('/login');
+  }
+
+  if (friendsError || requestsError || userError) {
+    history.push('/error');
   }
 
   return (
     <>
       <Title>Friends</Title>
-      {!user && <Redirect to="/login" />}
       <h1>Friends</h1>
       <FriendsWrapper>
-        {!friendsLoading ? (
-          friends?.length ? (
-            friends?.map((friend, index) => (
+        {friends?.length
+          ? friends?.map((friend, index) => (
               <Friend friend={friend} key={index} />
             ))
-          ) : (
-            'No friends yet, loser'
-          )
-        ) : (
-          <Loading />
-        )}
+          : 'No friends yet, loser'}
       </FriendsWrapper>
       <div
         style={{

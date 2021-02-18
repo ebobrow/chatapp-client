@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import { Conversation } from '../components/Conversation';
 import { ConversationList } from '../components/ConversationList';
 import { SocketContext } from '../contexts/SocketContext';
@@ -8,7 +8,8 @@ import { useUser } from '../hooks/useUser';
 import { Loading } from '../components/Loading';
 
 const Chat: React.FC = () => {
-  const { data, isLoading } = useUser();
+  const history = useHistory();
+  const { data, isLoading, isError } = useUser();
   const [listOpen, setListOpen] = useState(window.innerWidth > 985);
 
   const closeMenu = useCallback(() => {
@@ -22,6 +23,10 @@ const Chat: React.FC = () => {
       window.removeEventListener('resize', closeMenu);
     };
   }, [closeMenu]);
+
+  if (isError) {
+    history.push('/error');
+  }
 
   if (isLoading) {
     return <Loading />;

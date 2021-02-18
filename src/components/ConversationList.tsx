@@ -15,9 +15,9 @@ import {
 import { useUser } from '../hooks/useUser';
 import axios from 'axios';
 import { useConversations } from '../hooks/useConversations';
-import { catcher } from '../api';
 import Badge from '@material-ui/core/Badge';
 import { ChatInfo } from './ChatInfo';
+import { useHistory } from 'react-router-dom';
 
 interface Props {
   w: string;
@@ -26,8 +26,13 @@ interface Props {
 }
 
 export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
-  const { data: user } = useUser();
-  const { data: chats, refetch: refetchConversations } = useConversations();
+  const history = useHistory();
+  const { data: user, isError: userError } = useUser();
+  const {
+    data: chats,
+    refetch: refetchConversations,
+    isError: conversationsError
+  } = useConversations();
   const conversations = chats?.map(chat => ({
     ...chat,
     participants: chat.participants.map((person: string) =>
@@ -38,7 +43,11 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
   const [chatInfoId, setChatInfoId] = useState('');
   const { setChatId, chatId } = useChatContext();
   const { socket } = useSocketContext();
-  const { data, refetch: refetchNotifications } = useNotifications();
+  const {
+    data,
+    refetch: refetchNotifications,
+    isError: notificationsError
+  } = useNotifications();
 
   const selectChat = async (key: number) => {
     if (chatId) {
@@ -47,9 +56,7 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
 
     if (!conversations) return;
 
-    await catcher(async () => {
-      await axios.put('/chat/lastseen', { chatId: conversations[key].id });
-    });
+    await axios.put('/chat/lastseen', { chatId: conversations[key].id });
 
     setChatId(conversations[key].id);
     refetchNotifications();
@@ -59,6 +66,10 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
   useEffect(() => {
     socket.emit('join', chatId);
   }, [chatId, socket]);
+
+  if (notificationsError || conversationsError || userError) {
+    history.push('/error');
+  }
 
   return (
     <>

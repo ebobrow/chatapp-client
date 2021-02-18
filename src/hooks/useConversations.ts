@@ -1,18 +1,15 @@
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { catcher } from '../api';
 import { ChatObject } from '../types';
 
-const fetcher = async () => {
+const fetcher = async (): Promise<ChatObject[] | undefined> => {
   const { data } = await axios.get('/chat');
 
   return data.chats;
 };
 
 export const useConversations = () => {
-  const queryObj = useQuery('conversations', () =>
-    catcher<ChatObject[]>(fetcher)
-  );
+  const queryObj = useQuery('conversations', fetcher);
 
   return queryObj;
 };

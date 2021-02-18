@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AuthError } from '../components/AuthError';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
 import { Title } from '../components/Title';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -10,7 +10,6 @@ import { TextField } from 'formik-material-ui';
 import { useUser } from '../hooks/useUser';
 import { useQueryClient } from 'react-query';
 import axios from 'axios';
-import { catcher } from '../api';
 import { Loading } from '../components/Loading';
 
 const INPUTS = [
@@ -35,9 +34,14 @@ const Login: React.FC = () => {
   };
 
   const queryClient = useQueryClient();
-  const { data: user, isLoading } = useUser();
+  const history = useHistory();
+  const { data: user, isLoading, isError } = useUser();
 
   const [authErrors, setAuthErrors] = useState<string[]>([]);
+
+  if (isError) {
+    history.push('/error');
+  }
 
   if (isLoading) {
     return <Loading />;
@@ -56,17 +60,14 @@ const Login: React.FC = () => {
             formik.setFieldValue(fieldName, '', false);
           };
 
-          const res = await catcher<any>(async () => {
-            const { data } = await axios.post('/auth/login', values);
-            return data;
-          });
+          const { data } = await axios.post('/auth/login', values);
 
           setAuthErrors([]);
-          if (!res.errors) {
+          if (!data.errors) {
             queryClient.invalidateQueries();
             formik.resetForm();
           } else {
-            res.errors.forEach((err: string) => {
+            data.errors.forEach((err: string) => {
               setAuthErrors(c => [...c, err]);
             });
             resetField('password');

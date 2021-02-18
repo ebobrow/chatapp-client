@@ -4,13 +4,13 @@ import { FlexFiller, ModalForm } from './styled/Chat';
 import axios from 'axios';
 import { useFriends } from '../hooks/useFriends';
 import { useConversations } from '../hooks/useConversations';
-import { catcher } from '../api';
 import { Loading } from './Loading';
 import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Alert from '@material-ui/lab/Alert';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { useHistory } from 'react-router-dom';
 
 interface Props {
   open: boolean;
@@ -18,11 +18,12 @@ interface Props {
 }
 
 export const CreateChat: React.FC<Props> = ({ open, setOpen }) => {
+  const history = useHistory();
   const [form, setForm] = useState<string[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
-  const { data: friends, isLoading } = useFriends();
+  const { data: friends, isLoading, isError: friendsError } = useFriends();
   const { setChatId } = useChatContext();
-  const { refetch } = useConversations();
+  const { refetch, isError: conversationsError } = useConversations();
 
   const removeError = (error: string) => {
     setErrors(curr => curr.filter(err => err !== error));
@@ -41,22 +42,22 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen }) => {
   };
 
   const create = async () => {
-    const res = await catcher<any>(async () => {
-      const { data } = await axios.post('/chat', {
-        users: form
-      });
-
-      return data;
+    const { data } = await axios.post('/chat', {
+      users: form
     });
 
-    if (!res.ok) {
-      setErrorsNoRepeats(res.error);
+    if (!data.ok) {
+      setErrorsNoRepeats(data.error);
       return;
     }
     refetch();
-    setChatId(res.id);
+    setChatId(data.id);
     closeModal();
   };
+
+  if (friendsError || conversationsError) {
+    history.push('/error');
+  }
 
   if (isLoading) {
     return <Loading />;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import { AuthError } from '../components/AuthError';
 import { Title } from '../components/Title';
 import Button from '@material-ui/core/Button';
@@ -9,7 +9,6 @@ import { TextField } from 'formik-material-ui';
 import * as Yup from 'yup';
 import { useUser } from '../hooks/useUser';
 import axios from 'axios';
-import { catcher } from '../api';
 import { Loading } from '../components/Loading';
 
 const INPUTS = [
@@ -33,11 +32,16 @@ const changePasswordSchema = Yup.object().shape({
 });
 
 const Profile: React.FC = () => {
-  const { data: user, isLoading } = useUser();
+  const history = useHistory();
+  const { data: user, isLoading, isError } = useUser();
   const [authErrors, setAuthErrors] = useState<string[]>([]);
   const accountAge = new Date(
     (new Date() as any) - (new Date(user?.created_at!) as any)
   );
+
+  if (isError) {
+    history.push('/error');
+  }
 
   if (isLoading) {
     return <Loading />;
@@ -58,16 +62,13 @@ const Profile: React.FC = () => {
         initialValues={INITIAL_VALUES}
         validationSchema={changePasswordSchema}
         onSubmit={async (values, formik) => {
-          const res = await catcher<any>(async () => {
-            const { data } = await axios.put('/auth/password', {
-              ...values
-            });
-            return data;
+          const { data } = await axios.put('/auth/password', {
+            ...values
           });
 
           setAuthErrors([]);
-          if (res.errors) {
-            res.errors.forEach((err: string) => {
+          if (data.errors) {
+            data.errors.forEach((err: string) => {
               setAuthErrors(c => [...c, err]);
             });
             formik.setSubmitting(false);

@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { catcher } from '../api';
 
 type NotificationItem = {
   [key: string]: {
@@ -12,15 +11,13 @@ type NotificationItem = {
   };
 };
 
-const fetcher = async () => {
+const fetcher = async (): Promise<NotificationItem | undefined> => {
   const { data } = await axios.get('/chat/notifications');
   return data.notifications;
 };
 
 export const useNotifications = () => {
-  const queryObj = useQuery('notifications', () =>
-    catcher<NotificationItem>(fetcher)
-  );
+  const queryObj = useQuery('notifications', fetcher);
 
   return queryObj;
 };

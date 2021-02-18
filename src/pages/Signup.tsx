@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import { AuthError } from '../components/AuthError';
 import { Title } from '../components/Title';
 import * as Yup from 'yup';
@@ -39,9 +39,14 @@ const SignUpSchema = Yup.object().shape({
 });
 
 const SignUp: React.FC = () => {
+  const history = useHistory();
   const [authErrors, setAuthErrors] = useState<string[]>([]);
   const queryClient = useQueryClient();
-  const { data: user, isLoading } = useUser();
+  const { data: user, isLoading, isError } = useUser();
+
+  if (isError) {
+    history.push('/error');
+  }
 
   if (isLoading) {
     return <Loading />;

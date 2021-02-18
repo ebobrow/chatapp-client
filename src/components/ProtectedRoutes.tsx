@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 import React from 'react';
 import { useNotifications } from '../hooks/useNotifications';
 import { StyledLink } from './styled/Auth';
+import { useHistory } from 'react-router-dom';
 
 const PROTECTED_ROUTES = [
   {
@@ -17,7 +18,12 @@ const PROTECTED_ROUTES = [
 ];
 
 const ProtectedRoutes: React.FC = () => {
-  const { data } = useNotifications();
+  const history = useHistory();
+  const { data, isError } = useNotifications();
+
+  if (isError) {
+    history.push('/error');
+  }
 
   return (
     <ButtonGroup color="primary" variant="contained" disableElevation>

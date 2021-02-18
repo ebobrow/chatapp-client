@@ -24,16 +24,17 @@ import { useParticipants } from '../hooks/useParticipants';
 import { useNotifications } from '../hooks/useNotifications';
 import { useUser } from '../hooks/useUser';
 import axios from 'axios';
-import { catcher } from '../api';
 import { Loading } from './Loading';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { useHistory } from 'react-router-dom';
 
 interface Props {
   w: string;
 }
 
 export const Conversation: React.FC<Props> = ({ w }) => {
+  const history = useHistory();
   const { data: user } = useUser();
   const [form, setForm] = useState('');
   const [atBottom, setAtBottom] = useState(true);
@@ -41,14 +42,21 @@ export const Conversation: React.FC<Props> = ({ w }) => {
   const { chatId } = useChatContext();
   const { socket } = useSocketContext();
 
-  const { data: messages, isLoading: messagesLoading, refetch } = useMessages(
-    chatId
-  );
+  const {
+    data: messages,
+    isLoading: messagesLoading,
+    refetch: refetchMessages,
+    isError: messagesError
+  } = useMessages(chatId);
   const {
     data: participants,
-    isLoading: participantsLoading
+    isLoading: participantsLoading,
+    isError: participantsError
   } = useParticipants(chatId);
-  const { refetch: refetchNotifications } = useNotifications();
+  const {
+    refetch: refetchNotifications,
+    isError: notificationsError
+  } = useNotifications();
 
   const processedMessages = useMemo(
     () =>
@@ -67,9 +75,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
   }, []);
 
   const setLastOpened = useCallback(async () => {
-    await catcher(async () => {
-      await axios.put('/chat/lastseen', { chatId });
-    });
+    await axios.put('/chat/lastseen', { chatId });
     refetchNotifications();
   }, [chatId, refetchNotifications]);
 
@@ -86,7 +92,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
       sender: user!.username,
       last: true
     });
-    refetch();
+    refetchMessages();
     setForm('');
     setLastOpened();
     scrollToBottom();
@@ -94,7 +100,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
 
   useEffect(() => {
     socket.on('message', () => {
-      refetch();
+      refetchMessages();
       setLastOpened();
       setTimeout(scrollToBottom, 500);
       scrollToBottom();
@@ -103,11 +109,15 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     return () => {
       socket.off();
     };
-  }, [socket, scrollToBottom, setLastOpened, refetch]);
+  }, [socket, scrollToBottom, setLastOpened, refetchMessages]);
 
   useLayoutEffect(() => {
     scrollToBottom();
   }, [chatId, scrollToBottom]);
+
+  if (messagesError || notificationsError || participantsError) {
+    history.push('/error');
+  }
 
   const handleScroll = () => {
     if (!bottomRef.current) return;

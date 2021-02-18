@@ -8,6 +8,7 @@ import axios from 'axios';
 import { Loading } from './Loading';
 import { RefetchOptions, QueryObserverResult } from 'react-query';
 import { ChatObject } from '../types';
+import { useHistory } from 'react-router-dom';
 
 interface Props {
   id: string;
@@ -18,13 +19,24 @@ interface Props {
 }
 
 export const ChatInfo: React.FC<Props> = ({ id, setId, refetchChats }) => {
+  const history = useHistory();
   const {
     data: participants,
-    isLoading: participantsLoading
+    isLoading: participantsLoading,
+    isError: participantsError
   } = useParticipants(id);
-  const { data: name, refetch, isLoading: nameLoading } = useChatName(id);
+  const {
+    data: name,
+    refetch: refetchName,
+    isLoading: nameLoading,
+    isError: chatError
+  } = useChatName(id);
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(name || '');
+
+  if (participantsError || chatError) {
+    history.push('/error');
+  }
 
   const closeForm = () => {
     setEditing(false);
@@ -35,7 +47,7 @@ export const ChatInfo: React.FC<Props> = ({ id, setId, refetchChats }) => {
     axios
       .put(`/chat/name/${encodeURIComponent(id)}`, { name: form })
       .then(() => {
-        refetch();
+        refetchName();
         refetchChats();
       })
       .then(() => closeForm());

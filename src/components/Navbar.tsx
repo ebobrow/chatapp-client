@@ -3,11 +3,17 @@ import { UserInfo } from './UserInfo';
 import { FlexContainer, NavContainer } from './styled/Auth';
 import { useUser } from '../hooks/useUser';
 import AppBar from '@material-ui/core/AppBar';
+import { useHistory } from 'react-router-dom';
 
 const ProtectedRoutes = React.lazy(() => import('./ProtectedRoutes'));
 
 export const Navbar: React.FC = () => {
-  const { data: user, isLoading } = useUser();
+  const history = useHistory();
+  const { data: user, isLoading, isError } = useUser();
+
+  if (isError) {
+    history.push('/error');
+  }
 
   return (
     <AppBar position="relative" color="primary">
