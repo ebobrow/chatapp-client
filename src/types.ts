@@ -12,6 +12,7 @@ export interface ChatObject {
   id: string;
   participants: string[];
   messages?: Message[];
+  name?: string;
 }
 
 export interface Friend {

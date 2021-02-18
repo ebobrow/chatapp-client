@@ -2,7 +2,10 @@ import AddIcon from '@material-ui/icons/Add';
 import MenuIcon from '@material-ui/icons/Menu';
 import CloseIcon from '@material-ui/icons/Close';
 import styled from 'styled-components';
-import { PRIMARY_COLOR } from '../../constants';
+import InfoIcon from '@material-ui/icons/Info';
+import EditIcon from '@material-ui/icons/Edit';
+import DoneIcon from '@material-ui/icons/Done';
+import { PRIMARY_COLOR, SECONDARY_COLOR } from '../../constants';
 
 interface MessageProps {
   row: number;
@@ -39,6 +42,15 @@ export const MessageWrapper = styled.div<MessageProps>`
   }
 `;
 
+export const Info = styled(InfoIcon)`
+  color: black;
+
+  &:hover {
+    color: ${PRIMARY_COLOR};
+    cursor: pointer;
+  }
+`;
+
 export const TextNode = styled.p<{ ismine: boolean; padding: boolean }>`
   float: ${({ ismine }) => (ismine ? 'right' : 'left')};
   padding: 3px ${({ padding }) => (padding ? '10px' : '0')};
@@ -57,7 +69,7 @@ export const ChatWrapper = styled.div<{ w: string }>`
 
 export const ConversationWrapper = styled.div<{ active: boolean }>`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   border-radius: 10px;
   background-color: ${({ active }) => (active ? '#fff' : '')};
   color: ${({ active }) => (active ? PRIMARY_COLOR : 'black')};
@@ -66,7 +78,8 @@ export const ConversationWrapper = styled.div<{ active: boolean }>`
   min-height: 50px;
   margin: 0 10px;
   padding: 10px;
-  align-content: center;
+  align-items: center;
+  justify-content: space-between;
   transition: background-color 0.3s ease;
   width: 100%;
 
@@ -145,4 +158,28 @@ export const MessageForm = styled.form<{ atBottom: boolean }>`
       : `0px -2px 4px -1px rgba(0,0,0,0.2),
       0px -4px 5px 0px rgba(0,0,0,0.14),
       0px -1px 10px 0px rgba(0,0,0,0.12)`};
+`;
+
+export const EditName = styled(EditIcon)`
+  margin-left: 10px;
+
+  &:hover {
+    color: ${PRIMARY_COLOR};
+    cursor: pointer;
+  }
+`;
+
+export const Check = styled(DoneIcon)`
+  margin-left: 10px;
+
+  &:hover {
+    color: ${SECONDARY_COLOR};
+    cursor: pointer;
+  }
+`;
+
+export const ChatNameContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
