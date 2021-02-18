@@ -28,6 +28,7 @@ import { Loading } from './Loading';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { useHistory } from 'react-router-dom';
+import { getErrorUrl } from '../api';
 
 interface Props {
   w: string;
@@ -46,16 +47,16 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     data: messages,
     isLoading: messagesLoading,
     refetch: refetchMessages,
-    isError: messagesError
+    error: messagesError
   } = useMessages(chatId);
   const {
     data: participants,
     isLoading: participantsLoading,
-    isError: participantsError
+    error: participantsError
   } = useParticipants(chatId);
   const {
     refetch: refetchNotifications,
-    isError: notificationsError
+    error: notificationsError
   } = useNotifications();
 
   const processedMessages = useMemo(
@@ -115,8 +116,14 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     scrollToBottom();
   }, [chatId, scrollToBottom]);
 
-  if (messagesError || notificationsError || participantsError) {
-    history.push('/error');
+  if (messagesError) {
+    history.push(getErrorUrl(messagesError));
+  }
+  if (notificationsError) {
+    history.push(getErrorUrl(notificationsError));
+  }
+  if (participantsError) {
+    history.push(getErrorUrl(participantsError));
   }
 
   const handleScroll = () => {
@@ -133,6 +140,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
   } else if (chatId) {
     content = (
       <>
+        {!messages?.length && <h1>No messages... yet</h1>}
         <FlexFiller />
         <div style={{ overflowY: 'scroll' }} onScroll={handleScroll}>
           <MessagesContainer>

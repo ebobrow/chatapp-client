@@ -9,6 +9,7 @@ import { Loading } from './Loading';
 import { RefetchOptions, QueryObserverResult } from 'react-query';
 import { ChatObject } from '../types';
 import { useHistory } from 'react-router-dom';
+import { getErrorUrl } from '../api';
 
 interface Props {
   id: string;
@@ -23,19 +24,22 @@ export const ChatInfo: React.FC<Props> = ({ id, setId, refetchChats }) => {
   const {
     data: participants,
     isLoading: participantsLoading,
-    isError: participantsError
+    error: participantsError
   } = useParticipants(id);
   const {
     data: name,
     refetch: refetchName,
     isLoading: nameLoading,
-    isError: chatError
+    error: chatError
   } = useChatName(id);
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(name || '');
 
-  if (participantsError || chatError) {
-    history.push('/error');
+  if (participantsError) {
+    history.push(getErrorUrl(participantsError));
+  }
+  if (chatError) {
+    history.push(getErrorUrl(chatError));
   }
 
   const closeForm = () => {
@@ -50,7 +54,10 @@ export const ChatInfo: React.FC<Props> = ({ id, setId, refetchChats }) => {
         refetchName();
         refetchChats();
       })
-      .then(() => closeForm());
+      .then(() => closeForm())
+      .catch(error => {
+        history.push(getErrorUrl(error));
+      });
   };
 
   let content: JSX.Element;

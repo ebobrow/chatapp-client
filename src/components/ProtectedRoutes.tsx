@@ -5,6 +5,7 @@ import React from 'react';
 import { useNotifications } from '../hooks/useNotifications';
 import { StyledLink } from './styled/Auth';
 import { useHistory } from 'react-router-dom';
+import { getErrorUrl } from '../api';
 
 const PROTECTED_ROUTES = [
   {
@@ -19,10 +20,10 @@ const PROTECTED_ROUTES = [
 
 const ProtectedRoutes: React.FC = () => {
   const history = useHistory();
-  const { data, isError } = useNotifications();
+  const { data, error } = useNotifications();
 
-  if (isError) {
-    history.push('/error');
+  if (error) {
+    history.push(getErrorUrl(error));
   }
 
   return (

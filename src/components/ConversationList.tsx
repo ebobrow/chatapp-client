@@ -18,6 +18,7 @@ import { useConversations } from '../hooks/useConversations';
 import Badge from '@material-ui/core/Badge';
 import { ChatInfo } from './ChatInfo';
 import { useHistory } from 'react-router-dom';
+import { getErrorUrl } from '../api';
 
 interface Props {
   w: string;
@@ -27,11 +28,11 @@ interface Props {
 
 export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
   const history = useHistory();
-  const { data: user, isError: userError } = useUser();
+  const { data: user } = useUser();
   const {
     data: chats,
     refetch: refetchConversations,
-    isError: conversationsError
+    error: conversationsError
   } = useConversations();
   const conversations = chats?.map(chat => ({
     ...chat,
@@ -46,29 +47,37 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
   const {
     data,
     refetch: refetchNotifications,
-    isError: notificationsError
+    error: notificationsError
   } = useNotifications();
 
-  const selectChat = async (key: number) => {
+  const selectChat = (key: number) => {
     if (chatId) {
       socket.emit('leave', chatId);
     }
 
     if (!conversations) return;
 
-    await axios.put('/chat/lastseen', { chatId: conversations[key].id });
-
-    setChatId(conversations[key].id);
-    refetchNotifications();
-    refetchConversations();
+    axios
+      .put('/chat/lastseen', { chatId: conversations[key].id })
+      .then(() => {
+        setChatId(conversations[key].id);
+        refetchNotifications();
+        refetchConversations();
+      })
+      .catch(err => {
+        history.push(getErrorUrl(err));
+      });
   };
 
   useEffect(() => {
     socket.emit('join', chatId);
   }, [chatId, socket]);
 
-  if (notificationsError || conversationsError || userError) {
-    history.push('/error');
+  if (notificationsError) {
+    history.push(getErrorUrl(notificationsError));
+  }
+  if (conversationsError) {
+    history.push(getErrorUrl(conversationsError));
   }
 
   return (

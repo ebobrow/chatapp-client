@@ -13,17 +13,17 @@ const SignUp = React.lazy(() => import('../pages/Signup'));
 
 export const Router: React.FC = () => {
   return (
-    <Switch>
-      <Route path="/error" component={Error} />
-      <Suspense fallback={<Loading />}>
+    <Suspense fallback={<Loading />}>
+      <Switch>
         <Route path="/" exact component={Home} />
         <Route path="/login" exact component={Login} />
         <Route path="/signup" exact component={SignUp} />
         <Route path="/profile" exact component={Profile} />
         <Route path="/chat" exact component={Chat} />
         <Route path="/friends" exact component={Friends} />
-      </Suspense>
-      <Route path="*" component={NotFound} />
-    </Switch>
+        <Route path="/error" component={Error} />
+        <Route component={NotFound} />
+      </Switch>
+    </Suspense>
   );
 };

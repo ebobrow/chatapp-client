@@ -1,10 +1,8 @@
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { Message } from '../types';
+import { ApiError, Message } from '../types';
 
-const fetcher = async (
-  id: string | undefined
-): Promise<Message[] | undefined> => {
+const fetcher = async (id: string | undefined) => {
   if (!id) return;
   const { data } = await axios.get(`/chat/messages/${encodeURIComponent(id)}`);
 
@@ -12,7 +10,10 @@ const fetcher = async (
 };
 
 export const useMessages = (id: string | undefined) => {
-  const queryObj = useQuery(['messages', id], () => fetcher(id));
+  const queryObj = useQuery<Message[] | undefined, ApiError>(
+    ['messages', id],
+    () => fetcher(id)
+  );
 
   return queryObj;
 };

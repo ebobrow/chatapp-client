@@ -11,6 +11,7 @@ import { useUser } from '../hooks/useUser';
 import { useQueryClient } from 'react-query';
 import axios from 'axios';
 import { Loading } from '../components/Loading';
+import { getErrorUrl } from '../api';
 
 const INPUTS = [
   { label: 'Username', name: 'username', type: 'text' },
@@ -35,16 +36,12 @@ const Login: React.FC = () => {
 
   const queryClient = useQueryClient();
   const history = useHistory();
-  const { data: user, isLoading, isError } = useUser();
+  const { data: user, isLoading } = useUser();
 
   const [authErrors, setAuthErrors] = useState<string[]>([]);
 
   if (user) {
     history.push('/');
-  }
-
-  if (isError) {
-    history.push('/error');
   }
 
   if (isLoading) {
@@ -59,21 +56,20 @@ const Login: React.FC = () => {
         initialValues={INITIAL_VALUES}
         validationSchema={loginSchema}
         onSubmit={async (values, formik) => {
-          const resetField = (fieldName: string) => {
-            formik.setFieldValue(fieldName, '', false);
-          };
-
-          const { data } = await axios.post('/auth/login', values);
-
           setAuthErrors([]);
-          if (!data.errors) {
+          try {
+            await axios.post('/auth/login', values);
+
             queryClient.invalidateQueries();
             formik.resetForm();
-          } else {
-            data.errors.forEach((err: string) => {
-              setAuthErrors(c => [...c, err]);
-            });
-            resetField('password');
+          } catch (error) {
+            if (error.status === 400) {
+              setAuthErrors([error.error]);
+              formik.setFieldValue('password', '', false);
+            } else {
+              history.push(getErrorUrl(error));
+            }
+          } finally {
             formik.setSubmitting(false);
           }
         }}>

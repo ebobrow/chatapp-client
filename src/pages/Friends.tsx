@@ -12,41 +12,50 @@ import { useRecievedRequests } from '../hooks/useRecievedRequests';
 import { useSentRequests } from '../hooks/useSentRequests';
 import { Loading } from '../components/Loading';
 import Button from '@material-ui/core/Button';
+import { getErrorUrl } from '../api';
 
 const Friends: React.FC = () => {
   const history = useHistory();
-  const { data: user, isLoading: userLoading, isError: userError } = useUser();
+  const { data: user, isLoading: userLoading } = useUser();
   const {
     data: friends,
     isLoading: friendsLoading,
     refetch: refetchFriends,
-    isError: friendsError
+    error: friendsError
   } = useFriends();
   const { refetch } = useNotifications();
   const {
     data: recievedRequests,
     refetch: refetchRecieved,
-    isError: requestsError
+    error: recievedRequestsError
   } = useRecievedRequests();
-  const { data: sentRequests } = useSentRequests();
+  const { data: sentRequests, error: sentRequestsError } = useSentRequests();
   const [modalOpen, setModalOpen] = useState(false);
 
   const clearNotifications = useCallback(async () => {
     if (!user) return;
 
-    await axios.put('/auth/friends/seen');
-    refetch();
-  }, [user, refetch]);
+    try {
+      await axios.put('/auth/friends/seen');
+      refetch();
+    } catch (error) {
+      history.push(getErrorUrl(error));
+    }
+  }, [user, refetch, history]);
 
   const acceptRequest = async (accept: boolean, sender: string) => {
-    await axios.put('/auth/friends/accept', {
-      accept,
-      sender
-    });
+    try {
+      await axios.put('/auth/friends/accept', {
+        accept,
+        sender
+      });
 
-    refetchRecieved();
-    if (accept) {
-      refetchFriends();
+      refetchRecieved();
+      if (accept) {
+        refetchFriends();
+      }
+    } catch (error) {
+      history.push(getErrorUrl(error));
     }
   };
 
@@ -62,8 +71,14 @@ const Friends: React.FC = () => {
     history.push('/login');
   }
 
-  if (friendsError || requestsError || userError) {
-    history.push('/error');
+  if (friendsError) {
+    history.push(getErrorUrl(friendsError));
+  }
+  if (sentRequestsError) {
+    history.push(getErrorUrl(sentRequestsError));
+  }
+  if (recievedRequestsError) {
+    history.push(getErrorUrl(recievedRequestsError));
   }
 
   return (

@@ -11,6 +11,7 @@ import Button from '@material-ui/core/Button';
 import Alert from '@material-ui/lab/Alert';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { useHistory } from 'react-router-dom';
+import { getErrorUrl } from '../api';
 
 interface Props {
   open: boolean;
@@ -21,9 +22,9 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen }) => {
   const history = useHistory();
   const [form, setForm] = useState<string[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
-  const { data: friends, isLoading, isError: friendsError } = useFriends();
+  const { data: friends, isLoading, error: friendsError } = useFriends();
   const { setChatId } = useChatContext();
-  const { refetch, isError: conversationsError } = useConversations();
+  const { refetch, error: conversationsError } = useConversations();
 
   const removeError = (error: string) => {
     setErrors(curr => curr.filter(err => err !== error));
@@ -34,29 +35,29 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen }) => {
     setOpen(false);
   };
 
-  const setErrorsNoRepeats = (error: string) => {
-    setErrors(curr => {
-      if (curr.find(err => err === error)) return curr;
-      return [...curr, error];
-    });
-  };
-
   const create = async () => {
-    const { data } = await axios.post('/chat', {
-      users: form
-    });
+    try {
+      const { data } = await axios.post('/chat', {
+        users: form
+      });
 
-    if (!data.ok) {
-      setErrorsNoRepeats(data.error);
-      return;
+      refetch();
+      setChatId(data.id);
+      closeModal();
+    } catch (error) {
+      if (error.status === 400) {
+        setErrors([error.error]);
+      } else {
+        history.push(getErrorUrl(error));
+      }
     }
-    refetch();
-    setChatId(data.id);
-    closeModal();
   };
 
-  if (friendsError || conversationsError) {
-    history.push('/error');
+  if (friendsError) {
+    history.push(getErrorUrl(friendsError));
+  }
+  if (conversationsError) {
+    history.push(getErrorUrl(conversationsError));
   }
 
   if (isLoading) {

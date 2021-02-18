@@ -4,15 +4,16 @@ import { FlexContainer, NavContainer } from './styled/Auth';
 import { useUser } from '../hooks/useUser';
 import AppBar from '@material-ui/core/AppBar';
 import { useHistory } from 'react-router-dom';
+import { getErrorUrl } from '../api';
 
 const ProtectedRoutes = React.lazy(() => import('./ProtectedRoutes'));
 
 export const Navbar: React.FC = () => {
   const history = useHistory();
-  const { data: user, isLoading, isError } = useUser();
+  const { data: user, isLoading, error } = useUser();
 
-  if (isError) {
-    history.push('/error');
+  if (error) {
+    history.push(getErrorUrl(error));
   }
 
   return (

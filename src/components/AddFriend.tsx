@@ -4,6 +4,8 @@ import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
 import axios from 'axios';
 import React, { Dispatch, FormEvent, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { getErrorUrl } from '../api';
 import { useSentRequests } from '../hooks/useSentRequests';
 import { FlexFiller, ModalForm } from './styled/Chat';
 
@@ -13,38 +15,44 @@ interface Props {
 }
 
 export const AddFriend: React.FC<Props> = ({ open, setOpen }) => {
+  const history = useHistory();
   const [form, setForm] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
   const { refetch } = useSentRequests();
 
-  const closeModal = () => {
+  const reset = (closeModal = false) => {
     setErrors([]);
     setForm('');
-    setOpen(false);
+    setOpen(!closeModal);
   };
 
   const closeAlert = (message: string) => {
     setErrors(curr => curr.filter(err => err !== message));
   };
 
-  const add = async (e: FormEvent) => {
+  const add = (e: FormEvent) => {
     e.preventDefault();
+    reset();
 
-    const { data } = await axios.post('/auth/friends/request', {
-      reciever: form
-    });
-
-    if (!data || !data.ok) {
-      setErrors([data.error]);
-      return;
-    }
-
-    refetch();
-    closeModal();
+    axios
+      .post('/auth/friends/request', {
+        reciever: form
+      })
+      .then(() => {
+        refetch();
+        reset(true);
+      })
+      .catch(error => {
+        if (error.status === 400) {
+          setErrors([error.error]);
+        } else {
+          history.push(getErrorUrl(error));
+        }
+      });
   };
 
   return (
-    <Modal open={open} onClose={closeModal}>
+    <Modal open={open} onClose={() => reset(true)}>
       <ModalForm onSubmit={add}>
         <h1>Add Friend</h1>
         {errors.map(err => (

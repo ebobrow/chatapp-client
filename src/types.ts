@@ -19,3 +19,10 @@ export interface Friend {
   name: string;
   username: string;
 }
+
+export interface ApiError {
+  status: number;
+  statusText: string;
+  error: string;
+  data?: object;
+}

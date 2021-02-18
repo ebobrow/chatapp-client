@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 import { useUser } from '../hooks/useUser';
 import axios from 'axios';
 import { Loading } from '../components/Loading';
+import { getErrorUrl } from '../api';
 
 const INPUTS = [
   { label: 'Current Password', name: 'oldPassword', type: 'password' },
@@ -25,7 +26,7 @@ const INITIAL_VALUES = {
 
 const changePasswordSchema = Yup.object().shape({
   oldPassword: Yup.string().required('Required'),
-  newPassword: Yup.string().required('Required'),
+  newPassword: Yup.string().min(5, 'Too short').required('Required'),
   newPasswordVerify: Yup.string()
     .oneOf([Yup.ref('newPassword')], 'Passwords do not match')
     .required('Required')
@@ -33,7 +34,7 @@ const changePasswordSchema = Yup.object().shape({
 
 const Profile: React.FC = () => {
   const history = useHistory();
-  const { data: user, isLoading, isError } = useUser();
+  const { data: user, isLoading } = useUser();
   const [authErrors, setAuthErrors] = useState<string[]>([]);
   const accountAge = new Date(
     (new Date() as any) - (new Date(user?.created_at!) as any)
@@ -41,10 +42,6 @@ const Profile: React.FC = () => {
 
   if (!user) {
     history.push('/login');
-  }
-
-  if (isError) {
-    history.push('/error');
   }
 
   if (isLoading) {
@@ -66,18 +63,21 @@ const Profile: React.FC = () => {
         initialValues={INITIAL_VALUES}
         validationSchema={changePasswordSchema}
         onSubmit={async (values, formik) => {
-          const { data } = await axios.put('/auth/password', {
-            ...values
-          });
-
-          setAuthErrors([]);
-          if (data.errors) {
-            data.errors.forEach((err: string) => {
-              setAuthErrors(c => [...c, err]);
+          try {
+            setAuthErrors([]);
+            await axios.put('/auth/password', {
+              ...values
             });
+          } catch (error) {
+            if (error.status === 400) {
+              setAuthErrors([error.error]);
+            } else {
+              history.push(getErrorUrl(error));
+            }
+          } finally {
             formik.setSubmitting(false);
+            formik.resetForm();
           }
-          formik.resetForm();
         }}>
         {({ isSubmitting }) => (
           <>

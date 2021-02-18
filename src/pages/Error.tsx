@@ -6,8 +6,10 @@ const Error: React.FC = () => {
 
   return (
     <div>
-      <h1>Error | {query.get('status') || 500}</h1>
-      <p>{query.get('message') || 'Something went wrong'}</p>
+      <h1>
+        {query.get('status')} | {query.get('status-text')}
+      </h1>
+      <p>{query.get('message')}</p>
     </div>
   );
 };
