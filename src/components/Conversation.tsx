@@ -29,6 +29,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { useHistory } from 'react-router-dom';
 import { getErrorUrl } from '../api';
+import { Message as MessageType } from '../types';
 
 interface Props {
   w: string;
@@ -40,6 +41,8 @@ export const Conversation: React.FC<Props> = ({ w }) => {
   const [form, setForm] = useState('');
   const [atBottom, setAtBottom] = useState(true);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
+  const loadingMoreTexts = useRef<HTMLDivElement>(null);
   const { chatId } = useChatContext();
   const { socket } = useSocketContext();
 
@@ -47,7 +50,10 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     data: messages,
     isLoading: messagesLoading,
     refetch: refetchMessages,
-    error: messagesError
+    error: messagesError,
+    fetchPreviousPage,
+    isFetchingPreviousPage,
+    hasPreviousPage
   } = useMessages(chatId);
   const {
     data: participants,
@@ -59,16 +65,19 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     error: notificationsError
   } = useNotifications();
 
-  const processedMessages = useMemo(
-    () =>
-      messages?.map((message, index) => ({
-        ...message,
-        last:
-          index === messages.length - 1 ||
-          message.sender !== messages[index + 1].sender
-      })),
-    [messages]
-  );
+  const processedMessages = useMemo(() => {
+    let flattened: MessageType[] = [];
+    messages?.pages.forEach(page =>
+      page?.messages.forEach(message => flattened.push(message))
+    );
+
+    return flattened.map((message, index) => ({
+      ...message,
+      last:
+        index === flattened.length - 1 ||
+        message.sender !== flattened[index + 1].sender
+    }));
+  }, [messages]);
 
   const scrollToBottom = useCallback(() => {
     if (!bottomRef.current) return;
@@ -127,10 +136,15 @@ export const Conversation: React.FC<Props> = ({ w }) => {
   }
 
   const handleScroll = () => {
-    if (!bottomRef.current) return;
+    if (!bottomRef.current || !topRef.current) return;
     const top = bottomRef.current.getBoundingClientRect().top;
-    const visible = top >= 0 && top <= window.innerHeight;
-    setAtBottom(visible);
+    setAtBottom(top >= 0 && top <= window.innerHeight);
+
+    const scroll = topRef.current.scrollTop;
+
+    if (scroll === 0 && hasPreviousPage) {
+      fetchPreviousPage();
+    }
   };
 
   let content: JSX.Element;
@@ -140,9 +154,13 @@ export const Conversation: React.FC<Props> = ({ w }) => {
   } else if (chatId) {
     content = (
       <>
-        {!messages?.length && <h1>No messages... yet</h1>}
+        {!processedMessages?.length && <h1>No messages... yet</h1>}
         <FlexFiller />
-        <div style={{ overflowY: 'scroll' }} onScroll={handleScroll}>
+        <div
+          ref={topRef}
+          style={{ overflowY: 'scroll' }}
+          onScroll={handleScroll}>
+          {isFetchingPreviousPage && <h1 ref={loadingMoreTexts}>...</h1>}
           <MessagesContainer>
             {processedMessages &&
               processedMessages.map((message, index) => {
