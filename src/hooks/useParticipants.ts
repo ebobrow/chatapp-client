@@ -7,12 +7,15 @@ interface Participant {
   username: string;
 }
 
-const fetcher = async (id: string) => {
-  const { data } = await axios.post('/chat/getparticipants', { id });
+const fetcher = async (id: string | undefined) => {
+  if (!id) return;
+  const { data } = await axios.get(
+    `/chat/participants/${encodeURIComponent(id)}`
+  );
   return data.participants;
 };
 
-export const useParticipants = (id: string) => {
+export const useParticipants = (id: string | undefined) => {
   const queryObj = useQuery(['participants', id], () =>
     catcher<Participant[]>(() => fetcher(id))
   );

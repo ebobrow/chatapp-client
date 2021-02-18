@@ -17,7 +17,7 @@ export const Friend: React.FC<Props> = ({ friend }) => {
 
   const addChat = async () => {
     const chat = await catcher<any>(async () => {
-      const { data } = await axios.post('/chat/createchat', {
+      const { data } = await axios.post('/chat', {
         users: [friend.username]
       });
       return data;

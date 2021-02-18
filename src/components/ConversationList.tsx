@@ -48,7 +48,7 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
     if (!conversations) return;
 
     await catcher(async () => {
-      await axios.post('/chat/setopen', { chatId: conversations[key].id });
+      await axios.put('/chat/lastseen', { chatId: conversations[key].id });
     });
 
     setChatId(conversations[key].id);

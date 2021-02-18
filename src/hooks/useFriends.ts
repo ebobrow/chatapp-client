@@ -4,7 +4,7 @@ import { catcher } from '../api';
 import { Friend } from '../types';
 
 const fetcher = async () => {
-  const { data } = await axios.get('/auth/friends/getnames');
+  const { data } = await axios.get('/auth/friends/names');
 
   return data.friends;
 };

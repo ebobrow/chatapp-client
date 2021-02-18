@@ -42,7 +42,7 @@ export const CreateChat: React.FC<Props> = ({ open, setOpen }) => {
 
   const create = async () => {
     const res = await catcher<any>(async () => {
-      const { data } = await axios.post('/chat/createchat', {
+      const { data } = await axios.post('/chat', {
         users: form
       });
 

@@ -4,7 +4,7 @@ import { catcher } from '../api';
 import { ChatObject } from '../types';
 
 const fetcher = async () => {
-  const { data } = await axios.get('/chat/chats');
+  const { data } = await axios.get('/chat');
 
   return data.chats;
 };

@@ -68,7 +68,7 @@ export const Conversation: React.FC<Props> = ({ w }) => {
 
   const setLastOpened = useCallback(async () => {
     await catcher(async () => {
-      await axios.post('/chat/setopen', { chatId });
+      await axios.put('/chat/lastseen', { chatId });
     });
     refetchNotifications();
   }, [chatId, refetchNotifications]);
