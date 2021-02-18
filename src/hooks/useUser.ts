@@ -15,7 +15,6 @@ const fetcher = async () => {
     const { data } = await axios.get('/auth/token');
     return data.user;
   } catch (error) {
-    console.log(error);
     return;
   }
 };
