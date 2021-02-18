@@ -40,7 +40,7 @@ const Profile: React.FC = () => {
     (new Date() as any) - (new Date(user?.created_at!) as any)
   );
 
-  if (!user) {
+  if (!user && !isLoading) {
     history.push('/login');
   }
 

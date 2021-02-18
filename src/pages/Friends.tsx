@@ -67,7 +67,7 @@ const Friends: React.FC = () => {
     return <Loading />;
   }
 
-  if (!user) {
+  if (!user && !userLoading) {
     history.push('/login');
   }
 
