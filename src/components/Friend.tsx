@@ -2,10 +2,16 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useChatContext } from '../contexts/ChatContext';
 import { Friend as FriendType } from '../types';
-import { FriendContainer, Plus } from './styled/Friends';
+import {
+  FriendContainer,
+  FriendName,
+  Plus,
+  RemoveFriend
+} from './styled/Friends';
 import axios from 'axios';
 import Button from '@material-ui/core/Button';
 import { getErrorUrl } from '../api';
+import { useFriends } from '../hooks/useFriends';
 
 interface Props {
   friend: FriendType;
@@ -13,6 +19,7 @@ interface Props {
 
 export const Friend: React.FC<Props> = ({ friend }) => {
   const { setChatId } = useChatContext();
+  const { refetch } = useFriends();
   let history = useHistory();
 
   const addChat = async () => {
@@ -39,9 +46,25 @@ export const Friend: React.FC<Props> = ({ friend }) => {
     }
   };
 
+  const removeFriend = async () => {
+    const check = window.confirm(
+      `Are you sure you want to unfriend ${friend.name}?`
+    );
+
+    if (!check) {
+      return;
+    }
+
+    await axios.delete(`/auth/friends/${friend.username}`);
+    refetch();
+  };
+
   return (
     <FriendContainer>
-      <strong>{friend.name}</strong>
+      <FriendName>
+        <strong>{friend.name}</strong>
+        <RemoveFriend onClick={removeFriend} />
+      </FriendName>
       <small>{friend.username}</small>
       <Button color="primary" variant="outlined" onClick={addChat}>
         Chat <Plus />
