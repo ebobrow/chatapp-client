@@ -35,7 +35,7 @@ export const AddFriend: React.FC<Props> = ({ open, setOpen }) => {
     reset();
 
     axios
-      .post('/auth/friends/request', {
+      .post('/friends/request', {
         reciever: form
       })
       .then(() => {

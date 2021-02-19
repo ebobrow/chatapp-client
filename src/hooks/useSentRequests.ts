@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { ApiError } from '../types';
 
 const fetcher = async () => {
-  const { data } = await axios.get('/auth/friends/sentrequests');
+  const { data } = await axios.get('/friends/sentrequests');
 
   return data.requests;
 };

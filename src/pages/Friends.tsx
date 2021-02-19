@@ -36,7 +36,7 @@ const Friends: React.FC = () => {
     if (!user) return;
 
     try {
-      await axios.put('/auth/friends/seen');
+      await axios.put('/friends/seen');
       refetch();
     } catch (error) {
       history.push(getErrorUrl(error));
@@ -45,7 +45,7 @@ const Friends: React.FC = () => {
 
   const acceptRequest = async (accept: boolean, sender: string) => {
     try {
-      await axios.put('/auth/friends/accept', {
+      await axios.put('/friends/accept', {
         accept,
         sender
       });

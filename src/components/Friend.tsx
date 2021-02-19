@@ -55,7 +55,7 @@ export const Friend: React.FC<Props> = ({ friend }) => {
       return;
     }
 
-    await axios.delete(`/auth/friends/${friend.username}`);
+    await axios.delete(`/friends/${friend.username}`);
     refetch();
   };
 
