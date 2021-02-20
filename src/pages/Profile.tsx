@@ -40,12 +40,10 @@ const Profile: React.FC = () => {
     (new Date() as any) - (new Date(user?.created_at!) as any)
   );
 
-  if (!user && !isLoading) {
-    history.push('/login');
-  }
-
   if (isLoading) {
     return <Loading />;
+  } else if (!user) {
+    history.push('/login');
   }
 
   return (

@@ -25,16 +25,14 @@ const Chat: React.FC = () => {
     };
   }, [closeMenu]);
 
-  if (!data) {
-    history.push('/login');
-  }
-
   if (error) {
     history.push(getErrorUrl(error));
   }
 
   if (isLoading) {
     return <Loading />;
+  } else if (!data) {
+    history.push('/login');
   }
 
   return (

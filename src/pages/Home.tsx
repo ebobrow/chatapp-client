@@ -9,16 +9,14 @@ const Home: React.FC = () => {
   const history = useHistory();
   const { data, isLoading, error } = useUser();
 
-  if (!data) {
-    history.push('/login');
-  }
-
   if (error) {
     history.push(getErrorUrl(error));
   }
 
   if (isLoading) {
     return <Loading />;
+  } else if (!data) {
+    history.push('/login');
   }
 
   return (

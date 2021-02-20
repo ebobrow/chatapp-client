@@ -40,12 +40,10 @@ const Login: React.FC = () => {
 
   const [authErrors, setAuthErrors] = useState<string[]>([]);
 
-  if (user) {
-    history.push('/');
-  }
-
   if (isLoading) {
     return <Loading />;
+  } else if (user) {
+    history.push('/');
   }
 
   return (

@@ -45,12 +45,10 @@ const SignUp: React.FC = () => {
   const queryClient = useQueryClient();
   const { data: user, isLoading } = useUser();
 
-  if (user) {
-    history.push('/');
-  }
-
   if (isLoading) {
     return <Loading />;
+  } else if (user) {
+    history.push('/');
   }
 
   return (
