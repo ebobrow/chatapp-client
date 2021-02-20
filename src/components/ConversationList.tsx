@@ -100,38 +100,39 @@ export const ConversationList: React.FC<Props> = ({ w, open, setOpen }) => {
         {conversations &&
           open &&
           conversations.map((conversation, index) => (
-            <Badge
-              key={index}
-              badgeContent={
-                data?.Chat && (data?.Chat as any).chats.length
-                  ? (data?.Chat as any).chats.find(
-                      (chat: { id: string }) => chat.id === conversation.id
-                    )?.amount
-                  : 0 // This is so messy
-              }
-              color="secondary">
-              <ConversationWrapper
-                onClick={() => selectChat(index)}
-                active={conversation.id === chatId}>
+            <ConversationWrapper
+              onClick={() => selectChat(index)}
+              active={conversation.id === chatId}>
+              <Badge
+                key={index}
+                badgeContent={
+                  data?.Chat && (data?.Chat as any).chats.length
+                    ? (data?.Chat as any).chats.find(
+                        (chat: { id: string }) => chat.id === conversation.id
+                      )?.amount
+                    : 0 // This is so messy
+                }
+                color="secondary">
                 <div
                   style={{
                     display: 'flex',
                     alignItems: 'flex-start',
-                    flexDirection: 'column'
+                    flexDirection: 'column',
+                    padding: '5px'
                   }}>
                   {conversation.name && <strong>{conversation.name}</strong>}
                   <p style={{ margin: 0 }}>
                     {conversation.participants?.join(', ')}
                   </p>
                 </div>
-                <Info
-                  onClick={e => {
-                    e.stopPropagation();
-                    setChatInfoId(conversation.id);
-                  }}
-                />
-              </ConversationWrapper>
-            </Badge>
+              </Badge>
+              <Info
+                onClick={e => {
+                  e.stopPropagation();
+                  setChatInfoId(conversation.id);
+                }}
+              />
+            </ConversationWrapper>
           ))}
         <FlexFiller />
         <div style={{ display: 'flex', flexDirection: 'row' }}>

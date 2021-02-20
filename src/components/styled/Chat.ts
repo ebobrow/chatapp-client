@@ -81,7 +81,7 @@ export const ConversationWrapper = styled.div<{ active: boolean }>`
   align-items: center;
   justify-content: space-between;
   transition: background-color 0.3s ease;
-  width: 100%;
+  width: 90%;
 
   &:hover {
     color: ${({ active }) => (active ? PRIMARY_COLOR : 'grey')};
