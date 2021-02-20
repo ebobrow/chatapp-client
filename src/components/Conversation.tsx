@@ -97,12 +97,16 @@ export const Conversation: React.FC<Props> = ({ w }) => {
       room: chatId
     });
 
+    if (
+      processedMessages[processedMessages.length - 1].sender === user?.username
+    ) {
+      processedMessages[processedMessages.length - 1].last = false;
+    }
     processedMessages?.push({
       message: form,
       sender: user!.username,
       last: true
     });
-    refetchMessages();
     setForm('');
     setLastOpened();
     scrollToBottom();
