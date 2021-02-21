@@ -14,12 +14,9 @@ const fetcher: QueryFunction<ResponseType | undefined> = async ({
   const id = queryKey[1];
   if (!id) return;
 
-  let url = `/chat/messages?id=${id}`;
-  if (pageParam) {
-    url += `&cursor=${pageParam}`;
-  }
-
-  const { data } = await axios.get(url);
+  const { data } = await axios.get('/chat/messages', {
+    params: { id, cursor: pageParam || null }
+  });
   return data;
 };
 
