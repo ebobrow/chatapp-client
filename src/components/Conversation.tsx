@@ -116,8 +116,6 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     socket.on('message', () => {
       refetchMessages();
       setLastOpened();
-      setTimeout(scrollToBottom, 500);
-      scrollToBottom();
     });
 
     return () => {
@@ -125,9 +123,12 @@ export const Conversation: React.FC<Props> = ({ w }) => {
     };
   }, [socket, scrollToBottom, setLastOpened, refetchMessages]);
 
-  useLayoutEffect(() => {
-    scrollToBottom();
-  }, [chatId, scrollToBottom]);
+  useLayoutEffect(scrollToBottom, [
+    chatId,
+    scrollToBottom,
+    processedMessages,
+    messages
+  ]);
 
   if (messagesError) {
     history.push(getErrorUrl(messagesError));
