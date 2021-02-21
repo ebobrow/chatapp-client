@@ -1,10 +1,11 @@
 import React from 'react';
-import { LoadingContainer, Spinner } from './styled/Loading';
+import { LoadingContainer } from './styled/Loading';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export const Loading: React.FC = () => {
   return (
     <LoadingContainer>
-      <Spinner />
+      <CircularProgress />
     </LoadingContainer>
   );
 };
