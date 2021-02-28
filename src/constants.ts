@@ -1,4 +1,5 @@
-export const API_URL = process.env.API_URL || 'http://128.199.5.221:4000/';
+export const API_URL =
+  process.env.API_URL || 'http://api.whazzapp.elliotbobrow.com';
 
 export const APP_NAME = "What's Appening";
 
