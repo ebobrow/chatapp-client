@@ -1,5 +1,5 @@
 export const API_URL =
-  process.env.API_URL || 'http://api.whazzapp.elliotbobrow.com';
+  process.env.API_URL || 'https://api.whazzapp.elliotbobrow.com';
 
 export const APP_NAME = "What's Appening";
 
